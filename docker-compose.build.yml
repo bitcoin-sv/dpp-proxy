@@ -1,0 +1,7 @@
+version: "3.7"
+
+services:
+  pptcl:
+    image: local.pptcl
+    build:
+      context: .
