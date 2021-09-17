@@ -17,9 +17,9 @@ func SetupDefaults() {
 
 	// Environment Defaults
 	viper.SetDefault(EnvEnvironment, "dev")
-	viper.SetDefault(EnvRegion, "test")
+	viper.SetDefault(EnvRegion, "local")
 	viper.SetDefault(EnvCommit, "test")
-	viper.SetDefault(EnvVersion, "test")
+	viper.SetDefault(EnvVersion, "v0.0.0")
 	viper.SetDefault(EnvBuildDate, time.Now().UTC())
 	viper.SetDefault(EnvBitcoinNetwork, "regtest")
 
