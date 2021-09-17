@@ -24,9 +24,6 @@ run-unit-tests-cover:
 run-linter:
 	@golangci-lint run --deadline=480s --skip-dirs=vendor --tests
 
-# make create-alias alias=some_alias
-create-alias:
-	@go run -race main.go create $(alias)
 
 install-linter:
 	@curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.35.2

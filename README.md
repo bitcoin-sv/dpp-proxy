@@ -55,3 +55,46 @@ Values can also be passed at build time to provide information such as build inf
 | PAYD_PORT   | Port the PayD wallet is listening on                     | :8443   |
 | PAYD_SECURE | If true the P4 server will validate the wallet TLS certs | false   |
 
+## Working with P4
+
+There are a set of makefile commands listed under the [Makefile](Makefile) which give some useful shortcuts when working
+with the repo.
+
+Some of the more common commands are listed below:
+
+`make pre-commit` - ensures dependencies are up to date and runs linter and unit tests.
+
+`make build-image` - builds a local docker image, useful when testing p4 in docker.
+
+`make run-compose` - runs P4 in compose, a reference PayD wallet will be added to compose soon NOTE the above command will need ran first.
+
+### Rebuild on code change
+
+You can also add an optional `docker-compose.dev.yml` file (this is not committed) where you can safely overwrite values or add other services without impacting the main compose file.
+
+If you add this file, you can run it with `make run-compose-dev`.
+
+The file I use has a watcher which means it auto rebuilds the image on code change and ensures compose is always up to date, this full file is shown below:
+
+```yaml
+version: "3.7"
+
+services:
+  pptcl:
+    image: theflyingcodr/go-watcher:1.15.8
+    environment:
+      GO111MODULE: "on"
+      GOFLAGS: "-mod=vendor"
+      DB_DSN: "file:data/wallet.db?cache=shared&_foreign_keys=true;"
+      DB_SCHEMA_PATH: "data/sqlite/migrations"
+    command: watcher -run github.com/libsv/pptcl/cmd/rest-server/ -watch github.com/libsv/pptcl
+    working_dir: /go/src/github.com/libsv/pptcl
+    volumes:
+      - ~/git/libsv/go-p4:/go/src/github.com/libsv/pptcl
+```
+
+## CI / CD
+
+We use github actions to test and build the code.
+
+If a new release is required, after your PR is approved and code added to master, simply add a new semver tag and a GitHub action will build and publish your code as well as create a GitHub release.
