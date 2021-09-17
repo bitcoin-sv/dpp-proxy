@@ -12,6 +12,9 @@ import (
 type noop struct {
 }
 
+// NewNoOp will setup and return a new no operational data store for
+// testing purposes. Useful if you want to explore endpoints without
+// integrating with a wallet.
 func NewNoOp() *noop {
 	log.Info("using NOOP data store")
 	return &noop{}
