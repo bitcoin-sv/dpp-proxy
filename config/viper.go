@@ -57,6 +57,7 @@ func (v *ViperConfig) WithPayD() ConfigurationLoader {
 		Port:            viper.GetString(EnvPaydPort),
 		Secure:          viper.GetBool(EnvPaydSecure),
 		CertificatePath: viper.GetString(EnvPaydCertPath),
+		Noop:            viper.GetBool(EnvPaydNoop),
 	}
 	return v
 }

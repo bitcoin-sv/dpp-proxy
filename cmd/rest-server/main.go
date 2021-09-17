@@ -11,6 +11,7 @@ import (
 	echoSwagger "github.com/swaggo/echo-swagger"
 
 	"github.com/libsv/pptcl/data"
+	"github.com/libsv/pptcl/data/noop"
 	_ "github.com/libsv/pptcl/docs"
 
 	"github.com/labstack/gommon/log"
@@ -50,7 +51,6 @@ const banner = `
 // @license.name ISC
 // @license.url https://github.com/libsv/go-payment_protocol/blob/master/LICENSE
 // @host localhost:8445
-// @BasePath /api/v1
 // @schemes:
 //	- http
 //	- https
@@ -100,10 +100,15 @@ func main() {
 	}
 	// stores
 	paydStore := payd.NewPayD(cfg.PayD, data.NewClient(httpClient))
+	noopStore := noop.NewNoOp()
 
 	// services
 	paymentSvc := service.NewPayment(paydStore)
 	paymentReqSvc := service.NewPaymentRequest(cfg.Server, paydStore, paydStore, paydStore)
+	if cfg.PayD.Noop {
+		paymentSvc = service.NewPayment(noopStore)
+		paymentReqSvc = service.NewPaymentRequest(cfg.Server, noopStore, noopStore, noopStore)
+	}
 	// handlers
 	pptclHandlers.NewPaymentHandler(paymentSvc).RegisterRoutes(g)
 	pptclHandlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)

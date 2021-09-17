@@ -425,7 +425,7 @@ type swaggerInfo struct {
 var SwaggerInfo = swaggerInfo{
 	Version:     "0.0.1",
 	Host:        "localhost:8445",
-	BasePath:    "/api/v1",
+	BasePath:    "",
 	Schemes:     []string{},
 	Title:       "Payment Protocol Server",
 	Description: "Payment Protocol Server is an implementation of a Bip-270 payment flow.",

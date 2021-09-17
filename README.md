@@ -54,6 +54,7 @@ Values can also be passed at build time to provide information such as build inf
 | PAYD_HOST   | Host for the wallet we are connecting to                 | payd    |
 | PAYD_PORT   | Port the PayD wallet is listening on                     | :8443   |
 | PAYD_SECURE | If true the P4 server will validate the wallet TLS certs | false   |
+| PAYD_NOOP   | If true we will use a dummy data store in place of payd  | true    |
 
 ## Working with P4
 

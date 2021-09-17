@@ -52,6 +52,9 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args pptcl.Pa
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read merchant data when constructing payment request")
 	}
+	if merchant.ExtendedData == nil {
+		merchant.ExtendedData = map[string]interface{}{}
+	}
 	// here we store paymentRef in extended data to allow some validation in payment flow
 	merchant.ExtendedData["paymentReference"] = args.PaymentID
 	return &pptcl.PaymentRequest{

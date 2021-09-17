@@ -26,8 +26,9 @@ func SetupDefaults() {
 	// Log level defaults
 	viper.SetDefault(EnvLogLevel, "info")
 
-	// Payd wallet Defaults
+	// PayD wallet Defaults
 	viper.SetDefault(EnvPaydHost, "payd")
 	viper.SetDefault(EnvPaydPort, ":8443")
 	viper.SetDefault(EnvPaydSecure, false)
+	viper.SetDefault(EnvPaydNoop, true)
 }

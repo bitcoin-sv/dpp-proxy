@@ -24,6 +24,7 @@ const (
 	EnvPaydPort             = "payd.port"
 	EnvPaydSecure           = "payd.secure"
 	EnvPaydCertPath         = "payd.cert.path"
+	EnvPaydNoop             = "payd.noop"
 
 	LogDebug = "debug"
 	LogInfo  = "info"
@@ -104,6 +105,7 @@ type PayD struct {
 	Port            string
 	Secure          bool
 	CertificatePath string
+	Noop            bool
 }
 
 // ConfigurationLoader will load configuration items

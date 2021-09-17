@@ -12,7 +12,6 @@
         "version": "0.0.1"
     },
     "host": "localhost:8445",
-    "basePath": "/api/v1",
     "paths": {
         "/api/v1/payment/{paymentID}": {
             "get": {
