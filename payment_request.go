@@ -51,10 +51,3 @@ type PaymentRequestArgs struct {
 type PaymentRequestService interface {
 	CreatePaymentRequest(ctx context.Context, args PaymentRequestArgs) (*PaymentRequest, error)
 }
-
-// FeeReader can be implemented to read fees from a data store for returning as
-// part of the Payment Request.
-type FeeReader interface {
-	// Fees will return the current fees from a data store.
-	Fees(ctx context.Context, args PaymentRequestArgs) (*bt.FeeQuote, error)
-}

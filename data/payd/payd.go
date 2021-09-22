@@ -60,32 +60,25 @@ func (p *payd) Owner(ctx context.Context) (*pptcl.MerchantData, error) {
 	return owner, nil
 }
 
-// Outputs will return outputs for payment requests, the sender will then fulfil these outputs
-// and send a tx for broadcast.
-func (p *payd) Outputs(ctx context.Context, args pptcl.PaymentRequestArgs) ([]pptcl.Output, error) {
-	var dest models.DestinationResponse
-	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlDestinations, p.baseURL(), args.PaymentID), http.StatusOK, nil, &dest); err != nil {
+func (p *payd) Destinations(ctx context.Context, args pptcl.PaymentRequestArgs) (*pptcl.Destinations, error) {
+	var resp models.DestinationResponse
+	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlDestinations, p.baseURL(), args.PaymentID), http.StatusOK, nil, &resp); err != nil {
 		return nil, errors.WithStack(err)
 	}
-	oo := make([]pptcl.Output, 0, len(dest.Outputs))
-	for _, d := range dest.Outputs {
-		oo = append(oo, pptcl.Output{
-			Amount: d.Satoshis,
-			Script: d.Script,
+	dests := &pptcl.Destinations{
+		Outputs: make([]pptcl.Output, 0),
+		Fees: bt.NewFeeQuote().
+			AddQuote(bt.FeeTypeStandard, resp.Fees.Standard).
+			AddQuote(bt.FeeTypeData, resp.Fees.Data),
+	}
+	for _, o := range resp.Outputs {
+		dests.Outputs = append(dests.Outputs, pptcl.Output{
+			Amount: o.Satoshis,
+			Script: o.Script,
 		})
 	}
-	return oo, nil
-}
 
-// Fees will return current fees that a payd wallet is using.
-func (p *payd) Fees(ctx context.Context, args pptcl.PaymentRequestArgs) (*bt.FeeQuote, error) {
-	var dest models.DestinationResponse
-	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlDestinations, p.baseURL(), args.PaymentID), http.StatusOK, nil, &dest); err != nil {
-		return nil, errors.WithStack(err)
-	}
-	return bt.NewFeeQuote().
-		AddQuote(bt.FeeTypeStandard, dest.Fees.Standard).
-		AddQuote(bt.FeeTypeData, dest.Fees.Data), nil
+	return dests, nil
 }
 
 // baseURL will return http or https depending on if we're using TLS.

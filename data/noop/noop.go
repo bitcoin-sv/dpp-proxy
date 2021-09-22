@@ -43,21 +43,14 @@ func (n *noop) Owner(ctx context.Context) (*pptcl.MerchantData, error) {
 	}, nil
 }
 
-// Outputs will return outputs for payment requests, the sender will then fulfil these outputs
-// and send a tx for broadcast.
-func (n *noop) Outputs(ctx context.Context, args pptcl.PaymentRequestArgs) ([]pptcl.Output, error) {
-	log.Info("hit noop.Outputs")
-	return []pptcl.Output{
-		{
+func (n *noop) Destinations(ctx context.Context, args pptcl.PaymentRequestArgs) (*pptcl.Destinations, error) {
+	log.Info("hit noop.Destinations")
+	return &pptcl.Destinations{
+		Outputs: []pptcl.Output{{
 			Amount:      0,
 			Script:      "noop",
 			Description: "noop",
-		},
+		}},
+		Fees: bt.NewFeeQuote(),
 	}, nil
-}
-
-// Fees will return current fees that a payd wallet is using.
-func (n *noop) Fees(ctx context.Context, args pptcl.PaymentRequestArgs) (*bt.FeeQuote, error) {
-	log.Info("hit noop.Fees")
-	return bt.NewFeeQuote(), nil
 }

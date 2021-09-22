@@ -2,6 +2,8 @@ package pptcl
 
 import (
 	"context"
+
+	"github.com/libsv/go-bt/v2"
 )
 
 // Output message used in BIP270.
@@ -15,13 +17,13 @@ type Output struct {
 	Description string `json:"description" example:"paymentReference 123456"`
 }
 
-// OutputReader will read outputs from another system.
-type OutputReader interface {
-	// Outputs will be used to get locking scripts from an underlying service or data store.
-	//
-	// This use case is that the underlying system has the invoice and therefor the amount.
-	// We then send the invoice / paymentID for lookup and the service will create
-	// n outputs to equal the amount of satoshis. It may also add additional outputs
-	// for merchant fees or tax etc.
-	Outputs(ctx context.Context, args PaymentRequestArgs) ([]Output, error)
+// Destinations message containing outputs and their fees.
+type Destinations struct {
+	Outputs []Output
+	Fees    *bt.FeeQuote
+}
+
+// DestinationReader interfaces retrieving payment destinations.
+type DestinationReader interface {
+	Destinations(ctx context.Context, args PaymentRequestArgs) (*Destinations, error)
 }
