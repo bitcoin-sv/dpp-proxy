@@ -19,12 +19,6 @@ type Destination struct {
 	Satoshis uint64 `json:"satoshis"`
 }
 
-// Fees is the fees information for a given destinations.
-type Fees struct {
-	Standard *bt.Fee `json:"standard"`
-	Data     *bt.Fee `json:"data"`
-}
-
 // DestinationResponse is the response for the destinations api.
 type DestinationResponse struct {
 	Outputs []Destination `json:"outputs"`
