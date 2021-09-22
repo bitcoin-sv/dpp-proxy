@@ -18,7 +18,7 @@ import (
 const (
 	urlPayments      = "%s/api/v1/payments?invoiceID=%s"
 	urlOwner         = "%s/api/v1/owner"
-	urlDestinations  = "%s/api/v1/destinations/:%s"
+	urlDestinations  = "%s/api/v1/destinations/%s"
 	urlFees          = "%s/api/v1/fees"
 	protocolInsecure = "http"
 	protocolSecure   = "https"
@@ -64,12 +64,12 @@ func (p *payd) Owner(ctx context.Context) (*pptcl.MerchantData, error) {
 // Outputs will return outputs for payment requests, the sender will then fulfil these outputs
 // and send a tx for broadcast.
 func (p *payd) Outputs(ctx context.Context, args pptcl.PaymentRequestArgs) ([]pptcl.Output, error) {
-	var dd []models.Destination
-	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlDestinations, p.baseURL(), args.PaymentID), http.StatusOK, nil, &dd); err != nil {
+	var dest models.DestinationResponse
+	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlDestinations, p.baseURL(), args.PaymentID), http.StatusOK, nil, &dest); err != nil {
 		return nil, errors.WithStack(err)
 	}
-	oo := make([]pptcl.Output, 0, len(dd))
-	for _, d := range dd {
+	oo := make([]pptcl.Output, 0, len(dest.Outputs))
+	for _, d := range dest.Outputs {
 		oo = append(oo, pptcl.Output{
 			Amount: d.Satoshis,
 			Script: d.Script,

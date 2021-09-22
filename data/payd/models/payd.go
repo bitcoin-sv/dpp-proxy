@@ -17,3 +17,8 @@ type Destination struct {
 	Script   string `json:"script"`
 	Satoshis uint64 `json:"satohsis"`
 }
+
+// DestinationResponse is the response for the destinations api.
+type DestinationResponse struct {
+	Outputs []Destination `json:"outputs"`
+}
