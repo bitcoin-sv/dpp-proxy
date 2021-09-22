@@ -20,7 +20,7 @@ var _ pptcl.FeeReader = &FeeReaderMock{}
 //
 // 		// make and configure a mocked pptcl.FeeReader
 // 		mockedFeeReader := &FeeReaderMock{
-// 			FeesFunc: func(ctx context.Context) (*bt.FeeQuote, error) {
+// 			FeesFunc: func(ctx context.Context, args pptcl.PaymentRequestArgs) (*bt.FeeQuote, error) {
 // 				panic("mock out the Fees method")
 // 			},
 // 		}
@@ -31,7 +31,7 @@ var _ pptcl.FeeReader = &FeeReaderMock{}
 // 	}
 type FeeReaderMock struct {
 	// FeesFunc mocks the Fees method.
-	FeesFunc func(ctx context.Context) (*bt.FeeQuote, error)
+	FeesFunc func(ctx context.Context, args pptcl.PaymentRequestArgs) (*bt.FeeQuote, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -39,35 +39,41 @@ type FeeReaderMock struct {
 		Fees []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
+			// Args is the args argument value.
+			Args pptcl.PaymentRequestArgs
 		}
 	}
 	lockFees sync.RWMutex
 }
 
 // Fees calls FeesFunc.
-func (mock *FeeReaderMock) Fees(ctx context.Context) (*bt.FeeQuote, error) {
+func (mock *FeeReaderMock) Fees(ctx context.Context, args pptcl.PaymentRequestArgs) (*bt.FeeQuote, error) {
 	if mock.FeesFunc == nil {
 		panic("FeeReaderMock.FeesFunc: method is nil but FeeReader.Fees was just called")
 	}
 	callInfo := struct {
-		Ctx context.Context
+		Ctx  context.Context
+		Args pptcl.PaymentRequestArgs
 	}{
-		Ctx: ctx,
+		Ctx:  ctx,
+		Args: args,
 	}
 	mock.lockFees.Lock()
 	mock.calls.Fees = append(mock.calls.Fees, callInfo)
 	mock.lockFees.Unlock()
-	return mock.FeesFunc(ctx)
+	return mock.FeesFunc(ctx, args)
 }
 
 // FeesCalls gets all the calls that were made to Fees.
 // Check the length with:
 //     len(mockedFeeReader.FeesCalls())
 func (mock *FeeReaderMock) FeesCalls() []struct {
-	Ctx context.Context
+	Ctx  context.Context
+	Args pptcl.PaymentRequestArgs
 } {
 	var calls []struct {
-		Ctx context.Context
+		Ctx  context.Context
+		Args pptcl.PaymentRequestArgs
 	}
 	mock.lockFees.RLock()
 	calls = mock.calls.Fees
