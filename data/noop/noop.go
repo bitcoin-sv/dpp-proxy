@@ -57,7 +57,7 @@ func (n *noop) Outputs(ctx context.Context, args pptcl.PaymentRequestArgs) ([]pp
 }
 
 // Fees will return current fees that a payd wallet is using.
-func (n *noop) Fees(ctx context.Context) (*bt.FeeQuote, error) {
+func (n *noop) Fees(ctx context.Context, args pptcl.PaymentRequestArgs) (*bt.FeeQuote, error) {
 	log.Info("hit noop.Fees")
 	return bt.NewFeeQuote(), nil
 }

@@ -43,7 +43,7 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args pptcl.Pa
 		return nil, errors.Wrapf(err, "failed to generate outputs for paymentID %s", args.PaymentID)
 	}
 	// get fees from merchant
-	fees, err := p.feeRdr.Fees(ctx)
+	fees, err := p.feeRdr.Fees(ctx, args)
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to read fees when constructing payment request")
 	}

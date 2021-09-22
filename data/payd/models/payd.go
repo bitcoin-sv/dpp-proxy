@@ -2,6 +2,7 @@ package models
 
 import (
 	"github.com/libsv/go-bc/spv"
+	"github.com/libsv/go-bt/v2"
 
 	"github.com/libsv/pptcl"
 )
@@ -15,10 +16,16 @@ type PayDPaymentRequest struct {
 // Destination is a payment output with locking script.
 type Destination struct {
 	Script   string `json:"script"`
-	Satoshis uint64 `json:"satohsis"`
+	Satoshis uint64 `json:"satoshis"`
+}
+
+type Fees struct {
+	Standard *bt.Fee `json:"standard"`
+	Data     *bt.Fee `json:"data"`
 }
 
 // DestinationResponse is the response for the destinations api.
 type DestinationResponse struct {
 	Outputs []Destination `json:"outputs"`
+	Fees    Fees          `json:"fees"`
 }

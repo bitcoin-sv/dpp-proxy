@@ -56,5 +56,5 @@ type PaymentRequestService interface {
 // part of the Payment Request.
 type FeeReader interface {
 	// Fees will return the current fees from a data store.
-	Fees(ctx context.Context) (*bt.FeeQuote, error)
+	Fees(ctx context.Context, args PaymentRequestArgs) (*bt.FeeQuote, error)
 }

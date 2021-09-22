@@ -19,7 +19,6 @@ const (
 	urlPayments      = "%s/api/v1/payments?invoiceID=%s"
 	urlOwner         = "%s/api/v1/owner"
 	urlDestinations  = "%s/api/v1/destinations/%s"
-	urlFees          = "%s/api/v1/fees"
 	protocolInsecure = "http"
 	protocolSecure   = "https"
 )
@@ -79,12 +78,14 @@ func (p *payd) Outputs(ctx context.Context, args pptcl.PaymentRequestArgs) ([]pp
 }
 
 // Fees will return current fees that a payd wallet is using.
-func (p *payd) Fees(ctx context.Context) (*bt.FeeQuote, error) {
-	var fees *bt.FeeQuote
-	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlFees, p.baseURL()), http.StatusOK, nil, &fees); err != nil {
+func (p *payd) Fees(ctx context.Context, args pptcl.PaymentRequestArgs) (*bt.FeeQuote, error) {
+	var dest models.DestinationResponse
+	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlDestinations, p.baseURL(), args.PaymentID), http.StatusOK, nil, &dest); err != nil {
 		return nil, errors.WithStack(err)
 	}
-	return fees, nil
+	return bt.NewFeeQuote().
+		AddQuote(bt.FeeTypeStandard, dest.Fees.Standard).
+		AddQuote(bt.FeeTypeData, dest.Fees.Data), nil
 }
 
 // baseURL will return http or https depending on if we're using TLS.
