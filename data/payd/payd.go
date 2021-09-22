@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/libsv/go-bt/v2"
 	"github.com/pkg/errors"
 
 	"github.com/libsv/pptcl"
@@ -67,9 +66,7 @@ func (p *payd) Destinations(ctx context.Context, args pptcl.PaymentRequestArgs) 
 	}
 	dests := &pptcl.Destinations{
 		Outputs: make([]pptcl.Output, 0),
-		Fees: bt.NewFeeQuote().
-			AddQuote(bt.FeeTypeStandard, resp.Fees.Standard).
-			AddQuote(bt.FeeTypeData, resp.Fees.Data),
+		Fees:    resp.Fees,
 	}
 	for _, o := range resp.Outputs {
 		dests.Outputs = append(dests.Outputs, pptcl.Output{

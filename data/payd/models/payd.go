@@ -28,5 +28,5 @@ type Fees struct {
 // DestinationResponse is the response for the destinations api.
 type DestinationResponse struct {
 	Outputs []Destination `json:"outputs"`
-	Fees    Fees          `json:"fees"`
+	Fees    *bt.FeeQuote  `json:"fees"`
 }
