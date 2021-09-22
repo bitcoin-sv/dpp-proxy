@@ -6,8 +6,6 @@ services:
     image: local.p4
     environment:
       LOG_LEVEL: "debug"
-    volumes:
-      - ./run/data:/data
     ports:
       - "8445:8445"
     networks:

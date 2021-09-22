@@ -19,6 +19,8 @@ build:
 run-docker:
 	@docker compose up -d
 
+restart: stop run-docker
+
 redeploy: stop build run-docker
 
 run-unit-tests:
