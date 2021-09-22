@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/libsv/go-bt/v2"
 	"github.com/pkg/errors"
 
 	"github.com/libsv/pptcl"
@@ -18,8 +17,7 @@ import (
 const (
 	urlPayments      = "%s/api/v1/payments?invoiceID=%s"
 	urlOwner         = "%s/api/v1/owner"
-	urlDestinations  = "%s/api/v1/destinations/:%s"
-	urlFees          = "%s/api/v1/fees"
+	urlDestinations  = "%s/api/v1/destinations/%s"
 	protocolInsecure = "http"
 	protocolSecure   = "https"
 )
@@ -61,30 +59,23 @@ func (p *payd) Owner(ctx context.Context) (*pptcl.MerchantData, error) {
 	return owner, nil
 }
 
-// Outputs will return outputs for payment requests, the sender will then fulfil these outputs
-// and send a tx for broadcast.
-func (p *payd) Outputs(ctx context.Context, args pptcl.PaymentRequestArgs) ([]pptcl.Output, error) {
-	var dd []models.Destination
-	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlDestinations, p.baseURL(), args.PaymentID), http.StatusOK, nil, &dd); err != nil {
+func (p *payd) Destinations(ctx context.Context, args pptcl.PaymentRequestArgs) (*pptcl.Destinations, error) {
+	var resp models.DestinationResponse
+	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlDestinations, p.baseURL(), args.PaymentID), http.StatusOK, nil, &resp); err != nil {
 		return nil, errors.WithStack(err)
 	}
-	oo := make([]pptcl.Output, 0, len(dd))
-	for _, d := range dd {
-		oo = append(oo, pptcl.Output{
-			Amount: d.Satoshis,
-			Script: d.Script,
+	dests := &pptcl.Destinations{
+		Outputs: make([]pptcl.Output, 0),
+		Fees:    resp.Fees,
+	}
+	for _, o := range resp.Outputs {
+		dests.Outputs = append(dests.Outputs, pptcl.Output{
+			Amount: o.Satoshis,
+			Script: o.Script,
 		})
 	}
-	return oo, nil
-}
 
-// Fees will return current fees that a payd wallet is using.
-func (p *payd) Fees(ctx context.Context) (*bt.FeeQuote, error) {
-	var fees *bt.FeeQuote
-	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlFees, p.baseURL()), http.StatusOK, nil, &fees); err != nil {
-		return nil, errors.WithStack(err)
-	}
-	return fees, nil
+	return dests, nil
 }
 
 // baseURL will return http or https depending on if we're using TLS.

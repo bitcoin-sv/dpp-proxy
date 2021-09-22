@@ -1,19 +1,17 @@
 version: "3.7"
 
 services:
-  pptcl:
-    container_name: pptcl
-    image: local.pptcl
+  p4:
+    container_name: p4
+    image: local.p4
     environment:
       LOG_LEVEL: "debug"
-    volumes:
-      - ~/data/payd:/data
     ports:
-      - "8443:8443"
+      - "8445:8445"
     networks:
-      - regtest-network
+      - regtest-stack
 
 networks:
-  regtest-network:
+  regtest-stack:
     external: true
-    name: regtest-network
+    name: regtest-stack

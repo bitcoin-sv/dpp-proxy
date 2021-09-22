@@ -10,6 +10,10 @@ run-all-tests: run-linter run-unit-tests
 
 pre-commit: vendor-deps run-all-tests
 
+restart: stop-compose run-compose-d
+
+redeploy: stop-compose build-image run-compose-d
+
 run-unit-tests:
 	@go clean -testcache && go test -v ./... -race
 

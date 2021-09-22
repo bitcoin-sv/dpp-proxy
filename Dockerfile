@@ -3,7 +3,7 @@ FROM golang:1.17.1-buster as builder
 WORKDIR /app
 COPY . .
 
-RUN CGO_ENABLED=1 GOOS=linux go build -ldflags="-s -w" ./cmd/rest-server
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" ./cmd/rest-server
 
 # Create appuser.
 ENV USER=appuser
@@ -17,15 +17,14 @@ RUN adduser \
     --uid "${UID}" \
     "${USER}"
 
-FROM bitnami/minideb:buster
+FROM scratch
 
 COPY --from=builder /app/rest-server /bin/
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/ca-certificates.crt
-COPY --from=builder /app/data/sqlite/migrations/ /migrations
 USER appuser:appuser
 
-EXPOSE 8442
+EXPOSE 8445
 
 CMD ["rest-server"]

@@ -14,19 +14,17 @@ import (
 
 type paymentRequest struct {
 	walletCfg   *config.Server
-	outputter   pptcl.OutputReader
+	destRdr     pptcl.DestinationReader
 	merchantRdr pptcl.MerchantReader
-	feeRdr      pptcl.FeeReader
 }
 
 // NewPaymentRequest will setup and return a new PaymentRequest service that will generate outputs
 // using the provided outputter which is defined in server config.
-func NewPaymentRequest(walletCfg *config.Server, outputter pptcl.OutputReader, merchantRdr pptcl.MerchantReader, feeRdr pptcl.FeeReader) *paymentRequest {
+func NewPaymentRequest(walletCfg *config.Server, destRdr pptcl.DestinationReader, merchantRdr pptcl.MerchantReader) *paymentRequest {
 	return &paymentRequest{
 		walletCfg:   walletCfg,
-		outputter:   outputter,
+		destRdr:     destRdr,
 		merchantRdr: merchantRdr,
-		feeRdr:      feeRdr,
 	}
 }
 
@@ -37,16 +35,11 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args pptcl.Pa
 		return nil, err
 	}
 
-	// get payment destinations from merchant
-	oo, err := p.outputter.Outputs(ctx, args)
+	dests, err := p.destRdr.Destinations(ctx, args)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to generate outputs for paymentID %s", args.PaymentID)
+		return nil, errors.Wrapf(err, "failed to geet destinations for paymentID %s", args.PaymentID)
 	}
-	// get fees from merchant
-	fees, err := p.feeRdr.Fees(ctx)
-	if err != nil {
-		return nil, errors.Wrap(err, "failed to read fees when constructing payment request")
-	}
+
 	// get merchant information
 	merchant, err := p.merchantRdr.Owner(ctx)
 	if err != nil {
@@ -59,7 +52,7 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args pptcl.Pa
 	merchant.ExtendedData["paymentReference"] = args.PaymentID
 	return &pptcl.PaymentRequest{
 		Network:             "mainnet",
-		Outputs:             oo,
+		Outputs:             dests.Outputs,
 		CreationTimestamp:   time.Now().UTC(),
 		ExpirationTimestamp: time.Now().Add(24 * time.Hour).UTC(),
 		PaymentURL:          fmt.Sprintf("http://%s%s/api/v1/payment/%s", p.walletCfg.Hostname, p.walletCfg.Port, args.PaymentID),
@@ -71,6 +64,6 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args pptcl.Pa
 			Address:      merchant.Address,
 			ExtendedData: merchant.ExtendedData,
 		},
-		FeeRate: fees,
+		FeeRate: dests.Fees,
 	}, nil
 }
