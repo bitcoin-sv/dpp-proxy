@@ -42,6 +42,8 @@ func (c *client) Do(ctx context.Context, method, endpoint string, expStatus int,
 	if err != nil {
 		return errors.Wrapf(err, "failed to create http request for '%s' '%s'", method, endpoint)
 	}
+	httpReq.Header.Add("Content-Type", "application/json")
+
 	resp, err := c.c.Do(httpReq)
 	if err != nil {
 		return errors.Wrapf(err, "failed to send request to for '%s' '%s'", method, endpoint)
