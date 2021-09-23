@@ -15,7 +15,7 @@ import (
 
 // Known endpoints for the payd wallet implementing the payment protocol interface.
 const (
-	urlPayments      = "%s/api/v1/payments?invoiceID=%s"
+	urlPayments      = "%s/api/v1/payments/%s"
 	urlOwner         = "%s/api/v1/owner"
 	urlDestinations  = "%s/api/v1/destinations/%s"
 	protocolInsecure = "http"
