@@ -1,4 +1,4 @@
-module github.com/libsv/pptcl
+module github.com/libsv/go-p4
 
 go 1.17
 

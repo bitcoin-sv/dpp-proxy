@@ -11,7 +11,7 @@ import (
 // These can be overwritten when running the service.
 func SetupDefaults() {
 	// Web server defaults
-	viper.SetDefault(EnvServerHost, "pptcl")
+	viper.SetDefault(EnvServerHost, "p4")
 	viper.SetDefault(EnvServerPort, ":8445")
 	viper.SetDefault(EnvServerSwaggerEnabled, true)
 
@@ -30,5 +30,5 @@ func SetupDefaults() {
 	viper.SetDefault(EnvPaydHost, "payd")
 	viper.SetDefault(EnvPaydPort, ":8443")
 	viper.SetDefault(EnvPaydSecure, false)
-	viper.SetDefault(EnvPaydNoop, true)
+	viper.SetDefault(EnvPaydNoop, false)
 }

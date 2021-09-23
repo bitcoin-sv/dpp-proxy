@@ -1,4 +1,4 @@
-package pptcl
+package p4
 
 // ClientError defines an error type that can be returned to handle client errors.
 type ClientError struct {

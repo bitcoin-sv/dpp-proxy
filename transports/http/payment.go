@@ -6,16 +6,16 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/pkg/errors"
 
-	"github.com/libsv/pptcl"
+	"github.com/libsv/go-p4"
 )
 
 // paymentHandler is an http handler that supports BIP-270 requests.
 type paymentHandler struct {
-	svc pptcl.PaymentService
+	svc p4.PaymentService
 }
 
 // NewPaymentHandler will create and return a new PaymentHandler.
-func NewPaymentHandler(svc pptcl.PaymentService) *paymentHandler {
+func NewPaymentHandler(svc p4.PaymentService) *paymentHandler {
 	return &paymentHandler{
 		svc: svc,
 	}
@@ -32,17 +32,17 @@ func (h *paymentHandler) RegisterRoutes(g *echo.Group) {
 // @Accept json
 // @Produce json
 // @Param paymentID path string true "Payment ID"
-// @Param body body pptcl.PaymentCreate true "payment message used in BIP270"
-// @Success 201 {object} pptcl.PaymentACK "if success, error code will be empty, otherwise it will be filled in with reason"
-// @Failure 404 {object} pptcl.ClientError "returned if the paymentID has not been found"
+// @Param body body p4.PaymentCreate true "payment message used in BIP270"
+// @Success 201 {object} p4.PaymentACK "if success, error code will be empty, otherwise it will be filled in with reason"
+// @Failure 404 {object} p4.ClientError "returned if the paymentID has not been found"
 // @Failure 400 {object} validator.ErrValidation "returned if the user input is invalid, usually an issue with the paymentID"
 // @Failure 500 {string} string "returned if there is an unexpected internal error"
 // @Router /api/v1/payment/{paymentID} [POST].
 func (h *paymentHandler) createPayment(e echo.Context) error {
-	args := pptcl.PaymentCreateArgs{
+	args := p4.PaymentCreateArgs{
 		PaymentID: e.Param("paymentID"),
 	}
-	var req pptcl.PaymentCreate
+	var req p4.PaymentCreate
 	if err := e.Bind(&req); err != nil {
 		return errors.WithStack(err)
 	}

@@ -5,32 +5,32 @@ package mocks
 
 import (
 	"context"
-	"github.com/libsv/pptcl"
+	"github.com/libsv/go-p4"
 	"sync"
 )
 
-// Ensure, that DestinationReaderMock does implement pptcl.DestinationReader.
+// Ensure, that DestinationReaderMock does implement p4.DestinationReader.
 // If this is not the case, regenerate this file with moq.
-var _ pptcl.DestinationReader = &DestinationReaderMock{}
+var _ p4.DestinationReader = &DestinationReaderMock{}
 
-// DestinationReaderMock is a mock implementation of pptcl.DestinationReader.
+// DestinationReaderMock is a mock implementation of p4.DestinationReader.
 //
 // 	func TestSomethingThatUsesDestinationReader(t *testing.T) {
 //
-// 		// make and configure a mocked pptcl.DestinationReader
+// 		// make and configure a mocked p4.DestinationReader
 // 		mockedDestinationReader := &DestinationReaderMock{
-// 			DestinationsFunc: func(ctx context.Context, args pptcl.PaymentRequestArgs) (*pptcl.Destinations, error) {
+// 			DestinationsFunc: func(ctx context.Context, args p4.PaymentRequestArgs) (*p4.Destinations, error) {
 // 				panic("mock out the Destinations method")
 // 			},
 // 		}
 //
-// 		// use mockedDestinationReader in code that requires pptcl.DestinationReader
+// 		// use mockedDestinationReader in code that requires p4.DestinationReader
 // 		// and then make assertions.
 //
 // 	}
 type DestinationReaderMock struct {
 	// DestinationsFunc mocks the Destinations method.
-	DestinationsFunc func(ctx context.Context, args pptcl.PaymentRequestArgs) (*pptcl.Destinations, error)
+	DestinationsFunc func(ctx context.Context, args p4.PaymentRequestArgs) (*p4.Destinations, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -39,20 +39,20 @@ type DestinationReaderMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Args is the args argument value.
-			Args pptcl.PaymentRequestArgs
+			Args p4.PaymentRequestArgs
 		}
 	}
 	lockDestinations sync.RWMutex
 }
 
 // Destinations calls DestinationsFunc.
-func (mock *DestinationReaderMock) Destinations(ctx context.Context, args pptcl.PaymentRequestArgs) (*pptcl.Destinations, error) {
+func (mock *DestinationReaderMock) Destinations(ctx context.Context, args p4.PaymentRequestArgs) (*p4.Destinations, error) {
 	if mock.DestinationsFunc == nil {
 		panic("DestinationReaderMock.DestinationsFunc: method is nil but DestinationReader.Destinations was just called")
 	}
 	callInfo := struct {
 		Ctx  context.Context
-		Args pptcl.PaymentRequestArgs
+		Args p4.PaymentRequestArgs
 	}{
 		Ctx:  ctx,
 		Args: args,
@@ -68,11 +68,11 @@ func (mock *DestinationReaderMock) Destinations(ctx context.Context, args pptcl.
 //     len(mockedDestinationReader.DestinationsCalls())
 func (mock *DestinationReaderMock) DestinationsCalls() []struct {
 	Ctx  context.Context
-	Args pptcl.PaymentRequestArgs
+	Args p4.PaymentRequestArgs
 } {
 	var calls []struct {
 		Ctx  context.Context
-		Args pptcl.PaymentRequestArgs
+		Args p4.PaymentRequestArgs
 	}
 	mock.lockDestinations.RLock()
 	calls = mock.calls.Destinations

@@ -11,7 +11,7 @@ import (
 	"github.com/theflyingcodr/lathos"
 	"github.com/theflyingcodr/lathos/errs"
 
-	"github.com/libsv/pptcl"
+	"github.com/libsv/go-p4"
 )
 
 // ErrorHandler we can flesh this out.
@@ -36,7 +36,7 @@ func ErrorHandler(err error, c echo.Context) {
 	}
 	var clientErr lathos.ClientError
 	errors.As(err, &clientErr)
-	resp := pptcl.ClientError{
+	resp := p4.ClientError{
 		ID:      clientErr.ID(),
 		Code:    clientErr.Code(),
 		Title:   clientErr.Title(),
