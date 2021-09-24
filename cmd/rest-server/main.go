@@ -10,19 +10,19 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	echoSwagger "github.com/swaggo/echo-swagger"
 
-	"github.com/libsv/pptcl/data"
-	"github.com/libsv/pptcl/data/noop"
-	_ "github.com/libsv/pptcl/docs"
+	"github.com/libsv/go-p4/data"
+	"github.com/libsv/go-p4/data/noop"
+	_ "github.com/libsv/go-p4/docs"
 
 	"github.com/labstack/gommon/log"
 	"github.com/spf13/viper"
 
-	"github.com/libsv/pptcl/config"
-	"github.com/libsv/pptcl/data/payd"
-	"github.com/libsv/pptcl/service"
-	pptclHandlers "github.com/libsv/pptcl/transports/http"
+	"github.com/libsv/go-p4/config"
+	"github.com/libsv/go-p4/data/payd"
+	"github.com/libsv/go-p4/service"
+	p4Handlers "github.com/libsv/go-p4/transports/http"
 
-	paydMiddleware "github.com/libsv/pptcl/transports/http/middleware"
+	paydMiddleware "github.com/libsv/go-p4/transports/http/middleware"
 )
 
 const appname = "payment-protocol-rest-server"
@@ -110,8 +110,8 @@ func main() {
 		paymentReqSvc = service.NewPaymentRequest(cfg.Server, noopStore, noopStore)
 	}
 	// handlers
-	pptclHandlers.NewPaymentHandler(paymentSvc).RegisterRoutes(g)
-	pptclHandlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)
+	p4Handlers.NewPaymentHandler(paymentSvc).RegisterRoutes(g)
+	p4Handlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)
 
 	e.Logger.Fatal(e.Start(cfg.Server.Port))
 }

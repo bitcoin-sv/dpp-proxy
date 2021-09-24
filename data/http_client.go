@@ -11,8 +11,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// HttpClient defines a simple interface to execute an http request and map the request and response objects.
-type HttpClient interface {
+// HTTPClient defines a simple interface to execute an http request and map the request and response objects.
+type HTTPClient interface {
 	// Do will execute an http request.
 	Do(ctx context.Context, method, endpoint string, expStatus int, req interface{}, out interface{}) error
 }
@@ -42,6 +42,8 @@ func (c *client) Do(ctx context.Context, method, endpoint string, expStatus int,
 	if err != nil {
 		return errors.Wrapf(err, "failed to create http request for '%s' '%s'", method, endpoint)
 	}
+	httpReq.Header.Add("Content-Type", "application/json")
+
 	resp, err := c.c.Do(httpReq)
 	if err != nil {
 		return errors.Wrapf(err, "failed to send request to for '%s' '%s'", method, endpoint)

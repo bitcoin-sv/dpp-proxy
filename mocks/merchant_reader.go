@@ -5,32 +5,32 @@ package mocks
 
 import (
 	"context"
-	"github.com/libsv/pptcl"
+	"github.com/libsv/go-p4"
 	"sync"
 )
 
-// Ensure, that MerchantReaderMock does implement pptcl.MerchantReader.
+// Ensure, that MerchantReaderMock does implement p4.MerchantReader.
 // If this is not the case, regenerate this file with moq.
-var _ pptcl.MerchantReader = &MerchantReaderMock{}
+var _ p4.MerchantReader = &MerchantReaderMock{}
 
-// MerchantReaderMock is a mock implementation of pptcl.MerchantReader.
+// MerchantReaderMock is a mock implementation of p4.MerchantReader.
 //
 // 	func TestSomethingThatUsesMerchantReader(t *testing.T) {
 //
-// 		// make and configure a mocked pptcl.MerchantReader
+// 		// make and configure a mocked p4.MerchantReader
 // 		mockedMerchantReader := &MerchantReaderMock{
-// 			OwnerFunc: func(ctx context.Context) (*pptcl.MerchantData, error) {
+// 			OwnerFunc: func(ctx context.Context) (*p4.MerchantData, error) {
 // 				panic("mock out the Owner method")
 // 			},
 // 		}
 //
-// 		// use mockedMerchantReader in code that requires pptcl.MerchantReader
+// 		// use mockedMerchantReader in code that requires p4.MerchantReader
 // 		// and then make assertions.
 //
 // 	}
 type MerchantReaderMock struct {
 	// OwnerFunc mocks the Owner method.
-	OwnerFunc func(ctx context.Context) (*pptcl.MerchantData, error)
+	OwnerFunc func(ctx context.Context) (*p4.MerchantData, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -44,7 +44,7 @@ type MerchantReaderMock struct {
 }
 
 // Owner calls OwnerFunc.
-func (mock *MerchantReaderMock) Owner(ctx context.Context) (*pptcl.MerchantData, error) {
+func (mock *MerchantReaderMock) Owner(ctx context.Context) (*p4.MerchantData, error) {
 	if mock.OwnerFunc == nil {
 		panic("MerchantReaderMock.OwnerFunc: method is nil but MerchantReader.Owner was just called")
 	}

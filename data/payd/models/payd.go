@@ -4,13 +4,13 @@ import (
 	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-bt/v2"
 
-	"github.com/libsv/pptcl"
+	"github.com/libsv/go-p4"
 )
 
 // PayDPaymentRequest is used to send a payment to PayD for valdiation and storage.
 type PayDPaymentRequest struct {
 	SPVEnvelope    *spv.Envelope
-	ProofCallbacks map[string]pptcl.ProofCallback `json:"proofCallbacks"`
+	ProofCallbacks map[string]p4.ProofCallback `json:"proofCallbacks"`
 }
 
 // Destination is a payment output with locking script.

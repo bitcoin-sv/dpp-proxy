@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/gommon/log"
 	"github.com/libsv/go-bt/v2"
 
-	"github.com/libsv/pptcl"
+	"github.com/libsv/go-p4"
 )
 
 type noop struct {
@@ -23,7 +23,7 @@ func NewNoOp() *noop {
 // PaymentCreate will post a request to payd to validate and add the txos to the wallet.
 //
 // If invalid a non 204 status code is returned.
-func (n *noop) PaymentCreate(ctx context.Context, args pptcl.PaymentCreateArgs, req pptcl.PaymentCreate) error {
+func (n *noop) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) error {
 	log.Info("hit noop.PaymentCreate")
 	return nil
 }
@@ -32,9 +32,9 @@ func (n *noop) PaymentCreate(ctx context.Context, args pptcl.PaymentCreateArgs, 
 //
 // In this example, the payd wallet has no auth, in proper implementations auth would
 // be enabled and a cookie / oauth / bearer token etc would be passed down.
-func (n *noop) Owner(ctx context.Context) (*pptcl.MerchantData, error) {
+func (n *noop) Owner(ctx context.Context) (*p4.MerchantData, error) {
 	log.Info("hit noop.Owner")
-	return &pptcl.MerchantData{
+	return &p4.MerchantData{
 		AvatarURL:    "noop",
 		MerchantName: "noop",
 		Email:        "noop",
@@ -43,10 +43,10 @@ func (n *noop) Owner(ctx context.Context) (*pptcl.MerchantData, error) {
 	}, nil
 }
 
-func (n *noop) Destinations(ctx context.Context, args pptcl.PaymentRequestArgs) (*pptcl.Destinations, error) {
+func (n *noop) Destinations(ctx context.Context, args p4.PaymentRequestArgs) (*p4.Destinations, error) {
 	log.Info("hit noop.Destinations")
-	return &pptcl.Destinations{
-		Outputs: []pptcl.Output{{
+	return &p4.Destinations{
+		Outputs: []p4.Output{{
 			Amount:      0,
 			Script:      "noop",
 			Description: "noop",

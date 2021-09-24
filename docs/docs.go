@@ -55,7 +55,7 @@ var doc = `{
                     "201": {
                         "description": "contains outputs, merchant data and expiry information, used by the payee to construct a transaction",
                         "schema": {
-                            "$ref": "#/definitions/pptcl.PaymentRequest"
+                            "$ref": "#/definitions/p4.PaymentRequest"
                         }
                     },
                     "400": {
@@ -67,7 +67,7 @@ var doc = `{
                     "404": {
                         "description": "returned if the paymentID has not been found",
                         "schema": {
-                            "$ref": "#/definitions/pptcl.ClientError"
+                            "$ref": "#/definitions/p4.ClientError"
                         }
                     },
                     "500": {
@@ -104,7 +104,7 @@ var doc = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pptcl.PaymentCreate"
+                            "$ref": "#/definitions/p4.PaymentCreate"
                         }
                     }
                 ],
@@ -112,7 +112,7 @@ var doc = `{
                     "201": {
                         "description": "if success, error code will be empty, otherwise it will be filled in with reason",
                         "schema": {
-                            "$ref": "#/definitions/pptcl.PaymentACK"
+                            "$ref": "#/definitions/p4.PaymentACK"
                         }
                     },
                     "400": {
@@ -124,7 +124,7 @@ var doc = `{
                     "404": {
                         "description": "returned if the paymentID has not been found",
                         "schema": {
-                            "$ref": "#/definitions/pptcl.ClientError"
+                            "$ref": "#/definitions/p4.ClientError"
                         }
                     },
                     "500": {
@@ -199,7 +199,7 @@ var doc = `{
         "bt.FeeQuote": {
             "type": "object"
         },
-        "pptcl.ClientError": {
+        "p4.ClientError": {
             "type": "object",
             "properties": {
                 "code": {
@@ -220,7 +220,7 @@ var doc = `{
                 }
             }
         },
-        "pptcl.MerchantData": {
+        "p4.MerchantData": {
             "type": "object",
             "properties": {
                 "address": {
@@ -250,7 +250,7 @@ var doc = `{
                 }
             }
         },
-        "pptcl.Output": {
+        "p4.Output": {
             "type": "object",
             "properties": {
                 "amount": {
@@ -270,7 +270,7 @@ var doc = `{
                 }
             }
         },
-        "pptcl.PaymentACK": {
+        "p4.PaymentACK": {
             "type": "object",
             "properties": {
                 "error": {
@@ -281,11 +281,11 @@ var doc = `{
                     "type": "string"
                 },
                 "payment": {
-                    "$ref": "#/definitions/pptcl.PaymentCreate"
+                    "$ref": "#/definitions/p4.PaymentCreate"
                 }
             }
         },
-        "pptcl.PaymentCreate": {
+        "p4.PaymentCreate": {
             "type": "object",
             "properties": {
                 "memo": {
@@ -295,13 +295,13 @@ var doc = `{
                 },
                 "merchantData": {
                     "description": "MerchantData is copied from PaymentDetails.merchantData.\nPayment hosts may use invoice numbers or any other data they require to match Payments to PaymentRequests.\nNote that malicious clients may modify the merchantData, so should be authenticated\nin some way (for example, signed with a payment host-only key).\nMaximum length is 10000 characters.",
-                    "$ref": "#/definitions/pptcl.MerchantData"
+                    "$ref": "#/definitions/p4.MerchantData"
                 },
                 "proofCallbacks": {
                     "description": "ProofCallbacks are optional and can be supplied when the sender wants to receive\na merkleproof for the transaction they are submitting as part of the SPV Envelope.\n\nThis is especially useful if they are receiving change and means when they use it\nas an input, they can provide the merkle proof.",
                     "type": "object",
                     "additionalProperties": {
-                        "$ref": "#/definitions/pptcl.ProofCallback"
+                        "$ref": "#/definitions/p4.ProofCallback"
                     }
                 },
                 "refundTo": {
@@ -315,7 +315,7 @@ var doc = `{
                 }
             }
         },
-        "pptcl.PaymentRequest": {
+        "p4.PaymentRequest": {
             "type": "object",
             "properties": {
                 "creationTimestamp": {
@@ -339,7 +339,7 @@ var doc = `{
                 },
                 "merchantData": {
                     "description": "MerchantData contains arbitrary data that may be used by the payment host to identify the PaymentRequest.\nMay be omitted if the payment host does not need to associate Payments with PaymentRequest\nor if they associate each PaymentRequest with a separate payment address.\nMaximum length is 10000 characters.",
-                    "$ref": "#/definitions/pptcl.MerchantData"
+                    "$ref": "#/definitions/p4.MerchantData"
                 },
                 "network": {
                     "description": "Network  Always set to \"bitcoin\" (but seems to be set to 'bitcoin-sv'\noutside bip270 spec, see https://handcash.github.io/handcash-merchant-integration/#/merchant-payments)\n{enum: bitcoin, bitcoin-sv, test}\nRequired.",
@@ -356,7 +356,7 @@ var doc = `{
                     "description": "Outputs Is an array of outputs. required, but can have zero elements.\nRequired.",
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/pptcl.Output"
+                        "$ref": "#/definitions/p4.Output"
                     }
                 },
                 "paymentUrl": {
@@ -366,7 +366,7 @@ var doc = `{
                 }
             }
         },
-        "pptcl.ProofCallback": {
+        "p4.ProofCallback": {
             "type": "object",
             "properties": {
                 "token": {

@@ -26,7 +26,7 @@ Values can also be passed at build time to provide information such as build inf
 | Key                    | Description                                                        | Default |
 |------------------------|--------------------------------------------------------------------|---------|
 | SERVER_PORT            | Port which this server should use                                  | :8445   |
-| SERVER_HOST            | Host name under which this server is found                         | pptcl   |
+| SERVER_HOST            | Host name under which this server is found                         | p4      |
 | SERVER_SWAGGER_ENABLED | If set to true we will expose an endpoint hosting the Swagger docs | true    |
 
 ### Environment / Deployment Info
@@ -80,17 +80,17 @@ The file I use has a watcher which means it auto rebuilds the image on code chan
 version: "3.7"
 
 services:
-  pptcl:
+  p4:
     image: theflyingcodr/go-watcher:1.15.8
     environment:
       GO111MODULE: "on"
       GOFLAGS: "-mod=vendor"
       DB_DSN: "file:data/wallet.db?cache=shared&_foreign_keys=true;"
       DB_SCHEMA_PATH: "data/sqlite/migrations"
-    command: watcher -run github.com/libsv/pptcl/cmd/rest-server/ -watch github.com/libsv/pptcl
-    working_dir: /go/src/github.com/libsv/pptcl
+    command: watcher -run github.com/libsv/go-p4/cmd/rest-server/ -watch github.com/libsv/go-p4
+    working_dir: /go/src/github.com/libsv/go-p4
     volumes:
-      - ~/git/libsv/go-p4:/go/src/github.com/libsv/pptcl
+      - ~/git/libsv/go-p4:/go/src/github.com/libsv/go-p4
 ```
 
 ## CI / CD
