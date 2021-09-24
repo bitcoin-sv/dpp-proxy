@@ -23,13 +23,13 @@ const (
 )
 
 type payd struct {
-	client data.HttpClient
+	client data.HTTPClient
 	cfg    *config.PayD
 }
 
 // NewPayD will setup a new store that can interface with a payd wallet implementing
 // the Payment Protocol Interface.
-func NewPayD(cfg *config.PayD, client data.HttpClient) *payd {
+func NewPayD(cfg *config.PayD, client data.HTTPClient) *payd {
 	return &payd{
 		cfg:    cfg,
 		client: client,

@@ -11,8 +11,8 @@ import (
 	"github.com/pkg/errors"
 )
 
-// HttpClient defines a simple interface to execute an http request and map the request and response objects.
-type HttpClient interface {
+// HTTPClient defines a simple interface to execute an http request and map the request and response objects.
+type HTTPClient interface {
 	// Do will execute an http request.
 	Do(ctx context.Context, method, endpoint string, expStatus int, req interface{}, out interface{}) error
 }
