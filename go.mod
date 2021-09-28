@@ -4,7 +4,7 @@ go 1.17
 
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
-	github.com/labstack/echo/v4 v4.6.0
+	github.com/labstack/echo/v4 v4.6.1
 	github.com/labstack/gommon v0.3.0
 	github.com/libsv/go-bc v0.1.4
 	github.com/libsv/go-bt/v2 v2.0.0-beta.7
