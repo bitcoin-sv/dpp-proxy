@@ -13,7 +13,7 @@ require (
 	github.com/spf13/viper v1.9.0
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/echo-swagger v1.1.3
-	github.com/swaggo/swag v1.7.1
+	github.com/swaggo/swag v1.7.3
 	github.com/theflyingcodr/govalidator v0.0.2
 	github.com/theflyingcodr/lathos v0.0.3
 	gopkg.in/guregu/null.v3 v3.5.0
