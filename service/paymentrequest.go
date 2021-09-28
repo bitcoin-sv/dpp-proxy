@@ -52,7 +52,9 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args p4.Payme
 	merchant.ExtendedData["paymentReference"] = args.PaymentID
 	return &p4.PaymentRequest{
 		Network:             "mainnet",
+		SPVRequired:         dests.SPVRequired,
 		Outputs:             dests.Outputs,
+		FeeRate:             dests.Fees,
 		CreationTimestamp:   time.Now().UTC(),
 		ExpirationTimestamp: time.Now().Add(24 * time.Hour).UTC(),
 		PaymentURL:          fmt.Sprintf("http://%s%s/api/v1/payment/%s", p.walletCfg.Hostname, p.walletCfg.Port, args.PaymentID),
@@ -64,6 +66,5 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args p4.Payme
 			Address:      merchant.Address,
 			ExtendedData: merchant.ExtendedData,
 		},
-		FeeRate: dests.Fees,
 	}, nil
 }

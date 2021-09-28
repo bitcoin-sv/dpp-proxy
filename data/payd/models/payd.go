@@ -9,7 +9,8 @@ import (
 
 // PayDPaymentRequest is used to send a payment to PayD for valdiation and storage.
 type PayDPaymentRequest struct {
-	SPVEnvelope    *spv.Envelope
+	SPVEnvelope    *spv.Envelope               `json:"spvEnvelope"`
+	RawTX          *string                     `json:"rawTx"`
 	ProofCallbacks map[string]p4.ProofCallback `json:"proofCallbacks"`
 }
 
@@ -21,6 +22,7 @@ type Destination struct {
 
 // DestinationResponse is the response for the destinations api.
 type DestinationResponse struct {
-	Outputs []Destination `json:"outputs"`
-	Fees    *bt.FeeQuote  `json:"fees"`
+	SPVRequired bool          `json:"spvRequired"`
+	Outputs     []Destination `json:"outputs"`
+	Fees        *bt.FeeQuote  `json:"fees"`
 }

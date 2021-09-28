@@ -7,7 +7,6 @@ import (
 	"github.com/libsv/go-bt/v2"
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
-	"gopkg.in/guregu/null.v3"
 )
 
 // PaymentCreate is a Payment message used in BIP270.
@@ -21,12 +20,15 @@ type PaymentCreate struct {
 	MerchantData MerchantData `json:"merchantData"`
 	// RefundTo is a paymail to send a refund to should a refund be necessary.
 	// Maximum length is 100 characters
-	RefundTo null.String `json:"refundTo"  swaggertype:"primitive,string" example:"me@paymail.com"`
+	RefundTo *string `json:"refundTo"  swaggertype:"primitive,string" example:"me@paymail.com"`
 	// Memo is a plain-text note from the customer to the payment host.
 	Memo string `json:"memo" example:"for invoice 123456"`
 	// SPVEnvelope which contains the details of previous transaction and Merkle proof of each input UTXO.
+	// Should be available if SPVRequired is set to true in the paymentRequest.
 	// See https://tsc.bitcoinassociation.net/standards/spv-envelope/
 	SPVEnvelope *spv.Envelope `json:"spvEnvelope"`
+	// RawTX should be sent if SPVRequired is set to false in the payment request.
+	RawTX *string `json:"rawTx"`
 	// ProofCallbacks are optional and can be supplied when the sender wants to receive
 	// a merkleproof for the transaction they are submitting as part of the SPV Envelope.
 	//
@@ -38,7 +40,12 @@ type PaymentCreate struct {
 // Validate will ensure the users request is correct.
 func (p PaymentCreate) Validate() error {
 	v := validator.New().
-		Validate("spvEnvelope", validator.NotEmpty(p.SPVEnvelope)).
+		Validate("spvEnvelope/rawTx", func() error {
+			if p.RawTX == nil && p.SPVEnvelope == nil {
+				return errors.New("either an SPVEnvelope or a rawTX are required")
+			}
+			return nil
+		}).
 		Validate("merchantData.extendedData", validator.NotEmpty(p.MerchantData.ExtendedData))
 	if p.MerchantData.ExtendedData != nil {
 		v = v.Validate("merchantData.paymentReference", validator.NotEmpty(p.MerchantData.ExtendedData["paymentReference"]))
@@ -60,8 +67,16 @@ func (p PaymentCreate) Validate() error {
 				return nil
 			})
 	}
-	if p.RefundTo.Valid {
-		v = v.Validate("refundTo", validator.StrLength(p.RefundTo.String, 0, 100))
+	if p.RawTX != nil {
+		v = v.Validate("rawTx", func() error {
+			if _, err := bt.NewTxFromString(*p.RawTX); err != nil {
+				return errors.Wrap(err, "invalid rawTx supplied")
+			}
+			return nil
+		})
+	}
+	if p.RefundTo != nil {
+		v = v.Validate("refundTo", validator.StrLength(*p.RefundTo, 0, 100))
 	}
 	return v.Err()
 }

@@ -16,7 +16,6 @@ require (
 	github.com/swaggo/swag v1.7.3
 	github.com/theflyingcodr/govalidator v0.0.2
 	github.com/theflyingcodr/lathos v0.0.3
-	gopkg.in/guregu/null.v3 v3.5.0
 )
 
 require (

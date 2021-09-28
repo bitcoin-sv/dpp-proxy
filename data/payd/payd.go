@@ -41,6 +41,7 @@ func NewPayD(cfg *config.PayD, client data.HTTPClient) *payd {
 // If invalid a non 204 status code is returned.
 func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) error {
 	paymentReq := models.PayDPaymentRequest{
+		RawTX:          req.RawTX,
 		SPVEnvelope:    req.SPVEnvelope,
 		ProofCallbacks: req.ProofCallbacks,
 	}
@@ -65,8 +66,9 @@ func (p *payd) Destinations(ctx context.Context, args p4.PaymentRequestArgs) (*p
 		return nil, errors.WithStack(err)
 	}
 	dests := &p4.Destinations{
-		Outputs: make([]p4.Output, 0),
-		Fees:    resp.Fees,
+		SPVRequired: resp.SPVRequired,
+		Outputs:     make([]p4.Output, 0),
+		Fees:        resp.Fees,
 	}
 	for _, o := range resp.Outputs {
 		dests.Outputs = append(dests.Outputs, p4.Output{

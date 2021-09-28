@@ -19,8 +19,9 @@ type Output struct {
 
 // Destinations message containing outputs and their fees.
 type Destinations struct {
-	Outputs []Output
-	Fees    *bt.FeeQuote
+	SPVRequired bool
+	Outputs     []Output
+	Fees        *bt.FeeQuote
 }
 
 // DestinationReader interfaces retrieving payment destinations.
