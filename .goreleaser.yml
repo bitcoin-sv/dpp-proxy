@@ -49,4 +49,4 @@ dockers:
     dockerfile: Dockerfile.releaser
     image_templates:
       - "libsv/p4:latest"
-      - "libsv/p4:{{ .Tag }}"
+      - "libsv/p4:{{.Version}}"
