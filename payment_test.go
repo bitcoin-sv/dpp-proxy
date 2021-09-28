@@ -5,7 +5,6 @@ import (
 
 	"github.com/libsv/go-bc/spv"
 	"github.com/matryer/is"
-	"gopkg.in/guregu/null.v3"
 )
 
 func TestPaymentCreate_Validate(t *testing.T) {
@@ -33,8 +32,7 @@ func TestPaymentCreate_Validate(t *testing.T) {
 					MapiResponses: nil,
 					Parents:       nil,
 				},
-				RefundTo: null.String{},
-				Memo:     "test this please",
+				Memo: "test this please",
 			},
 			exp: "no validation errors",
 		}, "transaction with invalid txID should error": {
@@ -105,13 +103,14 @@ func TestPaymentCreate_Validate(t *testing.T) {
 					Proof:         nil,
 					MapiResponses: nil,
 					Parents:       nil,
-				}, RefundTo: func() null.String {
+				}, RefundTo: func() *string {
 					bb := make([]byte, 0)
 					// generate string 1 more byte than 10000
 					for i := 0; i <= 100; i++ {
 						bb = append(bb, 42)
 					}
-					return null.StringFrom(string(bb))
+					out := string(bb)
+					return &out
 				}(),
 				MerchantData: MerchantData{
 					ExtendedData: map[string]interface{}{

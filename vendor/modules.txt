@@ -188,9 +188,6 @@ golang.org/x/tools/go/buildutil
 golang.org/x/tools/go/internal/cgo
 golang.org/x/tools/go/loader
 golang.org/x/tools/internal/typeparams
-# gopkg.in/guregu/null.v3 v3.5.0
-## explicit
-gopkg.in/guregu/null.v3
 # gopkg.in/ini.v1 v1.63.2
 ## explicit
 gopkg.in/ini.v1

@@ -15,6 +15,9 @@ type PaymentRequest struct {
 	// {enum: bitcoin, bitcoin-sv, test}
 	// Required.
 	Network string `json:"network" example:"mainnet" enums:"mainnet,testnet,stn,regtest"`
+	// SPVRequired if true will expect the sender to submit an SPVEnvelope in the payment request, otherwise
+	// a rawTx will be required.
+	SPVRequired bool
 	// Outputs Is an array of outputs. required, but can have zero elements.
 	// Required.
 	Outputs []Output `json:"outputs"`

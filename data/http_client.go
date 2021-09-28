@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/pkg/errors"
+	"github.com/theflyingcodr/lathos/errs"
 )
 
 // HTTPClient defines a simple interface to execute an http request and map the request and response objects.
@@ -52,8 +53,16 @@ func (c *client) Do(ctx context.Context, method, endpoint string, expStatus int,
 		_ = resp.Body.Close()
 	}()
 	if resp.StatusCode != expStatus {
-		body, _ := ioutil.ReadAll(resp.Body)
-		return fmt.Errorf("error for '%s' '%s'. Status Received : '%d', Status Expected : '%d'. \nBody: %s", method, endpoint, resp.StatusCode, expStatus, body)
+		switch resp.StatusCode {
+		case http.StatusNotFound:
+			return errs.NewErrNotFound("404", fmt.Sprintf("item not found for '%s' '%s'", method, endpoint))
+		case http.StatusConflict:
+			return errs.NewErrDuplicate("409", fmt.Sprintf("item already exists for '%s' '%s'", method, endpoint))
+		default:
+			body, _ := ioutil.ReadAll(resp.Body)
+			return fmt.Errorf("error for '%s' '%s'. Status Received : '%d', Status Expected : '%d'. \nBody: %s", method, endpoint, resp.StatusCode, expStatus, body)
+		}
+
 	}
 	if out != nil {
 		if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {

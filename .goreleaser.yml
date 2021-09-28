@@ -1,5 +1,6 @@
 # This is an example .goreleaser.yml file with some sane defaults.
 # Make sure to check the documentation at http://goreleaser.com
+project_name: rest-server
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -8,14 +9,6 @@ builds:
   -
     id: rest-server
     main: ./cmd/rest-server
-    env:
-      - CGO_ENABLED=0
-    goos:
-      - linux
-      - windows
-      - darwin
-  - id: qr-server
-    main: ./cmd/qrcode
     env:
       - CGO_ENABLED=0
     goos:
@@ -31,6 +24,9 @@ archives:
       amd64: x86_64
 checksum:
   name_template: 'checksums.txt'
+release:
+  prerelease: true
+  name_template: "Release v{{.Version}}"
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
@@ -39,3 +35,18 @@ changelog:
     exclude:
       - '^docs:'
       - '^test:'
+dockers:
+  -
+    ids:
+      - rest-server
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--platform=linux/amd64"
+    dockerfile: Dockerfile.releaser
+    image_templates:
+      - "libsv/p4:latest"
+      - "libsv/p4:{{ .Tag }}"
