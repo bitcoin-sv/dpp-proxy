@@ -22,7 +22,7 @@ import (
 	"github.com/libsv/go-p4/service"
 	p4Handlers "github.com/libsv/go-p4/transports/http"
 
-	paydMiddleware "github.com/libsv/go-p4/transports/http/middleware"
+	p4Middleware "github.com/libsv/go-p4/transports/http/middleware"
 )
 
 const appname = "payment-protocol-rest-server"
@@ -81,7 +81,8 @@ func main() {
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
-	e.HTTPErrorHandler = paydMiddleware.ErrorHandler
+	e.Use(p4Middleware.DebugDumpBody(log.DEBUG))
+	e.HTTPErrorHandler = p4Middleware.ErrorHandler
 	if cfg.Server.SwaggerEnabled {
 		e.GET("/swagger/*", echoSwagger.WrapHandler)
 	}
