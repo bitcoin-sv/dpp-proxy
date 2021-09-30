@@ -6,7 +6,7 @@ require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/labstack/echo/v4 v4.6.1
 	github.com/labstack/gommon v0.3.0
-	github.com/libsv/go-bc v0.1.4
+	github.com/libsv/go-bc v0.1.6
 	github.com/libsv/go-bt/v2 v2.0.0-beta.7
 	github.com/matryer/is v1.4.0
 	github.com/pkg/errors v0.9.1
@@ -48,7 +48,7 @@ require (
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14 // indirect
 	github.com/valyala/bytebufferpool v1.0.0 // indirect
 	github.com/valyala/fasttemplate v1.2.1 // indirect
-	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
+	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
 	golang.org/x/net v0.0.0-20210913180222-943fd674d43e // indirect
 	golang.org/x/sys v0.0.0-20210910150752-751e447fb3d0 // indirect
 	golang.org/x/text v0.3.7 // indirect

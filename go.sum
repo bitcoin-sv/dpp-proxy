@@ -231,12 +231,10 @@ github.com/labstack/echo/v4 v4.6.1/go.mod h1:RnjgMWNDB9g/HucVWhQYNQP9PvbYf6adqft
 github.com/labstack/gommon v0.2.8/go.mod h1:/tj9csK2iPSBvn+3NLM9e52usepMtrd5ilFYA+wQNJ4=
 github.com/labstack/gommon v0.3.0 h1:JEeO0bvc78PKdyHxloTKiF8BD5iGrH8T6MSeGvSgob0=
 github.com/labstack/gommon v0.3.0/go.mod h1:MULnywXg0yavhxWKc+lOruYdAhDwPK9wf0OL7NoOu+k=
-github.com/libsv/go-bc v0.1.4 h1:p1ZT5OvXBDdKSgZaRwXd0JCrGuJ44gp05DiqUSCMdP8=
-github.com/libsv/go-bc v0.1.4/go.mod h1:rrlTAokCx10eCQnutt6g++LqTQ+I1n+SPCwKDVK4sd8=
-github.com/libsv/go-bk v0.0.0-20210430094342-ff08e691962b/go.mod h1:xbDkeFFpP0uyFaPLnP6TwaLpAsHaslZ0LftTdWlB6HI=
+github.com/libsv/go-bc v0.1.6 h1:jacgv/22R5TI1u3PInc7EG7TcvbdQWO2y3mA8be4v1w=
+github.com/libsv/go-bc v0.1.6/go.mod h1:IZuBIf65nlLY1OR/oXGOW/AgVvO5hGhIhRZPiHAiVHU=
 github.com/libsv/go-bk v0.1.4 h1:bTxlerGeibh8RRmyhFK03wSAEp6EAJxGR4vXuRT0LCE=
 github.com/libsv/go-bk v0.1.4/go.mod h1:xbDkeFFpP0uyFaPLnP6TwaLpAsHaslZ0LftTdWlB6HI=
-github.com/libsv/go-bt/v2 v2.0.0-20210730150403-97fd3b293e05/go.mod h1:62PATaSIMQ3omXVr9D4S7uMKaQByCJjNkrNzFpYThco=
 github.com/libsv/go-bt/v2 v2.0.0-beta.7 h1:ccJXfmO2i+79oP/mDYYqvqa5DH1QV+2a1eh8+HUKhic=
 github.com/libsv/go-bt/v2 v2.0.0-beta.7/go.mod h1:6Vk1qMlMoFJFNm7rR7NmFx4VwHNMCi4+V9WBqTd37rQ=
 github.com/magiconair/properties v1.8.5 h1:b6kJs+EmPFMYGkow9GiUyCyOvIwYetYJ3fSaWak/Gls=
@@ -366,8 +364,9 @@ golang.org/x/crypto v0.0.0-20191011191535-87dc89f01550/go.mod h1:yigFU9vqHzYiE8U
 golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9/go.mod h1:LzIPMQfyMNhhGPhUkYOs5KpL4U8rLKemX1yGLhDgUto=
 golang.org/x/crypto v0.0.0-20210421170649-83a5a9bb288b/go.mod h1:T9bdIzuCu7OtxOm1hfPfRQxPLYneinmdGuTeoZ9dtd4=
 golang.org/x/crypto v0.0.0-20210711020723-a769d52b0f97/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
-golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 h1:HWj/xjIHfjYU5nVXpTM0s39J9CbLn7Cc5a7IC5rwsMQ=
 golang.org/x/crypto v0.0.0-20210817164053-32db794688a5/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
+golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 h1:7I4JAnoQBe7ZtJcBaYHi5UtiO8tQHbUSXxL+pnGRANg=
+golang.org/x/crypto v0.0.0-20210921155107-089bfa567519/go.mod h1:GvvjBRRGRdwPK5ydBHafDWAxML/pGHZbMvKqRZ5+Abc=
 golang.org/x/exp v0.0.0-20190121172915-509febef88a4/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190306152737-a1d7652674e8/go.mod h1:CJ0aWSM057203Lf6IL+f9T1iT9GByDxfZKAQTCR3kQA=
 golang.org/x/exp v0.0.0-20190510132918-efd6b22b2522/go.mod h1:ZjyILWgesfNpC6sMxTJOJm9Kp84zZh5NQWvqDGG3Qr8=
