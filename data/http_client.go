@@ -8,7 +8,9 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"github.com/libsv/go-p4"
 	"github.com/pkg/errors"
+	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos/errs"
 )
 
@@ -53,16 +55,7 @@ func (c *client) Do(ctx context.Context, method, endpoint string, expStatus int,
 		_ = resp.Body.Close()
 	}()
 	if resp.StatusCode != expStatus {
-		switch resp.StatusCode {
-		case http.StatusNotFound:
-			return errs.NewErrNotFound("404", fmt.Sprintf("item not found for '%s' '%s'", method, endpoint))
-		case http.StatusConflict:
-			return errs.NewErrDuplicate("409", fmt.Sprintf("item already exists for '%s' '%s'", method, endpoint))
-		default:
-			body, _ := ioutil.ReadAll(resp.Body)
-			return fmt.Errorf("error for '%s' '%s'. Status Received : '%d', Status Expected : '%d'. \nBody: %s", method, endpoint, resp.StatusCode, expStatus, body)
-		}
-
+		return c.handleErr(resp, expStatus)
 	}
 	if out != nil {
 		if err := json.NewDecoder(resp.Body).Decode(&out); err != nil {
@@ -70,4 +63,40 @@ func (c *client) Do(ctx context.Context, method, endpoint string, expStatus int,
 		}
 	}
 	return nil
+}
+
+func (c *client) handleErr(resp *http.Response, expStatus int) error {
+	if resp.StatusCode == http.StatusBadRequest {
+		brErr := p4.BadRequestError{
+			Errors: make(validator.ErrValidation),
+		}
+		if err := json.NewDecoder(resp.Body).Decode(&brErr); err != nil {
+			return errors.WithStack(err)
+		}
+		return brErr.Errors
+	}
+
+	switch resp.StatusCode {
+	case http.StatusNotFound:
+		var msg p4.ClientError
+		if err := json.NewDecoder(resp.Body).Decode(&msg); err != nil {
+			return errors.WithStack(err)
+		}
+		return errs.NewErrNotFound(msg.Code, msg.Message)
+	case http.StatusConflict:
+		var msg p4.ClientError
+		if err := json.NewDecoder(resp.Body).Decode(&msg); err != nil {
+			return errors.WithStack(err)
+		}
+		return errs.NewErrDuplicate(msg.Code, msg.Message)
+	case http.StatusUnprocessableEntity:
+		var msg p4.ClientError
+		if err := json.NewDecoder(resp.Body).Decode(&msg); err != nil {
+			return errors.WithStack(err)
+		}
+		return errs.NewErrUnprocessable(msg.Code, msg.Message)
+	default:
+		body, _ := ioutil.ReadAll(resp.Body)
+		return fmt.Errorf("error for '%s' '%s'. Status Received : '%d', Status Expected : '%d'. \nBody: %s", resp.Request.Method, resp.Request.RequestURI, resp.StatusCode, expStatus, body)
+	}
 }
