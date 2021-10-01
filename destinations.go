@@ -17,6 +17,12 @@ type Output struct {
 	Description string `json:"description" example:"paymentReference 123456"`
 }
 
+// PaymentDestinations contains the supported destinations
+// by this P4 server.
+type PaymentDestinations struct {
+	Outputs []Output `json:"outputs"`
+}
+
 // Destinations message containing outputs and their fees.
 type Destinations struct {
 	SPVRequired bool

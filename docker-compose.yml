@@ -6,24 +6,14 @@ services:
     image: local.p4
     environment:
       LOG_LEVEL: "debug"
+      PAYD_HOST: "84e7-2a00-23c7-a599-8e01-494b-3c0d-f599-11f1.ngrok.io"
+      PAYD_PORT: ":80"
+      SERVER_HOST: "e2e2-2a00-23c7-a599-8e01-f402-c4f7-8571-6837.eu.ngrok.io"
     ports:
       - "8445:8445"
     networks:
       - regtest-stack
 
-  p4-merchant:
-    container_name: p4-merchant
-    image: local.p4
-    environment:
-      LOG_LEVEL: "debug"
-      PAYD_HOST: "payd-merchant"
-      PAYD_PORT: ":28443"
-      SERVER_HOST: "p4"
-      SERVER_PORT: ":28445"
-    ports:
-      - "28445:28445"
-    networks:
-      - regtest-stack
 
 networks:
   regtest-stack:

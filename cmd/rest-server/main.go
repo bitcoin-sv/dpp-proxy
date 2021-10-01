@@ -100,12 +100,12 @@ func main() {
 	}
 	// stores
 	paydStore := payd.NewPayD(cfg.PayD, data.NewClient(httpClient))
-	noopStore := noop.NewNoOp()
 
 	// services
 	paymentSvc := service.NewPayment(paydStore)
 	paymentReqSvc := service.NewPaymentRequest(cfg.Server, paydStore, paydStore)
 	if cfg.PayD.Noop {
+		noopStore := noop.NewNoOp()
 		paymentSvc = service.NewPayment(noopStore)
 		paymentReqSvc = service.NewPaymentRequest(cfg.Server, noopStore, noopStore)
 	}

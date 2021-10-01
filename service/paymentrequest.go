@@ -53,11 +53,11 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args p4.Payme
 	return &p4.PaymentRequest{
 		Network:             "mainnet",
 		SPVRequired:         dests.SPVRequired,
-		Outputs:             dests.Outputs,
+		Destinations:        p4.PaymentDestinations{Outputs: dests.Outputs},
 		FeeRate:             dests.Fees,
 		CreationTimestamp:   time.Now().UTC(),
 		ExpirationTimestamp: time.Now().Add(24 * time.Hour).UTC(),
-		PaymentURL:          fmt.Sprintf("http://%s%s/api/v1/payment/%s", p.walletCfg.Hostname, p.walletCfg.Port, args.PaymentID),
+		PaymentURL:          fmt.Sprintf("http://%s%s/api/v1/payment/%s", p.walletCfg.Hostname, "", args.PaymentID),
 		Memo:                fmt.Sprintf("invoice %s", args.PaymentID),
 		MerchantData: &p4.MerchantData{
 			AvatarURL:    merchant.AvatarURL,
