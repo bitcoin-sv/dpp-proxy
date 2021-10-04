@@ -17,10 +17,10 @@ type PaymentRequest struct {
 	Network string `json:"network" example:"mainnet" enums:"mainnet,testnet,stn,regtest"`
 	// SPVRequired if true will expect the sender to submit an SPVEnvelope in the payment request, otherwise
 	// a rawTx will be required.
-	SPVRequired bool
-	// Outputs Is an array of outputs. required, but can have zero elements.
+	SPVRequired bool `json:"spvRequired" example:"true"`
+	// Destinations contains supported payment destinations by the merchant and p4 server, initial P2PKH outputs but can be extended.
 	// Required.
-	Outputs []Output `json:"outputs"`
+	Destinations PaymentDestinations `json:"destinations"`
 	// CreationTimestamp Unix timestamp (seconds since 1-Jan-1970 UTC) when the PaymentRequest was created.
 	// Required.
 	CreationTimestamp time.Time `json:"creationTimestamp" swaggertype:"primitive,string" example:"2019-10-12T07:20:50.52Z"`
@@ -40,7 +40,7 @@ type PaymentRequest struct {
 	MerchantData *MerchantData `json:"merchantData,omitempty"`
 	// FeeRate defines the amount of fees a users wallet should add to the payment
 	// when submitting their final payments.
-	FeeRate *bt.FeeQuote `json:"fee"`
+	FeeRate *bt.FeeQuote `json:"fees"`
 }
 
 // PaymentRequestArgs are request arguments that can be passed to the service.
