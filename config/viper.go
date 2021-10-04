@@ -26,6 +26,7 @@ func (v *ViperConfig) WithServer() ConfigurationLoader {
 		Port:           viper.GetString(EnvServerPort),
 		Hostname:       viper.GetString(EnvServerHost),
 		SwaggerEnabled: viper.GetBool(EnvServerSwaggerEnabled),
+		FQDN:           viper.GetString(EnvServerFQDN),
 	}
 	return v
 }

@@ -12,6 +12,7 @@ import (
 const (
 	EnvServerPort           = "server.port"
 	EnvServerHost           = "server.host"
+	EnvServerFQDN           = "server.fqdn"
 	EnvServerSwaggerEnabled = "server.swagger.enabled"
 	EnvEnvironment          = "env.environment"
 	EnvBitcoinNetwork       = "env.bitcoin.network"
@@ -93,6 +94,9 @@ type Logging struct {
 type Server struct {
 	Port     string
 	Hostname string
+	// FQDN - fully qualified domain name, used to form the paymentRequest
+	// payment URL as this may be different from the hostname + port.
+	FQDN string
 	// SwaggerEnabled if true we will include an endpoint to serve swagger documents.
 	SwaggerEnabled bool
 }

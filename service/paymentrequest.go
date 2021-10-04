@@ -57,7 +57,7 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args p4.Payme
 		FeeRate:             dests.Fees,
 		CreationTimestamp:   time.Now().UTC(),
 		ExpirationTimestamp: time.Now().Add(24 * time.Hour).UTC(),
-		PaymentURL:          fmt.Sprintf("http://%s%s/api/v1/payment/%s", p.walletCfg.Hostname, "", args.PaymentID),
+		PaymentURL:          fmt.Sprintf("http://%s/api/v1/payment/%s", p.walletCfg.FQDN, args.PaymentID),
 		Memo:                fmt.Sprintf("invoice %s", args.PaymentID),
 		MerchantData: &p4.MerchantData{
 			AvatarURL:    merchant.AvatarURL,
