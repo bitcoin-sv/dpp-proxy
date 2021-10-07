@@ -2,6 +2,7 @@ package p4
 
 import (
 	"context"
+	"time"
 
 	"github.com/libsv/go-bt/v2"
 )
@@ -28,6 +29,8 @@ type Destinations struct {
 	SPVRequired bool
 	Outputs     []Output
 	Fees        *bt.FeeQuote
+	CreatedAt   time.Time
+	ExpiresAt   time.Time
 }
 
 // DestinationReader interfaces retrieving payment destinations.

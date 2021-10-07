@@ -69,6 +69,8 @@ func (p *payd) Destinations(ctx context.Context, args p4.PaymentRequestArgs) (*p
 		SPVRequired: resp.SPVRequired,
 		Outputs:     make([]p4.Output, 0),
 		Fees:        resp.Fees,
+		CreatedAt:   resp.CreatedAt,
+		ExpiresAt:   resp.ExpiresAt,
 	}
 	for _, o := range resp.Outputs {
 		dests.Outputs = append(dests.Outputs, p4.Output{

@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"fmt"
-	"time"
 
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
@@ -37,7 +36,7 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args p4.Payme
 
 	dests, err := p.destRdr.Destinations(ctx, args)
 	if err != nil {
-		return nil, errors.Wrapf(err, "failed to geet destinations for paymentID %s", args.PaymentID)
+		return nil, errors.Wrapf(err, "failed to get destinations for paymentID %s", args.PaymentID)
 	}
 
 	// get merchant information
@@ -55,8 +54,8 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args p4.Payme
 		SPVRequired:         dests.SPVRequired,
 		Destinations:        p4.PaymentDestinations{Outputs: dests.Outputs},
 		FeeRate:             dests.Fees,
-		CreationTimestamp:   time.Now().UTC(),
-		ExpirationTimestamp: time.Now().Add(24 * time.Hour).UTC(),
+		CreationTimestamp:   dests.CreatedAt,
+		ExpirationTimestamp: dests.ExpiresAt,
 		PaymentURL:          fmt.Sprintf("http://%s/api/v1/payment/%s", p.walletCfg.FQDN, args.PaymentID),
 		Memo:                fmt.Sprintf("invoice %s", args.PaymentID),
 		MerchantData: &p4.MerchantData{

@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-bt/v2"
 
@@ -25,4 +27,6 @@ type DestinationResponse struct {
 	SPVRequired bool          `json:"spvRequired"`
 	Outputs     []Destination `json:"outputs"`
 	Fees        *bt.FeeQuote  `json:"fees"`
+	CreatedAt   time.Time     `json:"createdAt"`
+	ExpiresAt   time.Time     `json:"expiresAt"`
 }
