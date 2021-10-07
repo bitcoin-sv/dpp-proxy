@@ -81,7 +81,6 @@ func main() {
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
-	e.Use(p4Middleware.DebugDumpBody(log.DEBUG))
 	e.HTTPErrorHandler = p4Middleware.ErrorHandler
 	if cfg.Server.SwaggerEnabled {
 		e.GET("/swagger/*", echoSwagger.WrapHandler)
