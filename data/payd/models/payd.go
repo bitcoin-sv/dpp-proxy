@@ -25,6 +25,7 @@ type Destination struct {
 // DestinationResponse is the response for the destinations api.
 type DestinationResponse struct {
 	SPVRequired bool          `json:"spvRequired"`
+	Network     string        `json:"network"`
 	Outputs     []Destination `json:"outputs"`
 	Fees        *bt.FeeQuote  `json:"fees"`
 	CreatedAt   time.Time     `json:"createdAt"`

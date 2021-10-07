@@ -27,6 +27,7 @@ type PaymentDestinations struct {
 // Destinations message containing outputs and their fees.
 type Destinations struct {
 	SPVRequired bool
+	Network     string
 	Outputs     []Output
 	Fees        *bt.FeeQuote
 	CreatedAt   time.Time

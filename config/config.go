@@ -2,10 +2,7 @@ package config
 
 import (
 	"fmt"
-	"regexp"
 	"time"
-
-	validator "github.com/theflyingcodr/govalidator"
 )
 
 // Environment variable constants.
@@ -15,7 +12,6 @@ const (
 	EnvServerFQDN           = "server.fqdn"
 	EnvServerSwaggerEnabled = "server.swagger.enabled"
 	EnvEnvironment          = "env.environment"
-	EnvBitcoinNetwork       = "env.bitcoin.network"
 	EnvRegion               = "env.region"
 	EnvVersion              = "env.version"
 	EnvCommit               = "env.commit"
@@ -33,34 +29,12 @@ const (
 	LogWarn  = "warn"
 )
 
-var reNetworks = regexp.MustCompile(`^(regtest|stn|testnet|mainnet)$`)
-
-// NetworkType is used to restrict the networks we can support.
-type NetworkType string
-
-// Supported bitcoin network types.
-const (
-	NetworkRegtest NetworkType = "mainnet"
-	NetworkSTN     NetworkType = "stn"
-	NetworkTestnet NetworkType = "testnet"
-	NetworkMainet  NetworkType = "mainnet"
-)
-
 // Config returns strongly typed config values.
 type Config struct {
 	Logging    *Logging
 	Server     *Server
 	Deployment *Deployment
 	PayD       *PayD
-}
-
-// Validate will ensure the config matches certain parameters.
-func (c *Config) Validate() error {
-	vl := validator.New()
-	if c.Deployment != nil {
-		vl = vl.Validate("deployment.network", validator.MatchString(string(c.Deployment.Network), reNetworks))
-	}
-	return vl.Err()
 }
 
 // Deployment contains information relating to the current
@@ -72,7 +46,6 @@ type Deployment struct {
 	Version     string
 	Commit      string
 	BuildDate   time.Time
-	Network     NetworkType
 }
 
 // IsDev determines if this app is running on a dev environment.

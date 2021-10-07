@@ -63,10 +63,6 @@ func main() {
 		WithLog().
 		WithPayD().
 		Load()
-	// validate the config, fail if it fails.
-	if err := cfg.Validate(); err != nil {
-		log.Fatal(err)
-	}
 	config.SetupLog(cfg.Logging)
 	log.Infof("\n------Environment: %s -----\n", cfg.Server)
 

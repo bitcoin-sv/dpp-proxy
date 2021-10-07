@@ -40,7 +40,6 @@ func (v *ViperConfig) WithDeployment(appName string) ConfigurationLoader {
 		Commit:      viper.GetString(EnvCommit),
 		BuildDate:   viper.GetTime(EnvBuildDate),
 		AppName:     appName,
-		Network:     NetworkType(viper.GetString(EnvBitcoinNetwork)),
 	}
 	return v
 }

@@ -50,7 +50,7 @@ func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args p4.Payme
 	// here we store paymentRef in extended data to allow some validation in payment flow
 	merchant.ExtendedData["paymentReference"] = args.PaymentID
 	return &p4.PaymentRequest{
-		Network:             "mainnet",
+		Network:             dests.Network,
 		SPVRequired:         dests.SPVRequired,
 		Destinations:        p4.PaymentDestinations{Outputs: dests.Outputs},
 		FeeRate:             dests.Fees,

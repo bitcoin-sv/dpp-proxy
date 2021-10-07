@@ -67,6 +67,7 @@ func (p *payd) Destinations(ctx context.Context, args p4.PaymentRequestArgs) (*p
 	}
 	dests := &p4.Destinations{
 		SPVRequired: resp.SPVRequired,
+		Network:     resp.Network,
 		Outputs:     make([]p4.Output, 0),
 		Fees:        resp.Fees,
 		CreatedAt:   resp.CreatedAt,
