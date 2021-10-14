@@ -23,10 +23,10 @@ func NewPaymentRequestHandler(svc p4.PaymentRequestService) *paymentRequestHandl
 
 // RegisterRoutes will setup all routes with an echo group.
 func (h *paymentRequestHandler) RegisterRoutes(g *echo.Group) {
-	g.GET(RoutePaymentRequest, h.createPaymentRequest)
+	g.GET(RoutePaymentRequest, h.buildPaymentRequest)
 }
 
-// createPaymentRequest will setup and return a new payment request.
+// buildPaymentRequest will setup and return a new payment request.
 // @Summary Request to pay an invoice and receive back outputs to use when constructing the payment transaction
 // @Description Creates a payment request based on a payment id (the identifier for an invoice).
 // @Tags Payment
@@ -38,14 +38,14 @@ func (h *paymentRequestHandler) RegisterRoutes(g *echo.Group) {
 // @Failure 400 {object} validator.ErrValidation "returned if the user input is invalid, usually an issue with the paymentID"
 // @Failure 500 {string} string "returned if there is an unexpected internal error"
 // @Router /api/v1/payment/{paymentID} [GET].
-func (h *paymentRequestHandler) createPaymentRequest(e echo.Context) error {
+func (h *paymentRequestHandler) buildPaymentRequest(e echo.Context) error {
 	var args p4.PaymentRequestArgs
 	if err := e.Bind(&args); err != nil {
 		return errors.Wrap(err, "failed to bind request")
 	}
-	resp, err := h.svc.CreatePaymentRequest(e.Request().Context(), args)
+	resp, err := h.svc.PaymentRequest(e.Request().Context(), args)
 	if err != nil {
 		return errors.WithStack(err)
 	}
-	return e.JSON(http.StatusCreated, resp)
+	return e.JSON(http.StatusOK, resp)
 }

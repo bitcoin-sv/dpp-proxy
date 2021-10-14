@@ -27,8 +27,8 @@ func NewPaymentRequest(walletCfg *config.Server, destRdr p4.DestinationReader, m
 	}
 }
 
-// CreatePaymentRequest handles setting up a new PaymentRequest response and will validate that we have a paymentID.
-func (p *paymentRequest) CreatePaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+// PaymentRequest handles setting up a new PaymentRequest response and will validate that we have a paymentID.
+func (p *paymentRequest) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
 	if err := validator.New().
 		Validate("paymentID", validator.NotEmpty(args.PaymentID)); err.Err() != nil {
 		return nil, err
