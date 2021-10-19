@@ -23,11 +23,12 @@ Values can also be passed at build time to provide information such as build inf
 
 ### Server
 
-| Key                    | Description                                                        | Default |
-|------------------------|--------------------------------------------------------------------|---------|
-| SERVER_PORT            | Port which this server should use                                  | :8445   |
-| SERVER_HOST            | Host name under which this server is found                         | p4      |
-| SERVER_SWAGGER_ENABLED | If set to true we will expose an endpoint hosting the Swagger docs | true    |
+| Key                    | Description                                                        | Default        |
+|------------------------|--------------------------------------------------------------------|----------------|
+| SERVER_PORT            | Port which this server should use                                  | :8445          |
+| SERVER_HOST            | Host name under which this server is found                         | p4             |
+| SERVER_SWAGGER_ENABLED | If set to true we will expose an endpoint hosting the Swagger docs | true           |
+| SERVER_SWAGGER_HOST    | Sets the base url for swagger ui calls                             | localhost:8445 |
 
 ### Environment / Deployment Info
 

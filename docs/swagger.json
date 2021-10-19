@@ -39,19 +39,19 @@
                     "201": {
                         "description": "contains outputs, merchant data and expiry information, used by the payee to construct a transaction",
                         "schema": {
-                            "$ref": "#/definitions/pptcl.PaymentRequest"
+                            "$ref": "#/definitions/p4.PaymentRequest"
                         }
                     },
                     "400": {
                         "description": "returned if the user input is invalid, usually an issue with the paymentID",
                         "schema": {
-                            "$ref": "#/definitions/validator.ErrValidation"
+                            "$ref": "#/definitions/p4.ClientError"
                         }
                     },
                     "404": {
                         "description": "returned if the paymentID has not been found",
                         "schema": {
-                            "$ref": "#/definitions/pptcl.ClientError"
+                            "$ref": "#/definitions/p4.ClientError"
                         }
                     },
                     "500": {
@@ -88,7 +88,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/pptcl.PaymentCreate"
+                            "$ref": "#/definitions/p4.PaymentCreate"
                         }
                     }
                 ],
@@ -96,19 +96,19 @@
                     "201": {
                         "description": "if success, error code will be empty, otherwise it will be filled in with reason",
                         "schema": {
-                            "$ref": "#/definitions/pptcl.PaymentACK"
+                            "$ref": "#/definitions/p4.PaymentACK"
                         }
                     },
                     "400": {
                         "description": "returned if the user input is invalid, usually an issue with the paymentID",
                         "schema": {
-                            "$ref": "#/definitions/validator.ErrValidation"
+                            "$ref": "#/definitions/p4.ClientError"
                         }
                     },
                     "404": {
                         "description": "returned if the paymentID has not been found",
                         "schema": {
-                            "$ref": "#/definitions/pptcl.ClientError"
+                            "$ref": "#/definitions/p4.ClientError"
                         }
                     },
                     "500": {
@@ -183,7 +183,7 @@
         "bt.FeeQuote": {
             "type": "object"
         },
-        "pptcl.ClientError": {
+        "p4.ClientError": {
             "type": "object",
             "properties": {
                 "code": {
@@ -204,7 +204,7 @@
                 }
             }
         },
-        "pptcl.MerchantData": {
+        "p4.MerchantData": {
             "type": "object",
             "properties": {
                 "address": {
@@ -234,7 +234,7 @@
                 }
             }
         },
-        "pptcl.Output": {
+        "p4.Output": {
             "type": "object",
             "properties": {
                 "amount": {
@@ -254,7 +254,7 @@
                 }
             }
         },
-        "pptcl.PaymentACK": {
+        "p4.PaymentACK": {
             "type": "object",
             "properties": {
                 "error": {
@@ -265,11 +265,11 @@
                     "type": "string"
                 },
                 "payment": {
-                    "$ref": "#/definitions/pptcl.PaymentCreate"
+                    "$ref": "#/definitions/p4.PaymentCreate"
                 }
             }
         },
-        "pptcl.PaymentCreate": {
+        "p4.PaymentCreate": {
             "type": "object",
             "properties": {
                 "memo": {
@@ -279,14 +279,18 @@
                 },
                 "merchantData": {
                     "description": "MerchantData is copied from PaymentDetails.merchantData.\nPayment hosts may use invoice numbers or any other data they require to match Payments to PaymentRequests.\nNote that malicious clients may modify the merchantData, so should be authenticated\nin some way (for example, signed with a payment host-only key).\nMaximum length is 10000 characters.",
-                    "$ref": "#/definitions/pptcl.MerchantData"
+                    "$ref": "#/definitions/p4.MerchantData"
                 },
                 "proofCallbacks": {
                     "description": "ProofCallbacks are optional and can be supplied when the sender wants to receive\na merkleproof for the transaction they are submitting as part of the SPV Envelope.\n\nThis is especially useful if they are receiving change and means when they use it\nas an input, they can provide the merkle proof.",
                     "type": "object",
                     "additionalProperties": {
-                        "$ref": "#/definitions/pptcl.ProofCallback"
+                        "$ref": "#/definitions/p4.ProofCallback"
                     }
+                },
+                "rawTx": {
+                    "description": "RawTX should be sent if SPVRequired is set to false in the payment request.",
+                    "type": "string"
                 },
                 "refundTo": {
                     "description": "RefundTo is a paymail to send a refund to should a refund be necessary.\nMaximum length is 100 characters",
@@ -294,12 +298,23 @@
                     "example": "me@paymail.com"
                 },
                 "spvEnvelope": {
-                    "description": "SPVEnvelope which contains the details of previous transaction and Merkle proof of each input UTXO.\nSee https://tsc.bitcoinassociation.net/standards/spv-envelope/",
+                    "description": "SPVEnvelope which contains the details of previous transaction and Merkle proof of each input UTXO.\nShould be available if SPVRequired is set to true in the paymentRequest.\nSee https://tsc.bitcoinassociation.net/standards/spv-envelope/",
                     "$ref": "#/definitions/spv.Envelope"
                 }
             }
         },
-        "pptcl.PaymentRequest": {
+        "p4.PaymentDestinations": {
+            "type": "object",
+            "properties": {
+                "outputs": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/p4.Output"
+                    }
+                }
+            }
+        },
+        "p4.PaymentRequest": {
             "type": "object",
             "properties": {
                 "creationTimestamp": {
@@ -307,12 +322,16 @@
                     "type": "string",
                     "example": "2019-10-12T07:20:50.52Z"
                 },
+                "destinations": {
+                    "description": "Destinations contains supported payment destinations by the merchant and p4 server, initial P2PKH outputs but can be extended.\nRequired.",
+                    "$ref": "#/definitions/p4.PaymentDestinations"
+                },
                 "expirationTimestamp": {
                     "description": "ExpirationTimestamp Unix timestamp (UTC) after which the PaymentRequest should be considered invalid.\nOptional.",
                     "type": "string",
                     "example": "2019-10-12T07:20:50.52Z"
                 },
-                "fee": {
+                "fees": {
                     "description": "FeeRate defines the amount of fees a users wallet should add to the payment\nwhen submitting their final payments.",
                     "$ref": "#/definitions/bt.FeeQuote"
                 },
@@ -323,7 +342,7 @@
                 },
                 "merchantData": {
                     "description": "MerchantData contains arbitrary data that may be used by the payment host to identify the PaymentRequest.\nMay be omitted if the payment host does not need to associate Payments with PaymentRequest\nor if they associate each PaymentRequest with a separate payment address.\nMaximum length is 10000 characters.",
-                    "$ref": "#/definitions/pptcl.MerchantData"
+                    "$ref": "#/definitions/p4.MerchantData"
                 },
                 "network": {
                     "description": "Network  Always set to \"bitcoin\" (but seems to be set to 'bitcoin-sv'\noutside bip270 spec, see https://handcash.github.io/handcash-merchant-integration/#/merchant-payments)\n{enum: bitcoin, bitcoin-sv, test}\nRequired.",
@@ -336,21 +355,19 @@
                     ],
                     "example": "mainnet"
                 },
-                "outputs": {
-                    "description": "Outputs Is an array of outputs. required, but can have zero elements.\nRequired.",
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/pptcl.Output"
-                    }
-                },
                 "paymentUrl": {
                     "description": "PaymentURL secure HTTPS location where a Payment message (see below) will be sent to obtain a PaymentACK.\nMaximum length is 4000 characters",
                     "type": "string",
                     "example": "https://localhost:3443/api/v1/payment/123456"
+                },
+                "spvRequired": {
+                    "description": "SPVRequired if true will expect the sender to submit an SPVEnvelope in the payment request, otherwise\na rawTx will be required.",
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
-        "pptcl.ProofCallback": {
+        "p4.ProofCallback": {
             "type": "object",
             "properties": {
                 "token": {
@@ -380,15 +397,6 @@
                     "type": "string"
                 },
                 "txid": {
-                    "type": "string"
-                }
-            }
-        },
-        "validator.ErrValidation": {
-            "type": "object",
-            "additionalProperties": {
-                "type": "array",
-                "items": {
                     "type": "string"
                 }
             }

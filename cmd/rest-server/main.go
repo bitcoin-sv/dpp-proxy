@@ -12,7 +12,7 @@ import (
 
 	"github.com/libsv/go-p4/data"
 	"github.com/libsv/go-p4/data/noop"
-	_ "github.com/libsv/go-p4/docs"
+	docs "github.com/libsv/go-p4/docs"
 
 	"github.com/labstack/gommon/log"
 	"github.com/spf13/viper"
@@ -79,6 +79,7 @@ func main() {
 	}))
 	e.HTTPErrorHandler = p4Middleware.ErrorHandler
 	if cfg.Server.SwaggerEnabled {
+		docs.SwaggerInfo.Host = cfg.Server.SwaggerHost
 		e.GET("/swagger/*", echoSwagger.WrapHandler)
 	}
 

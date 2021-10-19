@@ -39,7 +39,7 @@ definitions:
     type: object
   bt.FeeQuote:
     type: object
-  pptcl.ClientError:
+  p4.ClientError:
     properties:
       code:
         example: N01
@@ -54,7 +54,7 @@ definitions:
         example: not found
         type: string
     type: object
-  pptcl.MerchantData:
+  p4.MerchantData:
     properties:
       address:
         description: Address is the merchants store / head office address.
@@ -70,29 +70,32 @@ definitions:
         type: string
       extendedData:
         additionalProperties: true
-        description: ExtendedData can be supplied if the merchant wishes to send some arbitrary data back to the wallet.
+        description: ExtendedData can be supplied if the merchant wishes to send some
+          arbitrary data back to the wallet.
         type: object
       name:
         description: MerchantName is a human readable string identifying the merchant.
         example: merchant 1
         type: string
     type: object
-  pptcl.Output:
+  p4.Output:
     properties:
       amount:
         description: Amount is the number of satoshis to be paid.
         example: 100000
         type: integer
       description:
-        description: Description, an optional description such as "tip" or "sales tax". Maximum length is 100 chars.
+        description: Description, an optional description such as "tip" or "sales
+          tax". Maximum length is 100 chars.
         example: paymentReference 123456
         type: string
       script:
-        description: Script is a locking script where payment should be sent, formatted as a hexadecimal string.
+        description: Script is a locking script where payment should be sent, formatted
+          as a hexadecimal string.
         example: 76a91455b61be43392125d127f1780fb038437cd67ef9c88ac
         type: string
     type: object
-  pptcl.PaymentACK:
+  p4.PaymentACK:
     properties:
       error:
         description: |-
@@ -104,16 +107,16 @@ definitions:
       memo:
         type: string
       payment:
-        $ref: '#/definitions/pptcl.PaymentCreate'
+        $ref: '#/definitions/p4.PaymentCreate'
     type: object
-  pptcl.PaymentCreate:
+  p4.PaymentCreate:
     properties:
       memo:
         description: Memo is a plain-text note from the customer to the payment host.
         example: for invoice 123456
         type: string
       merchantData:
-        $ref: '#/definitions/pptcl.MerchantData'
+        $ref: '#/definitions/p4.MerchantData'
         description: |-
           MerchantData is copied from PaymentDetails.merchantData.
           Payment hosts may use invoice numbers or any other data they require to match Payments to PaymentRequests.
@@ -122,7 +125,7 @@ definitions:
           Maximum length is 10000 characters.
       proofCallbacks:
         additionalProperties:
-          $ref: '#/definitions/pptcl.ProofCallback'
+          $ref: '#/definitions/p4.ProofCallback'
         description: |-
           ProofCallbacks are optional and can be supplied when the sender wants to receive
           a merkleproof for the transaction they are submitting as part of the SPV Envelope.
@@ -130,6 +133,10 @@ definitions:
           This is especially useful if they are receiving change and means when they use it
           as an input, they can provide the merkle proof.
         type: object
+      rawTx:
+        description: RawTX should be sent if SPVRequired is set to false in the payment
+          request.
+        type: string
       refundTo:
         description: |-
           RefundTo is a paymail to send a refund to should a refund be necessary.
@@ -140,9 +147,17 @@ definitions:
         $ref: '#/definitions/spv.Envelope'
         description: |-
           SPVEnvelope which contains the details of previous transaction and Merkle proof of each input UTXO.
+          Should be available if SPVRequired is set to true in the paymentRequest.
           See https://tsc.bitcoinassociation.net/standards/spv-envelope/
     type: object
-  pptcl.PaymentRequest:
+  p4.PaymentDestinations:
+    properties:
+      outputs:
+        items:
+          $ref: '#/definitions/p4.Output'
+        type: array
+    type: object
+  p4.PaymentRequest:
     properties:
       creationTimestamp:
         description: |-
@@ -150,13 +165,18 @@ definitions:
           Required.
         example: "2019-10-12T07:20:50.52Z"
         type: string
+      destinations:
+        $ref: '#/definitions/p4.PaymentDestinations'
+        description: |-
+          Destinations contains supported payment destinations by the merchant and p4 server, initial P2PKH outputs but can be extended.
+          Required.
       expirationTimestamp:
         description: |-
           ExpirationTimestamp Unix timestamp (UTC) after which the PaymentRequest should be considered invalid.
           Optional.
         example: "2019-10-12T07:20:50.52Z"
         type: string
-      fee:
+      fees:
         $ref: '#/definitions/bt.FeeQuote'
         description: |-
           FeeRate defines the amount of fees a users wallet should add to the payment
@@ -168,7 +188,7 @@ definitions:
         example: invoice number 123456
         type: string
       merchantData:
-        $ref: '#/definitions/pptcl.MerchantData'
+        $ref: '#/definitions/p4.MerchantData'
         description: |-
           MerchantData contains arbitrary data that may be used by the payment host to identify the PaymentRequest.
           May be omitted if the payment host does not need to associate Payments with PaymentRequest
@@ -187,21 +207,20 @@ definitions:
         - regtest
         example: mainnet
         type: string
-      outputs:
-        description: |-
-          Outputs Is an array of outputs. required, but can have zero elements.
-          Required.
-        items:
-          $ref: '#/definitions/pptcl.Output'
-        type: array
       paymentUrl:
         description: |-
           PaymentURL secure HTTPS location where a Payment message (see below) will be sent to obtain a PaymentACK.
           Maximum length is 4000 characters
         example: https://localhost:3443/api/v1/payment/123456
         type: string
+      spvRequired:
+        description: |-
+          SPVRequired if true will expect the sender to submit an SPVEnvelope in the payment request, otherwise
+          a rawTx will be required.
+        example: true
+        type: boolean
     type: object
-  pptcl.ProofCallback:
+  p4.ProofCallback:
     properties:
       token:
         type: string
@@ -223,12 +242,6 @@ definitions:
       txid:
         type: string
     type: object
-  validator.ErrValidation:
-    additionalProperties:
-      items:
-        type: string
-      type: array
-    type: object
 host: localhost:8445
 info:
   contact: {}
@@ -244,7 +257,8 @@ paths:
     get:
       consumes:
       - application/json
-      description: Creates a payment request based on a payment id (the identifier for an invoice).
+      description: Creates a payment request based on a payment id (the identifier
+        for an invoice).
       parameters:
       - description: Payment ID
         in: path
@@ -255,28 +269,32 @@ paths:
       - application/json
       responses:
         "201":
-          description: contains outputs, merchant data and expiry information, used by the payee to construct a transaction
+          description: contains outputs, merchant data and expiry information, used
+            by the payee to construct a transaction
           schema:
-            $ref: '#/definitions/pptcl.PaymentRequest'
+            $ref: '#/definitions/p4.PaymentRequest'
         "400":
-          description: returned if the user input is invalid, usually an issue with the paymentID
+          description: returned if the user input is invalid, usually an issue with
+            the paymentID
           schema:
-            $ref: '#/definitions/validator.ErrValidation'
+            $ref: '#/definitions/p4.ClientError'
         "404":
           description: returned if the paymentID has not been found
           schema:
-            $ref: '#/definitions/pptcl.ClientError'
+            $ref: '#/definitions/p4.ClientError'
         "500":
           description: returned if there is an unexpected internal error
           schema:
             type: string
-      summary: Request to pay an invoice and receive back outputs to use when constructing the payment transaction
+      summary: Request to pay an invoice and receive back outputs to use when constructing
+        the payment transaction
       tags:
       - Payment
     post:
       consumes:
       - application/json
-      description: Creates a payment based on a payment id (the identifier for an invoice).
+      description: Creates a payment based on a payment id (the identifier for an
+        invoice).
       parameters:
       - description: Payment ID
         in: path
@@ -288,27 +306,30 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/pptcl.PaymentCreate'
+          $ref: '#/definitions/p4.PaymentCreate'
       produces:
       - application/json
       responses:
         "201":
-          description: if success, error code will be empty, otherwise it will be filled in with reason
+          description: if success, error code will be empty, otherwise it will be
+            filled in with reason
           schema:
-            $ref: '#/definitions/pptcl.PaymentACK'
+            $ref: '#/definitions/p4.PaymentACK'
         "400":
-          description: returned if the user input is invalid, usually an issue with the paymentID
+          description: returned if the user input is invalid, usually an issue with
+            the paymentID
           schema:
-            $ref: '#/definitions/validator.ErrValidation'
+            $ref: '#/definitions/p4.ClientError'
         "404":
           description: returned if the paymentID has not been found
           schema:
-            $ref: '#/definitions/pptcl.ClientError'
+            $ref: '#/definitions/p4.ClientError'
         "500":
           description: returned if there is an unexpected internal error
           schema:
             type: string
-      summary: A user will submit an SpvEnvelope along with other information that is validated before being broadcast to the network.
+      summary: A user will submit an SpvEnvelope along with other information that
+        is validated before being broadcast to the network.
       tags:
       - Payment
 swagger: "2.0"

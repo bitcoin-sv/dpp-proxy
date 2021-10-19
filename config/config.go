@@ -11,6 +11,7 @@ const (
 	EnvServerHost           = "server.host"
 	EnvServerFQDN           = "server.fqdn"
 	EnvServerSwaggerEnabled = "server.swagger.enabled"
+	EnvServerSwaggerHost    = "server.swagger.host"
 	EnvEnvironment          = "env.environment"
 	EnvRegion               = "env.region"
 	EnvVersion              = "env.version"
@@ -72,6 +73,7 @@ type Server struct {
 	FQDN string
 	// SwaggerEnabled if true we will include an endpoint to serve swagger documents.
 	SwaggerEnabled bool
+	SwaggerHost    string
 }
 
 // PayD is used to setup connection to a payd instance.

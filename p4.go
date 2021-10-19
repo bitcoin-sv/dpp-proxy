@@ -12,5 +12,5 @@ type ClientError struct {
 
 // BadRequestError defines an error type to handle validation errors.
 type BadRequestError struct {
-	Errors validator.ErrValidation `json:"errors"`
+	Errors validator.ErrValidation `json:"errors" swaggertype:"validator.ErrValidation"`
 }
