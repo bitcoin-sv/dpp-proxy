@@ -3,7 +3,6 @@ module github.com/libsv/go-p4
 go 1.17
 
 require (
-	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
 	github.com/labstack/echo/v4 v4.6.1
 	github.com/labstack/gommon v0.3.0
 	github.com/libsv/go-bc v0.1.7
@@ -13,7 +12,7 @@ require (
 	github.com/spf13/viper v1.9.0
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/echo-swagger v1.1.4
-	github.com/swaggo/swag v1.7.3
+	github.com/swaggo/swag v1.7.4
 	github.com/theflyingcodr/govalidator v0.0.2
 	github.com/theflyingcodr/lathos v0.0.5
 )
