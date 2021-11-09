@@ -13,7 +13,7 @@ require (
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/echo-swagger v1.1.4
 	github.com/swaggo/swag v1.7.4
-	github.com/theflyingcodr/govalidator v0.0.2
+	github.com/theflyingcodr/govalidator v0.1.3
 	github.com/theflyingcodr/lathos v0.0.5
 )
 
