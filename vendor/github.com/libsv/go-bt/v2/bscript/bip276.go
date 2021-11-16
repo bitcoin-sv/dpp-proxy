@@ -2,6 +2,7 @@ package bscript
 
 import (
 	"encoding/hex"
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -67,7 +68,7 @@ func DecodeBIP276(text string) (*BIP276, error) {
 
 	// Check if we got a result from the regex match first
 	if len(res) == 0 {
-		return nil, ErrTextNoBIP76
+		return nil, fmt.Errorf("text did not match the BIP276 format")
 	}
 	s := BIP276{
 		Prefix: res[1],
@@ -89,7 +90,7 @@ func DecodeBIP276(text string) (*BIP276, error) {
 	}
 	s.Data = data
 	if _, checkSum := createBIP276(s); res[5] != checkSum {
-		return nil, ErrEncodingInvalidChecksum
+		return nil, errors.New("invalid checksum")
 	}
 
 	return &s, nil

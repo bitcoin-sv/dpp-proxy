@@ -7,22 +7,26 @@ import (
 
 // Environment variable constants.
 const (
-	EnvServerPort           = "server.port"
-	EnvServerHost           = "server.host"
-	EnvServerFQDN           = "server.fqdn"
-	EnvServerSwaggerEnabled = "server.swagger.enabled"
-	EnvServerSwaggerHost    = "server.swagger.host"
-	EnvEnvironment          = "env.environment"
-	EnvRegion               = "env.region"
-	EnvVersion              = "env.version"
-	EnvCommit               = "env.commit"
-	EnvBuildDate            = "env.builddate"
-	EnvLogLevel             = "log.level"
-	EnvPaydHost             = "payd.host"
-	EnvPaydPort             = "payd.port"
-	EnvPaydSecure           = "payd.secure"
-	EnvPaydCertPath         = "payd.cert.path"
-	EnvPaydNoop             = "payd.noop"
+	EnvServerPort                  = "server.port"
+	EnvServerHost                  = "server.host"
+	EnvServerFQDN                  = "server.fqdn"
+	EnvServerSwaggerEnabled        = "server.swagger.enabled"
+	EnvServerSwaggerHost           = "server.swagger.host"
+	EnvEnvironment                 = "env.environment"
+	EnvRegion                      = "env.region"
+	EnvVersion                     = "env.version"
+	EnvCommit                      = "env.commit"
+	EnvBuildDate                   = "env.builddate"
+	EnvLogLevel                    = "log.level"
+	EnvPaydHost                    = "payd.host"
+	EnvPaydPort                    = "payd.port"
+	EnvPaydSecure                  = "payd.secure"
+	EnvPaydCertPath                = "payd.cert.path"
+	EnvPaydNoop                    = "payd.noop"
+	EnvSocketChannelTimeoutSeconds = "socket.channel.timeoutseconds"
+	EnvSocketMaxMessageBytes       = "socket.maxmessage.bytes"
+	EnvTransportHTTPEnabled        = "transport.http.enabled"
+	EnvTransportSocketsEnabled     = "transport.sockets.enabled"
 
 	LogDebug = "debug"
 	LogInfo  = "info"
@@ -36,6 +40,8 @@ type Config struct {
 	Server     *Server
 	Deployment *Deployment
 	PayD       *PayD
+	Sockets    *Socket
+	Transports *Transports
 }
 
 // Deployment contains information relating to the current
@@ -87,6 +93,18 @@ type PayD struct {
 	Noop            bool
 }
 
+// Socket contains config items for a socket server.
+type Socket struct {
+	MaxMessageBytes int
+	ChannelTimeout  time.Duration
+}
+
+// Transports enables or disables p4 transports.
+type Transports struct {
+	HTTPEnabled    bool
+	SocketsEnabled bool
+}
+
 // ConfigurationLoader will load configuration items
 // into a struct that contains a configuration.
 type ConfigurationLoader interface {
@@ -94,5 +112,7 @@ type ConfigurationLoader interface {
 	WithDeployment(app string) ConfigurationLoader
 	WithLog() ConfigurationLoader
 	WithPayD() ConfigurationLoader
+	WithSockets() ConfigurationLoader
+	WithTransports() ConfigurationLoader
 	Load() *Config
 }

@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/labstack/echo/v4"
+	"github.com/libsv/go-p4/log"
 	"github.com/libsv/go-p4/transports/http/middleware"
 	"github.com/stretchr/testify/assert"
 	validator "github.com/theflyingcodr/govalidator"
@@ -94,7 +95,7 @@ func TestErrorHandler(t *testing.T) {
 
 			e := echo.New()
 			ctx := e.NewContext(req, rec)
-			middleware.ErrorHandler(test.err, ctx)
+			middleware.ErrorHandler(log.Noop{})(test.err, ctx)
 
 			response := rec.Result()
 			defer response.Body.Close()

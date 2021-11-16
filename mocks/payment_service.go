@@ -5,8 +5,9 @@ package mocks
 
 import (
 	"context"
-	"github.com/libsv/go-p4"
 	"sync"
+
+	"github.com/libsv/go-p4"
 )
 
 // Ensure, that PaymentServiceMock does implement p4.PaymentService.

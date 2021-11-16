@@ -5,12 +5,20 @@ import (
 	"context"
 	"encoding/binary"
 	"encoding/hex"
+	"errors"
 	"fmt"
 
 	"github.com/libsv/go-bk/crypto"
-	"github.com/pkg/errors"
 
 	"github.com/libsv/go-bt/v2/bscript"
+)
+
+var (
+	// ErrNoUTXO signals the UTXOGetterFunc has reached the end of its input.
+	ErrNoUTXO = errors.New("no remaining utxos")
+
+	// ErrInsufficientFunds insufficient funds provided for funding
+	ErrInsufficientFunds = errors.New("insufficient funds provided")
 )
 
 // UTXOGetterFunc is used for tx.Fund(...). It provides the amount of satoshis required
@@ -22,10 +30,10 @@ import (
 // It is expected that bt.ErrNoUTXO will be returned once the utxo source is depleted.
 type UTXOGetterFunc func(ctx context.Context, deficit uint64) ([]*UTXO, error)
 
-// newInputFromBytes returns a transaction input from the bytes provided.
-func newInputFromBytes(bytes []byte) (*Input, int, error) {
+// NewInputFromBytes returns a transaction input from the bytes provided.
+func NewInputFromBytes(bytes []byte) (*Input, int, error) {
 	if len(bytes) < 36 {
-		return nil, 0, fmt.Errorf("%w < 36", ErrInputTooShort)
+		return nil, 0, fmt.Errorf("input length too short < 36")
 	}
 
 	offset := 36
@@ -35,7 +43,7 @@ func newInputFromBytes(bytes []byte) (*Input, int, error) {
 	totalLength := offset + int(l) + 4 // 4 bytes for nSeq
 
 	if len(bytes) < totalLength {
-		return nil, 0, fmt.Errorf("%w < 36 + script + 4", ErrInputTooShort)
+		return nil, 0, fmt.Errorf("input length too short < 36 + script + 4")
 	}
 
 	return &Input{

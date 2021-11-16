@@ -5,8 +5,9 @@ package mocks
 
 import (
 	"context"
-	"github.com/libsv/go-p4/data"
 	"sync"
+
+	"github.com/libsv/go-p4/data"
 )
 
 // Ensure, that HTTPClientMock does implement data.HTTPClient.

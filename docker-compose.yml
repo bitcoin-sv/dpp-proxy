@@ -5,7 +5,7 @@ services:
     container_name: p4
     image: local.p4
     environment:
-      LOG_LEVEL: "debug"
+      LOG_LEVEL: "info"
     ports:
       - "8445:8445"
     networks:
@@ -15,7 +15,7 @@ services:
     container_name: p4-merchant
     image: local.p4
     environment:
-      LOG_LEVEL: "debug"
+      LOG_LEVEL: "info"
       PAYD_HOST: "payd-merchant"
       PAYD_PORT: ":28443"
       SERVER_HOST: "p4"

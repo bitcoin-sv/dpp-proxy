@@ -63,6 +63,24 @@ func (v *ViperConfig) WithPayD() ConfigurationLoader {
 	return v
 }
 
+// WithSockets reads socket env vars.
+func (v *ViperConfig) WithSockets() ConfigurationLoader {
+	v.Sockets = &Socket{
+		ChannelTimeout:  viper.GetDuration(EnvSocketChannelTimeoutSeconds),
+		MaxMessageBytes: viper.GetInt(EnvSocketMaxMessageBytes),
+	}
+	return v
+}
+
+// WithTransports reads transport config.
+func (v *ViperConfig) WithTransports() ConfigurationLoader {
+	v.Transports = &Transports{
+		HTTPEnabled:    viper.GetBool(EnvTransportHTTPEnabled),
+		SocketsEnabled: viper.GetBool(EnvTransportSocketsEnabled),
+	}
+	return v
+}
+
 // Load will return the underlying config setup.
 func (v *ViperConfig) Load() *Config {
 	return v.Config

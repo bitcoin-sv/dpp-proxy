@@ -22,7 +22,7 @@ func NewPaymentHandler(svc p4.PaymentService) *paymentHandler {
 
 // RegisterRoutes will setup all routes with an echo group.
 func (h *paymentHandler) RegisterRoutes(g *echo.Group) {
-	g.POST(RoutePayment, h.createPayment)
+	g.POST(RouteV1Payment, h.createPayment)
 }
 
 // @Summary A user will submit an SpvEnvelope along with other information that is validated before being broadcast to the network.

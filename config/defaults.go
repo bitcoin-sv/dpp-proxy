@@ -32,4 +32,12 @@ func SetupDefaults() {
 	viper.SetDefault(EnvPaydPort, ":8443")
 	viper.SetDefault(EnvPaydSecure, false)
 	viper.SetDefault(EnvPaydNoop, false)
+
+	// Socket settings
+	viper.SetDefault(EnvSocketChannelTimeoutSeconds, 7200*time.Second) // 2 hrs in seconds
+	viper.SetDefault(EnvSocketMaxMessageBytes, 10000)
+
+	// Transport settings
+	viper.SetDefault(EnvTransportHTTPEnabled, true)
+	viper.SetDefault(EnvTransportSocketsEnabled, true)
 }

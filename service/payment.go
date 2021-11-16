@@ -3,21 +3,22 @@ package service
 import (
 	"context"
 
-	"github.com/labstack/gommon/log"
-
 	"github.com/libsv/go-p4"
+	"github.com/libsv/go-p4/log"
 )
 
 // payment is a layer on top of the payment services of which we currently support:
 // * wallet payments, that are handled by the wallet and transmitted to the network
 // * paymail payments, that use the paymail protocol for making the payments.
 type payment struct {
+	l          log.Logger
 	paymentWtr p4.PaymentWriter
 }
 
 // NewPayment will create and return a new payment service.
-func NewPayment(paymentWtr p4.PaymentWriter) *payment {
+func NewPayment(l log.Logger, paymentWtr p4.PaymentWriter) *payment {
 	return &payment{
+		l:          l,
 		paymentWtr: paymentWtr,
 	}
 }
@@ -32,7 +33,7 @@ func (p *payment) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, 
 	}
 	// broadcast it to a wallet for processing.
 	if err := p.paymentWtr.PaymentCreate(ctx, args, req); err != nil {
-		log.Error(err)
+		p.l.Error(err, "failed to create payment")
 		return &p4.PaymentACK{
 			Memo:  err.Error(),
 			Error: 1,

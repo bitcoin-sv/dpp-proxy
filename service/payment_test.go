@@ -7,6 +7,7 @@ import (
 
 	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-p4"
+	"github.com/libsv/go-p4/log"
 	"github.com/libsv/go-p4/mocks"
 	"github.com/libsv/go-p4/service"
 	"github.com/stretchr/testify/assert"
@@ -104,9 +105,11 @@ func TestPayment_Create(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			svc := service.NewPayment(&mocks.PaymentWriterMock{
-				PaymentCreateFunc: test.paymentCreateFn,
-			})
+			svc := service.NewPayment(
+				log.Noop{},
+				&mocks.PaymentWriterMock{
+					PaymentCreateFunc: test.paymentCreateFn,
+				})
 
 			ack, err := svc.PaymentCreate(context.TODO(), test.args, test.req)
 			if test.expErr != nil {

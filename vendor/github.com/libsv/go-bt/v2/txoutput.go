@@ -3,18 +3,17 @@ package bt
 import (
 	"encoding/binary"
 	"encoding/hex"
+	"errors"
 	"fmt"
 
-	"github.com/libsv/go-bk/bip32"
 	"github.com/libsv/go-bk/crypto"
 	"github.com/libsv/go-bt/v2/bscript"
-	"github.com/pkg/errors"
 )
 
-// newOutputFromBytes returns a transaction Output from the bytes provided
-func newOutputFromBytes(bytes []byte) (*Output, int, error) {
+// NewOutputFromBytes returns a transaction Output from the bytes provided
+func NewOutputFromBytes(bytes []byte) (*Output, int, error) {
 	if len(bytes) < 8 {
-		return nil, 0, fmt.Errorf("%w < 8", ErrOutputTooShort)
+		return nil, 0, fmt.Errorf("output length too short < 8")
 	}
 
 	offset := 8
@@ -24,7 +23,7 @@ func newOutputFromBytes(bytes []byte) (*Output, int, error) {
 	totalLength := offset + int(l)
 
 	if len(bytes) < totalLength {
-		return nil, 0, fmt.Errorf("%w < 8 + script", ErrInputTooShort)
+		return nil, 0, fmt.Errorf("output length too short < 8 + script")
 	}
 
 	s := bscript.Script(bytes[offset:totalLength])
@@ -102,28 +101,13 @@ func (tx *Tx) AddP2PKHOutputFromAddress(addr string, satoshis uint64) error {
 // AddP2PKHOutputFromScript makes an output to a P2PKH script paid to the provided locking script with a value.
 func (tx *Tx) AddP2PKHOutputFromScript(script *bscript.Script, satoshis uint64) error {
 	if !script.IsP2PKH() {
-		return errors.Wrapf(ErrInvalidScriptType, "'%s' is not a valid P2PKH script", script.ScriptType())
+		return errors.New("script is not a valid P2PKH script")
 	}
 	tx.AddOutput(&Output{
 		Satoshis:      satoshis,
 		LockingScript: script,
 	})
 	return nil
-}
-
-// AddP2PKHOutputFromBip32ExtKey generated a random P2PKH output script from a provided *bip32.ExtendedKey,
-// and add it to the receiving tx. The derviation path used is returned.
-func (tx *Tx) AddP2PKHOutputFromBip32ExtKey(privKey *bip32.ExtendedKey, satoshis uint64) (string, error) {
-	script, derivationPath, err := bscript.NewP2PKHFromBip32ExtKey(privKey)
-	if err != nil {
-		return "", err
-	}
-
-	tx.AddOutput(&Output{
-		LockingScript: script,
-		Satoshis:      satoshis,
-	})
-	return derivationPath, nil
 }
 
 // AddHashPuzzleOutput makes an output to a hash puzzle + PKH with a value.

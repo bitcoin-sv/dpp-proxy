@@ -2,9 +2,20 @@ package bt
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"sync"
 	"time"
+)
+
+// Sentinel errors reported by the fees.
+var (
+	ErrFeeQuotesNotInit = errors.New("feeQuotes have not been setup, call NewFeeQuotes")
+	ErrMinerNoQuotes    = errors.New("miner has no quotes stored")
+	ErrFeeTypeNotFound  = errors.New("feetype not found")
+	ErrFeeQuoteNotInit  = errors.New("feeQuote has not been initialised, call NewFeeQuote()")
+	ErrEmptyValues      = errors.New("empty value or values passed, all arguments are required and cannot be empty")
+	ErrUnknownFeeType   = "unknown feetype supplied '%s'"
 )
 
 // FeeType is used to specify which
@@ -93,7 +104,7 @@ func (f *FeeQuotes) UpdateMinerFees(minerName string, feeType FeeType, fee *Fee)
 	f.mu.Lock()
 	defer f.mu.Unlock()
 	if minerName == "" || feeType == "" || fee == nil {
-		return nil, ErrEmptyValues
+		return nil, errors.New("empty value or values passed, all arguments are required and cannot be empty")
 	}
 	m := f.quotes[minerName]
 	if m == nil {
@@ -255,7 +266,7 @@ func (f *FeeQuote) UnmarshalJSON(body []byte) error {
 	}
 	for k, v := range fees {
 		if k != FeeTypeData && k != FeeTypeStandard {
-			return fmt.Errorf("%w '%s'", ErrUnknownFeeType, k)
+			return fmt.Errorf(ErrUnknownFeeType, k)
 		}
 		v.FeeType = k
 	}

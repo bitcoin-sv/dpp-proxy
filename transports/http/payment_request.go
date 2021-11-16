@@ -25,7 +25,7 @@ func NewPaymentRequestHandler(svc p4.PaymentRequestService) *paymentRequestHandl
 
 // RegisterRoutes will setup all routes with an echo group.
 func (h *paymentRequestHandler) RegisterRoutes(g *echo.Group) {
-	g.GET(RoutePaymentRequest, h.buildPaymentRequest)
+	g.GET(RouteV1PaymentRequest, h.buildPaymentRequest)
 }
 
 // buildPaymentRequest will setup and return a new payment request.
