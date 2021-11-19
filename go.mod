@@ -17,7 +17,7 @@ require (
 	github.com/swaggo/echo-swagger v1.1.4
 	github.com/swaggo/swag v1.7.4
 	github.com/theflyingcodr/govalidator v0.1.3
-	github.com/theflyingcodr/lathos v0.0.5
+	github.com/theflyingcodr/lathos v0.0.6
 	github.com/theflyingcodr/sockets v0.0.10-beta
 )
 
