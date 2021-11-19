@@ -267,8 +267,9 @@ github.com/labstack/gommon v0.3.0 h1:JEeO0bvc78PKdyHxloTKiF8BD5iGrH8T6MSeGvSgob0
 github.com/labstack/gommon v0.3.0/go.mod h1:MULnywXg0yavhxWKc+lOruYdAhDwPK9wf0OL7NoOu+k=
 github.com/libsv/go-bc v0.1.7 h1:rFJ2ha4b3leqRvJoB3a0hGkkeY+XZ6+7lYe8XJNQ+SU=
 github.com/libsv/go-bc v0.1.7/go.mod h1:IZuBIf65nlLY1OR/oXGOW/AgVvO5hGhIhRZPiHAiVHU=
-github.com/libsv/go-bk v0.1.4 h1:bTxlerGeibh8RRmyhFK03wSAEp6EAJxGR4vXuRT0LCE=
 github.com/libsv/go-bk v0.1.4/go.mod h1:xbDkeFFpP0uyFaPLnP6TwaLpAsHaslZ0LftTdWlB6HI=
+github.com/libsv/go-bk v0.1.5 h1:fqbWy8nwVM/ayM8Nxe+lM7fN0FaUMMD1w5MCpwit7XQ=
+github.com/libsv/go-bk v0.1.5/go.mod h1:xbDkeFFpP0uyFaPLnP6TwaLpAsHaslZ0LftTdWlB6HI=
 github.com/libsv/go-bt/v2 v2.0.0-beta.7/go.mod h1:6Vk1qMlMoFJFNm7rR7NmFx4VwHNMCi4+V9WBqTd37rQ=
 github.com/libsv/go-bt/v2 v2.0.0-beta.12 h1:xjCt06cUW5a8o1Qyk7pGSkvThMLTy2HzPrJFmsQIPBc=
 github.com/libsv/go-bt/v2 v2.0.0-beta.12/go.mod h1:Ict9mJuFxjzNszELtCTtAHH5tQtQd2fnXUKG1n1ldP0=
