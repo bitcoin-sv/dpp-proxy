@@ -84,8 +84,8 @@ github.com/libsv/go-bk/bip32
 github.com/libsv/go-bk/chaincfg
 github.com/libsv/go-bk/crypto
 github.com/libsv/go-bk/envelope
-# github.com/libsv/go-bt/v2 v2.0.0-beta.12
-## explicit; go 1.16
+# github.com/libsv/go-bt/v2 v2.0.0-beta.13
+## explicit; go 1.17
 github.com/libsv/go-bt/v2
 github.com/libsv/go-bt/v2/bscript
 github.com/libsv/go-bt/v2/sighash
