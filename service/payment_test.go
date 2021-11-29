@@ -7,9 +7,9 @@ import (
 
 	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-p4"
-	"github.com/libsv/go-p4/log"
-	"github.com/libsv/go-p4/mocks"
-	"github.com/libsv/go-p4/service"
+	"github.com/libsv/p4-server/log"
+	"github.com/libsv/p4-server/mocks"
+	"github.com/libsv/p4-server/service"
 	"github.com/stretchr/testify/assert"
 )
 

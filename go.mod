@@ -1,4 +1,4 @@
-module github.com/libsv/go-p4
+module github.com/libsv/p4-server
 
 go 1.17
 
@@ -9,6 +9,7 @@ require (
 	github.com/libsv/go-bc v0.1.7
 	github.com/libsv/go-bk v0.1.5
 	github.com/libsv/go-bt/v2 v2.0.0-beta.12
+	github.com/libsv/go-p4 v0.0.6
 	github.com/matryer/is v1.4.0
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.0
@@ -69,3 +70,5 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
+
+replace github.com/libsv/go-p4 => /Users/t.carroll/go/src/github.com/libsv/go-p4

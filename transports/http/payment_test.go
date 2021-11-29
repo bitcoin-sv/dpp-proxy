@@ -12,7 +12,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/libsv/go-p4"
-	"github.com/libsv/go-p4/mocks"
+	"github.com/libsv/p4-server/mocks"
 	"github.com/stretchr/testify/assert"
 )
 

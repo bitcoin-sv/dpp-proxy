@@ -10,10 +10,10 @@ import (
 	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-bt/v2"
 	"github.com/libsv/go-p4"
-	"github.com/libsv/go-p4/config"
-	"github.com/libsv/go-p4/data/payd"
-	"github.com/libsv/go-p4/data/payd/models"
-	"github.com/libsv/go-p4/mocks"
+	"github.com/libsv/p4-server/config"
+	"github.com/libsv/p4-server/data/payd"
+	"github.com/libsv/p4-server/data/payd/models"
+	"github.com/libsv/p4-server/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
