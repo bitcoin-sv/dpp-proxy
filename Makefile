@@ -68,4 +68,4 @@ install-swagger-gen:
 	@go get github.com/swaggo/swag/cmd/swag
 
 generate-swagger:
-	@swag init --parseVendor --parseDependency --parseInternal -g ./cmd/rest-server/main.go
+	@swag init --parseVendor --parseDependency --parseInternal -g ./cmd/server/main.go

@@ -39,6 +39,19 @@ definitions:
     type: object
   bt.FeeQuote:
     type: object
+  envelope.JSONEnvelope:
+    properties:
+      encoding:
+        type: string
+      mimetype:
+        type: string
+      payload:
+        type: string
+      publicKey:
+        type: string
+      signature:
+        type: string
+    type: object
   p4.ClientError:
     properties:
       code:
@@ -332,4 +345,29 @@ paths:
         is validated before being broadcast to the network.
       tags:
       - Payment
+  /v1/proofs/{txid}:
+    post:
+      consumes:
+      - application/json
+      description: Creates a json envelope proof
+      parameters:
+      - description: Transaction ID
+        in: path
+        name: txid
+        required: true
+        type: string
+      - description: JSON Envelope
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/envelope.JSONEnvelope'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: ""
+      summary: InvoiceCreate proof
+      tags:
+      - Proofs
 swagger: "2.0"
