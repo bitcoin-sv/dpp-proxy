@@ -3,6 +3,7 @@ module github.com/libsv/go-p4
 go 1.17
 
 require (
+	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.4.2
 	github.com/labstack/echo/v4 v4.6.1
 	github.com/libsv/go-bc v0.1.7
@@ -18,7 +19,7 @@ require (
 	github.com/swaggo/swag v1.7.4
 	github.com/theflyingcodr/govalidator v0.1.3
 	github.com/theflyingcodr/lathos v0.0.6
-	github.com/theflyingcodr/sockets v0.0.10-beta
+	github.com/theflyingcodr/sockets v0.0.11-beta
 )
 
 require (
@@ -35,7 +36,6 @@ require (
 	github.com/go-openapi/swag v0.19.15 // indirect
 	github.com/golang-jwt/jwt v3.2.2+incompatible // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/uuid v1.3.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/labstack/gommon v0.3.0 // indirect

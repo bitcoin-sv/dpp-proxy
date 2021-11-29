@@ -24,9 +24,9 @@ func NewNoOp(l log.Logger) *noop {
 // PaymentCreate will post a request to payd to validate and add the txos to the wallet.
 //
 // If invalid a non 204 status code is returned.
-func (n *noop) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) error {
+func (n *noop) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
 	n.l.Info("hit noop.PaymentCreate")
-	return nil
+	return &p4.PaymentACK{}, nil
 }
 
 // Owner will return information regarding the owner of a payd wallet.

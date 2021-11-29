@@ -118,5 +118,5 @@ type PaymentService interface {
 
 // PaymentWriter will write a payment to a data store.
 type PaymentWriter interface {
-	PaymentCreate(ctx context.Context, args PaymentCreateArgs, req PaymentCreate) error
+	PaymentCreate(ctx context.Context, args PaymentCreateArgs, req PaymentCreate) (*PaymentACK, error)
 }

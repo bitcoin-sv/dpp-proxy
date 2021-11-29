@@ -9,6 +9,8 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/libsv/go-p4/data"
+	"github.com/libsv/go-p4/data/payd"
 	"github.com/libsv/go-p4/data/sockets"
 	"github.com/libsv/go-p4/docs"
 	"github.com/libsv/go-p4/log"
@@ -24,9 +26,8 @@ import (
 
 	"github.com/libsv/go-p4"
 	"github.com/libsv/go-p4/config"
-	"github.com/libsv/go-p4/data"
 	"github.com/libsv/go-p4/data/noop"
-	"github.com/libsv/go-p4/data/payd"
+	socData "github.com/libsv/go-p4/data/sockets"
 	"github.com/libsv/go-p4/service"
 )
 
@@ -38,7 +39,7 @@ type Deps struct {
 }
 
 // SetupDeps will setup all required dependent services.
-func SetupDeps(cfg config.Config) *Deps {
+func SetupDeps(cfg config.Config, l log.Logger) *Deps {
 	httpClient := &http.Client{Timeout: 5 * time.Second}
 	if !cfg.PayD.Secure { // for testing, don't validate server cert
 		// #nosec
@@ -51,7 +52,7 @@ func SetupDeps(cfg config.Config) *Deps {
 	paydStore := payd.NewPayD(cfg.PayD, data.NewClient(httpClient))
 
 	// services
-	paymentSvc := service.NewPayment(log.Noop{}, paydStore)
+	paymentSvc := service.NewPayment(l, paydStore)
 	paymentReqSvc := service.NewPaymentRequest(cfg.Server, paydStore, paydStore)
 	if cfg.PayD.Noop {
 		noopStore := noop.NewNoOp(log.Noop{})
@@ -119,6 +120,29 @@ func SetupSockets(cfg config.Socket, e *echo.Echo) *server.SocketServer {
 	return s
 }
 
+// SetupHybrid will setup handlers for http=>socket communication.
+func SetupHybrid(cfg config.Config, l log.Logger, e *echo.Echo) *server.SocketServer {
+	g := e.Group("/")
+	s := server.New(
+		server.WithMaxMessageSize(int64(cfg.Sockets.MaxMessageBytes)),
+		server.WithChannelTimeout(cfg.Sockets.ChannelTimeout))
+	paymentStore := socData.NewPayd(s)
+	paymentSvc := service.NewPayment(l, paymentStore)
+	if cfg.PayD.Noop {
+		noopStore := noop.NewNoOp(log.Noop{})
+		paymentSvc = service.NewPayment(log.Noop{}, noopStore)
+	}
+	paymentReqSvc := service.NewPaymentRequestProxy(paymentStore)
+	proofsSvc := service.NewProof(paymentStore)
+
+	p4Handlers.NewPaymentHandler(paymentSvc).RegisterRoutes(g)
+	p4Handlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)
+	p4Handlers.NewProofs(proofsSvc).RegisterRoutes(g)
+
+	e.GET("/ws/:channelID", wsHandler(s))
+	return s
+}
+
 // wsHandler will upgrade connections to a websocket and then wait for messages.
 func wsHandler(svr *server.SocketServer) echo.HandlerFunc {
 	upgrader := websocket.Upgrader{}
@@ -131,10 +155,7 @@ func wsHandler(svr *server.SocketServer) echo.HandlerFunc {
 		defer func() {
 			_ = ws.Close()
 		}()
-		if err := svr.Listen(ws, c.Param("channelID")); err != nil {
-			return err
-		}
-		return nil
+		return svr.Listen(ws, c.Param("channelID"))
 	}
 }
 

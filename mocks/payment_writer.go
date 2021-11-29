@@ -19,7 +19,7 @@ var _ p4.PaymentWriter = &PaymentWriterMock{}
 //
 // 		// make and configure a mocked p4.PaymentWriter
 // 		mockedPaymentWriter := &PaymentWriterMock{
-// 			PaymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) error {
+// 			PaymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
 // 				panic("mock out the PaymentCreate method")
 // 			},
 // 		}
@@ -30,7 +30,7 @@ var _ p4.PaymentWriter = &PaymentWriterMock{}
 // 	}
 type PaymentWriterMock struct {
 	// PaymentCreateFunc mocks the PaymentCreate method.
-	PaymentCreateFunc func(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) error
+	PaymentCreateFunc func(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -48,7 +48,7 @@ type PaymentWriterMock struct {
 }
 
 // PaymentCreate calls PaymentCreateFunc.
-func (mock *PaymentWriterMock) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) error {
+func (mock *PaymentWriterMock) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
 	if mock.PaymentCreateFunc == nil {
 		panic("PaymentWriterMock.PaymentCreateFunc: method is nil but PaymentWriter.PaymentCreate was just called")
 	}

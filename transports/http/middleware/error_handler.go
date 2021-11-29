@@ -30,8 +30,8 @@ func ErrorHandler(l log.Logger) echo.HTTPErrorHandler {
 
 		// Internal error, log it to a system and return small detail
 		if !lathos.IsClientError(err) {
-			internalErr := errs.NewErrInternal(err, nil)
-			l.Error(errs.NewErrInternal(err, nil), "internal error")
+			internalErr := errs.NewErrInternal(err, "500")
+			l.Error(internalErr, "internal error")
 
 			_ = c.JSON(http.StatusInternalServerError, p4.ClientError{
 				ID:      internalErr.ID(),

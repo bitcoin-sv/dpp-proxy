@@ -75,8 +75,7 @@ func (v *ViperConfig) WithSockets() ConfigurationLoader {
 // WithTransports reads transport config.
 func (v *ViperConfig) WithTransports() ConfigurationLoader {
 	v.Transports = &Transports{
-		HTTPEnabled:    viper.GetBool(EnvTransportHTTPEnabled),
-		SocketsEnabled: viper.GetBool(EnvTransportSocketsEnabled),
+		Mode: viper.GetString(EnvTransportMode),
 	}
 	return v
 }

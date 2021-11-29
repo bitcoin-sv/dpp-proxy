@@ -122,7 +122,7 @@ func TestPayd_PaymentCreate(t *testing.T) {
 					return test.doFunc(ctx, method, url, statusCode, req, out)
 				},
 			})
-			err := pd.PaymentCreate(context.Background(), test.args, test.req)
+			_, err := pd.PaymentCreate(context.Background(), test.args, test.req)
 			if test.expErr != nil {
 				assert.Error(t, err)
 				assert.EqualError(t, err, test.expErr.Error())

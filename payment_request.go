@@ -54,3 +54,8 @@ type PaymentRequestArgs struct {
 type PaymentRequestService interface {
 	PaymentRequest(ctx context.Context, args PaymentRequestArgs) (*PaymentRequest, error)
 }
+
+// PaymentRequestReader will return a new payment request.
+type PaymentRequestReader interface {
+	PaymentRequest(ctx context.Context, args PaymentRequestArgs) (*PaymentRequest, error)
+}

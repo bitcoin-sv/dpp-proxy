@@ -38,6 +38,5 @@ func SetupDefaults() {
 	viper.SetDefault(EnvSocketMaxMessageBytes, 10000)
 
 	// Transport settings
-	viper.SetDefault(EnvTransportHTTPEnabled, true)
-	viper.SetDefault(EnvTransportSocketsEnabled, true)
+	viper.SetDefault(EnvTransportMode, TransportModeHTTP)
 }

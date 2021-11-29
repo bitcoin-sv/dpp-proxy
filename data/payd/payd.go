@@ -41,13 +41,19 @@ func NewPayD(cfg *config.PayD, client data.HTTPClient) *payd {
 // PaymentCreate will post a request to payd to validate and add the txos to the wallet.
 //
 // If invalid a non 204 status code is returned.
-func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) error {
+func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
 	paymentReq := models.PayDPaymentRequest{
 		RawTX:          req.RawTX,
 		SPVEnvelope:    req.SPVEnvelope,
 		ProofCallbacks: req.ProofCallbacks,
 	}
-	return p.client.Do(ctx, http.MethodPost, fmt.Sprintf(urlPayments, p.baseURL(), args.PaymentID), http.StatusNoContent, paymentReq, nil)
+	if err := p.client.Do(ctx, http.MethodPost, fmt.Sprintf(urlPayments, p.baseURL(), args.PaymentID), http.StatusNoContent, paymentReq, nil); err != nil {
+		return nil, err
+	}
+	return &p4.PaymentACK{
+		Memo:    req.Memo,
+		Payment: &req,
+	}, nil
 }
 
 // Owner will return information regarding the owner of a payd wallet.
@@ -87,10 +93,7 @@ func (p *payd) Destinations(ctx context.Context, args p4.PaymentRequestArgs) (*p
 
 // ProofCreate will pass on the proof to a payd instance for storage.
 func (p *payd) ProofCreate(ctx context.Context, args p4.ProofCreateArgs, req envelope.JSONEnvelope) error {
-	if err := p.client.Do(ctx, http.MethodPost, fmt.Sprintf(urlProofs, p.baseURL(), args.TxID), http.StatusCreated, req, nil); err != nil {
-		return errors.WithStack(err)
-	}
-	return nil
+	return errors.WithStack(p.client.Do(ctx, http.MethodPost, fmt.Sprintf(urlProofs, p.baseURL(), args.TxID), http.StatusCreated, req, nil))
 }
 
 // baseURL will return http or https depending on if we're using TLS.

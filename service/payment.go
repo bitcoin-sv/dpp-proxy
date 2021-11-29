@@ -32,15 +32,13 @@ func (p *payment) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, 
 		return nil, err
 	}
 	// broadcast it to a wallet for processing.
-	if err := p.paymentWtr.PaymentCreate(ctx, args, req); err != nil {
+	ack, err := p.paymentWtr.PaymentCreate(ctx, args, req)
+	if err != nil {
 		p.l.Error(err, "failed to create payment")
 		return &p4.PaymentACK{
 			Memo:  err.Error(),
 			Error: 1,
 		}, err
 	}
-	return &p4.PaymentACK{
-		Payment: &req,
-		Memo:    req.Memo,
-	}, nil
+	return ack, nil
 }
