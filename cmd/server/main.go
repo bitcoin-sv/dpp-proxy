@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/libsv/go-p4/cmd/internal"
-	"github.com/libsv/go-p4/config"
-	"github.com/libsv/go-p4/log"
+	"github.com/libsv/p4-server/cmd/internal"
+	"github.com/libsv/p4-server/config"
+	"github.com/libsv/p4-server/log"
 )
 
 const appname = "payment-protocol-rest-server"

@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/libsv/go-p4/config"
+	"github.com/libsv/p4-server/config"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

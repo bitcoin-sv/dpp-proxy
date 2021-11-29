@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/libsv/go-p4"
-	"github.com/libsv/go-p4/log"
+	"github.com/libsv/p4-server/log"
 )
 
 // payment is a layer on top of the payment services of which we currently support:

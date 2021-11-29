@@ -9,9 +9,9 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/libsv/go-p4"
-	"github.com/libsv/go-p4/config"
-	"github.com/libsv/go-p4/data"
-	"github.com/libsv/go-p4/data/payd/models"
+	"github.com/libsv/p4-server/config"
+	"github.com/libsv/p4-server/data"
+	"github.com/libsv/p4-server/data/payd/models"
 )
 
 // Known endpoints for the payd wallet implementing the payment protocol interface.

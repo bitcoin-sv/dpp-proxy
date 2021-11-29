@@ -5,7 +5,7 @@ package mocks
 
 import (
 	"context"
-	"github.com/libsv/go-p4/data"
+	"github.com/libsv/p4-server/data"
 	"sync"
 )
 

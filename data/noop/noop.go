@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/libsv/go-bt/v2"
-	"github.com/libsv/go-p4/log"
+	"github.com/libsv/p4-server/log"
 
 	"github.com/libsv/go-p4"
 )

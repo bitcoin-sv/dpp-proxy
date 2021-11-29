@@ -134,6 +134,44 @@ var doc = `{
                     }
                 }
             }
+        },
+        "/v1/proofs/{txid}": {
+            "post": {
+                "description": "Creates a json envelope proof",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Proofs"
+                ],
+                "summary": "InvoiceCreate proof",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Transaction ID",
+                        "name": "txid",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "JSON Envelope",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/envelope.JSONEnvelope"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": ""
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -197,6 +235,26 @@ var doc = `{
         },
         "bt.FeeQuote": {
             "type": "object"
+        },
+        "envelope.JSONEnvelope": {
+            "type": "object",
+            "properties": {
+                "encoding": {
+                    "type": "string"
+                },
+                "mimetype": {
+                    "type": "string"
+                },
+                "payload": {
+                    "type": "string"
+                },
+                "publicKey": {
+                    "type": "string"
+                },
+                "signature": {
+                    "type": "string"
+                }
+            }
         },
         "p4.ClientError": {
             "type": "object",
@@ -470,5 +528,5 @@ func (s *s) ReadDoc() string {
 }
 
 func init() {
-	swag.Register(swag.Name, &s{})
+	swag.Register("swagger", &s{})
 }
