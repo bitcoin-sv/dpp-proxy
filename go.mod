@@ -9,8 +9,7 @@ require (
 	github.com/libsv/go-bc v0.1.7
 	github.com/libsv/go-bk v0.1.5
 	github.com/libsv/go-bt/v2 v2.0.0-beta.12
-	github.com/libsv/go-p4 v0.0.6
-	github.com/matryer/is v1.4.0
+	github.com/libsv/go-p4 v0.0.7-0.20211129151249-0811fc553403
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.11.0
 	github.com/rs/zerolog v1.26.0
@@ -42,6 +41,7 @@ require (
 	github.com/labstack/gommon v0.3.0 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/matryer/is v1.4.0 // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
@@ -70,5 +70,3 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
-
-replace github.com/libsv/go-p4 => /Users/t.carroll/go/src/github.com/libsv/go-p4

@@ -89,7 +89,7 @@ github.com/libsv/go-bk/envelope
 github.com/libsv/go-bt/v2
 github.com/libsv/go-bt/v2/bscript
 github.com/libsv/go-bt/v2/sighash
-# github.com/libsv/go-p4 v0.0.6 => /Users/t.carroll/go/src/github.com/libsv/go-p4
+# github.com/libsv/go-p4 v0.0.7-0.20211129151249-0811fc553403
 ## explicit; go 1.17
 github.com/libsv/go-p4
 # github.com/magiconair/properties v1.8.5
@@ -102,7 +102,6 @@ github.com/mailru/easyjson/jlexer
 github.com/mailru/easyjson/jwriter
 # github.com/matryer/is v1.4.0
 ## explicit; go 1.14
-github.com/matryer/is
 # github.com/mattn/go-colorable v0.1.8
 ## explicit; go 1.13
 github.com/mattn/go-colorable
@@ -281,4 +280,3 @@ gopkg.in/yaml.v2
 # gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 ## explicit
 gopkg.in/yaml.v3
-# github.com/libsv/go-p4 => /Users/t.carroll/go/src/github.com/libsv/go-p4
