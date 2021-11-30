@@ -11,7 +11,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/libsv/go-p4"
-	"github.com/libsv/p4-server/mocks"
+	p4mocks "github.com/libsv/go-p4/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -47,7 +47,7 @@ func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			e := echo.New()
-			h := NewPaymentRequestHandler(&mocks.PaymentRequestServiceMock{
+			h := NewPaymentRequestHandler(&p4mocks.PaymentRequestServiceMock{
 				PaymentRequestFunc: test.paymentRequestFunc,
 			})
 			g := e.Group("/")

@@ -19,7 +19,7 @@ var _ p4.MerchantReader = &MerchantReaderMock{}
 //
 // 		// make and configure a mocked p4.MerchantReader
 // 		mockedMerchantReader := &MerchantReaderMock{
-// 			OwnerFunc: func(ctx context.Context) (*p4.MerchantData, error) {
+// 			OwnerFunc: func(ctx context.Context) (*p4.Merchant, error) {
 // 				panic("mock out the Owner method")
 // 			},
 // 		}
@@ -30,7 +30,7 @@ var _ p4.MerchantReader = &MerchantReaderMock{}
 // 	}
 type MerchantReaderMock struct {
 	// OwnerFunc mocks the Owner method.
-	OwnerFunc func(ctx context.Context) (*p4.MerchantData, error)
+	OwnerFunc func(ctx context.Context) (*p4.Merchant, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -44,7 +44,7 @@ type MerchantReaderMock struct {
 }
 
 // Owner calls OwnerFunc.
-func (mock *MerchantReaderMock) Owner(ctx context.Context) (*p4.MerchantData, error) {
+func (mock *MerchantReaderMock) Owner(ctx context.Context) (*p4.Merchant, error) {
 	if mock.OwnerFunc == nil {
 		panic("MerchantReaderMock.OwnerFunc: method is nil but MerchantReader.Owner was just called")
 	}

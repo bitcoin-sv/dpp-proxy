@@ -41,7 +41,7 @@ func NewPayD(cfg *config.PayD, client data.HTTPClient) *payd {
 // PaymentCreate will post a request to payd to validate and add the txos to the wallet.
 //
 // If invalid a non 204 status code is returned.
-func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
+func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
 	paymentReq := models.PayDPaymentRequest{
 		RawTX:          req.RawTX,
 		SPVEnvelope:    req.SPVEnvelope,
@@ -60,8 +60,8 @@ func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req
 //
 // In this example, the payd wallet has no auth, in proper implementations auth would
 // be enabled and a cookie / oauth / bearer token etc would be passed down.
-func (p *payd) Owner(ctx context.Context) (*p4.MerchantData, error) {
-	var owner *p4.MerchantData
+func (p *payd) Owner(ctx context.Context) (*p4.Merchant, error) {
+	var owner *p4.Merchant
 	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlOwner, p.baseURL()), http.StatusOK, nil, &owner); err != nil {
 		return nil, errors.WithStack(err)
 	}

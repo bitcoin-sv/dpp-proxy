@@ -84,14 +84,15 @@ github.com/libsv/go-bk/bip32
 github.com/libsv/go-bk/chaincfg
 github.com/libsv/go-bk/crypto
 github.com/libsv/go-bk/envelope
-# github.com/libsv/go-bt/v2 v2.1.0-beta.1
+# github.com/libsv/go-bt/v2 v2.0.0-beta.13
 ## explicit; go 1.17
 github.com/libsv/go-bt/v2
 github.com/libsv/go-bt/v2/bscript
 github.com/libsv/go-bt/v2/sighash
-# github.com/libsv/go-p4 v0.0.7-0.20211129151249-0811fc553403
+# github.com/libsv/go-p4 v0.0.7
 ## explicit; go 1.17
 github.com/libsv/go-p4
+github.com/libsv/go-p4/mocks
 # github.com/magiconair/properties v1.8.5
 ## explicit; go 1.13
 github.com/magiconair/properties

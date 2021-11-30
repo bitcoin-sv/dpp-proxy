@@ -12,41 +12,41 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/libsv/go-p4"
-	"github.com/libsv/p4-server/mocks"
+	p4mocks "github.com/libsv/go-p4/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPaymentHandler_CreatedPayment(t *testing.T) {
 	tests := map[string]struct {
-		paymentCreateFunc func(context.Context, p4.PaymentCreateArgs, p4.PaymentCreate) (*p4.PaymentACK, error)
-		reqBody           p4.PaymentCreate
+		paymentCreateFunc func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error)
+		reqBody           p4.Payment
 		paymentID         string
 		expResponse       p4.PaymentACK
 		expStatusCode     int
 		expErr            error
 	}{
 		"successful post": {
-			paymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
+			paymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
 				return &p4.PaymentACK{
 					Memo: fmt.Sprintf("payment %s", args.PaymentID),
 				}, nil
 			},
 			paymentID: "abc123",
-			reqBody:   p4.PaymentCreate{},
+			reqBody:   p4.Payment{},
 			expResponse: p4.PaymentACK{
 				Memo: "payment abc123",
 			},
 			expStatusCode: http.StatusCreated,
 		},
 		"error response returns 422": {
-			paymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
+			paymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
 				return &p4.PaymentACK{
 					Memo:  "failed",
 					Error: 1,
 				}, nil
 			},
 			paymentID: "abc123",
-			reqBody:   p4.PaymentCreate{},
+			reqBody:   p4.Payment{},
 			expResponse: p4.PaymentACK{
 				Error: 1,
 				Memo:  "failed",
@@ -54,11 +54,11 @@ func TestPaymentHandler_CreatedPayment(t *testing.T) {
 			expStatusCode: http.StatusUnprocessableEntity,
 		},
 		"payment create service error is handled": {
-			paymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
+			paymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
 				return nil, errors.New("ohnonono")
 			},
 			paymentID:     "abc123",
-			reqBody:       p4.PaymentCreate{},
+			reqBody:       p4.Payment{},
 			expStatusCode: http.StatusInternalServerError,
 			expErr:        errors.New("ohnonono"),
 		},
@@ -67,7 +67,7 @@ func TestPaymentHandler_CreatedPayment(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			e := echo.New()
-			h := NewPaymentHandler(&mocks.PaymentServiceMock{
+			h := NewPaymentHandler(&p4mocks.PaymentServiceMock{
 				PaymentCreateFunc: test.paymentCreateFunc,
 			})
 			g := e.Group("/")

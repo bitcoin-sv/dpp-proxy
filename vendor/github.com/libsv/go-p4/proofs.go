@@ -3,7 +3,6 @@ package p4
 import (
 	"context"
 	"fmt"
-	"regexp"
 	"strings"
 
 	"github.com/libsv/go-bc"
@@ -12,8 +11,6 @@ import (
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
 )
-
-var reTargetType = regexp.MustCompile(`^(header|hash|merkleRoot)$`)
 
 // ProofCreateArgs are used to create a proof.
 type ProofCreateArgs struct {
@@ -52,7 +49,7 @@ func (p ProofWrapper) Validate(args ProofCreateArgs) error {
 	if p.CallbackPayload == nil {
 		return vl.Err()
 	}
-	vl = vl.Validate("callbackPayload.targetType", validator.MatchString(p.CallbackPayload.TargetType, reTargetType)).
+	vl = vl.Validate("callbackPayload.targetType", validator.AnyString(p.CallbackPayload.TargetType, "header", "hash", "merkleRoot")).
 		Validate("callbackPayload.target", validator.NotEmpty(p.CallbackPayload.Target)).
 		Validate("callbackPayload.proofType", func() error {
 			if p.CallbackPayload.ProofType == "" {

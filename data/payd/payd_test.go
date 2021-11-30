@@ -21,7 +21,7 @@ func TestPayd_PaymentCreate(t *testing.T) {
 	tests := map[string]struct {
 		doFunc func(context.Context, string, string, int, interface{}, interface{}) error
 		args   p4.PaymentCreateArgs
-		req    p4.PaymentCreate
+		req    p4.Payment
 		cfg    *config.PayD
 		expURL string
 		expReq models.PayDPaymentRequest
@@ -34,7 +34,7 @@ func TestPayd_PaymentCreate(t *testing.T) {
 			args: p4.PaymentCreateArgs{
 				PaymentID: "qwe123",
 			},
-			req: p4.PaymentCreate{
+			req: p4.Payment{
 				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
 				SPVEnvelope: &spv.Envelope{},
 				ProofCallbacks: map[string]p4.ProofCallback{
@@ -61,7 +61,7 @@ func TestPayd_PaymentCreate(t *testing.T) {
 			args: p4.PaymentCreateArgs{
 				PaymentID: "qwe123",
 			},
-			req: p4.PaymentCreate{
+			req: p4.Payment{
 				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
 				SPVEnvelope: &spv.Envelope{},
 				ProofCallbacks: map[string]p4.ProofCallback{
@@ -89,7 +89,7 @@ func TestPayd_PaymentCreate(t *testing.T) {
 			args: p4.PaymentCreateArgs{
 				PaymentID: "qwe123",
 			},
-			req: p4.PaymentCreate{
+			req: p4.Payment{
 				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
 				SPVEnvelope: &spv.Envelope{},
 				ProofCallbacks: map[string]p4.ProofCallback{

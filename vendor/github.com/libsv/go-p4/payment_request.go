@@ -37,7 +37,7 @@ type PaymentRequest struct {
 	// May be omitted if the payment host does not need to associate Payments with PaymentRequest
 	// or if they associate each PaymentRequest with a separate payment address.
 	// Maximum length is 10000 characters.
-	MerchantData *MerchantData `json:"merchantData,omitempty"`
+	MerchantData *Merchant `json:"merchantData,omitempty"`
 	// FeeRate defines the amount of fees a users wallet should add to the payment
 	// when submitting their final payments.
 	FeeRate *bt.FeeQuote `json:"fees"`

@@ -26,12 +26,12 @@ type PaymentDestinations struct {
 
 // Destinations message containing outputs and their fees.
 type Destinations struct {
-	SPVRequired bool
-	Network     string
-	Outputs     []Output
-	Fees        *bt.FeeQuote
-	CreatedAt   time.Time
-	ExpiresAt   time.Time
+	SPVRequired bool         `json:"spvRequired"`
+	Network     string       `json:"network"`
+	Outputs     []Output     `json:"outputs"`
+	Fees        *bt.FeeQuote `json:"fees"`
+	CreatedAt   time.Time    `json:"createdAt"`
+	ExpiresAt   time.Time    `json:"expiresAt"`
 }
 
 // DestinationReader interfaces retrieving payment destinations.

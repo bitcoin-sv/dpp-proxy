@@ -24,7 +24,7 @@ func NewPayment(l log.Logger, paymentWtr p4.PaymentWriter) *payment {
 }
 
 // PaymentCreate will setup a new payment and return the result.
-func (p *payment) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
+func (p *payment) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
 	if err := args.Validate(); err != nil {
 		return nil, err
 	}
