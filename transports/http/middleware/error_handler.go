@@ -5,12 +5,11 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
+	server "github.com/libsv/p4-server"
 	"github.com/libsv/p4-server/log"
 	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos"
 	"github.com/theflyingcodr/lathos/errs"
-
-	"github.com/libsv/go-p4"
 )
 
 // ErrorHandler we can flesh this out.
@@ -33,7 +32,7 @@ func ErrorHandler(l log.Logger) echo.HTTPErrorHandler {
 			internalErr := errs.NewErrInternal(err, "500")
 			l.Error(internalErr, "internal error")
 
-			_ = c.JSON(http.StatusInternalServerError, p4.ClientError{
+			_ = c.JSON(http.StatusInternalServerError, server.ClientError{
 				ID:      internalErr.ID(),
 				Code:    "500",
 				Title:   "Internal Server Error",
@@ -43,7 +42,7 @@ func ErrorHandler(l log.Logger) echo.HTTPErrorHandler {
 		}
 		var clientErr lathos.ClientError
 		errors.As(err, &clientErr)
-		resp := p4.ClientError{
+		resp := server.ClientError{
 			ID:      clientErr.ID(),
 			Code:    clientErr.Code(),
 			Title:   clientErr.Title(),

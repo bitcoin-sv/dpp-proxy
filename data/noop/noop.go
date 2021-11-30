@@ -24,7 +24,7 @@ func NewNoOp(l log.Logger) *noop {
 // PaymentCreate will post a request to payd to validate and add the txos to the wallet.
 //
 // If invalid a non 204 status code is returned.
-func (n *noop) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
+func (n *noop) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
 	n.l.Info("hit noop.PaymentCreate")
 	return &p4.PaymentACK{}, nil
 }
@@ -33,11 +33,11 @@ func (n *noop) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req
 //
 // In this example, the payd wallet has no auth, in proper implementations auth would
 // be enabled and a cookie / oauth / bearer token etc would be passed down.
-func (n *noop) Owner(ctx context.Context) (*p4.MerchantData, error) {
+func (n *noop) Owner(ctx context.Context) (*p4.Merchant, error) {
 	n.l.Info("hit noop.Owner")
-	return &p4.MerchantData{
+	return &p4.Merchant{
 		AvatarURL:    "noop",
-		MerchantName: "noop",
+		Name:         "noop",
 		Email:        "noop",
 		Address:      "noop",
 		ExtendedData: nil,

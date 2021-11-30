@@ -19,7 +19,7 @@ var _ p4.PaymentService = &PaymentServiceMock{}
 //
 // 		// make and configure a mocked p4.PaymentService
 // 		mockedPaymentService := &PaymentServiceMock{
-// 			PaymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
+// 			PaymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
 // 				panic("mock out the PaymentCreate method")
 // 			},
 // 		}
@@ -30,7 +30,7 @@ var _ p4.PaymentService = &PaymentServiceMock{}
 // 	}
 type PaymentServiceMock struct {
 	// PaymentCreateFunc mocks the PaymentCreate method.
-	PaymentCreateFunc func(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error)
+	PaymentCreateFunc func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -41,21 +41,21 @@ type PaymentServiceMock struct {
 			// Args is the args argument value.
 			Args p4.PaymentCreateArgs
 			// Req is the req argument value.
-			Req p4.PaymentCreate
+			Req p4.Payment
 		}
 	}
 	lockPaymentCreate sync.RWMutex
 }
 
 // PaymentCreate calls PaymentCreateFunc.
-func (mock *PaymentServiceMock) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
+func (mock *PaymentServiceMock) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
 	if mock.PaymentCreateFunc == nil {
 		panic("PaymentServiceMock.PaymentCreateFunc: method is nil but PaymentService.PaymentCreate was just called")
 	}
 	callInfo := struct {
 		Ctx  context.Context
 		Args p4.PaymentCreateArgs
-		Req  p4.PaymentCreate
+		Req  p4.Payment
 	}{
 		Ctx:  ctx,
 		Args: args,
@@ -73,12 +73,12 @@ func (mock *PaymentServiceMock) PaymentCreate(ctx context.Context, args p4.Payme
 func (mock *PaymentServiceMock) PaymentCreateCalls() []struct {
 	Ctx  context.Context
 	Args p4.PaymentCreateArgs
-	Req  p4.PaymentCreate
+	Req  p4.Payment
 } {
 	var calls []struct {
 		Ctx  context.Context
 		Args p4.PaymentCreateArgs
-		Req  p4.PaymentCreate
+		Req  p4.Payment
 	}
 	mock.lockPaymentCreate.RLock()
 	calls = mock.calls.PaymentCreate

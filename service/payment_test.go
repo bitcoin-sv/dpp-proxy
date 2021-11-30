@@ -7,29 +7,29 @@ import (
 
 	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-p4"
+	p4mocks "github.com/libsv/go-p4/mocks"
 	"github.com/libsv/p4-server/log"
-	"github.com/libsv/p4-server/mocks"
 	"github.com/libsv/p4-server/service"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPayment_Create(t *testing.T) {
 	tests := map[string]struct {
-		paymentCreateFn func(context.Context, p4.PaymentCreateArgs, p4.PaymentCreate) (*p4.PaymentACK, error)
+		paymentCreateFn func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error)
 		args            p4.PaymentCreateArgs
-		req             p4.PaymentCreate
+		req             p4.Payment
 		expErr          error
 	}{
 		"successful payment create": {
-			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.PaymentCreate) (*p4.PaymentACK, error) {
+			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error) {
 				return &p4.PaymentACK{}, nil
 			},
-			req: p4.PaymentCreate{
+			req: p4.Payment{
 				SPVEnvelope: &spv.Envelope{
 					RawTx: "01000000000000000000",
 					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
 				},
-				MerchantData: p4.MerchantData{
+				MerchantData: p4.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
@@ -38,48 +38,48 @@ func TestPayment_Create(t *testing.T) {
 			},
 		},
 		"invalid args errors": {
-			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.PaymentCreate) (*p4.PaymentACK, error) {
+			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error) {
 				return &p4.PaymentACK{}, nil
 			},
 			args: p4.PaymentCreateArgs{},
-			req: p4.PaymentCreate{
+			req: p4.Payment{
 				SPVEnvelope: &spv.Envelope{
 					RawTx: "01000000000000000000",
 					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
 				},
-				MerchantData: p4.MerchantData{
+				MerchantData: p4.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
 			expErr: errors.New("[paymentID: value cannot be empty]"),
 		},
 		"missing raw tx errors": {
-			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.PaymentCreate) (*p4.PaymentACK, error) {
+			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error) {
 				return &p4.PaymentACK{}, nil
 			},
 			args: p4.PaymentCreateArgs{
 				PaymentID: "abc123",
 			},
-			req: p4.PaymentCreate{
-				MerchantData: p4.MerchantData{
+			req: p4.Payment{
+				MerchantData: p4.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
 			expErr: errors.New("[spvEnvelope/rawTx: either an SPVEnvelope or a rawTX are required]"),
 		},
 		"error on payment create is handled": {
-			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.PaymentCreate) (*p4.PaymentACK, error) {
+			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error) {
 				return nil, errors.New("lol oh boi")
 			},
 			args: p4.PaymentCreateArgs{
 				PaymentID: "abc123",
 			},
-			req: p4.PaymentCreate{
+			req: p4.Payment{
 				SPVEnvelope: &spv.Envelope{
 					RawTx: "01000000000000000000",
 					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
 				},
-				MerchantData: p4.MerchantData{
+				MerchantData: p4.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
@@ -91,7 +91,7 @@ func TestPayment_Create(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			svc := service.NewPayment(
 				log.Noop{},
-				&mocks.PaymentWriterMock{
+				&p4mocks.PaymentWriterMock{
 					PaymentCreateFunc: test.paymentCreateFn,
 				})
 

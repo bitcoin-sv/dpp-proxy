@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/libsv/go-p4"
+	p4mocks "github.com/libsv/go-p4/mocks"
 	"github.com/libsv/p4-server/config"
-	"github.com/libsv/p4-server/mocks"
 	"github.com/libsv/p4-server/service"
 	"github.com/stretchr/testify/assert"
 )
@@ -18,7 +18,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 	expired := created.Add(time.Hour * 24)
 	tests := map[string]struct {
 		destinationsFunc func(context.Context, p4.PaymentRequestArgs) (*p4.Destinations, error)
-		ownerFunc        func(context.Context) (*p4.MerchantData, error)
+		ownerFunc        func(context.Context) (*p4.Merchant, error)
 		config           *config.Server
 		args             p4.PaymentRequestArgs
 		expResp          *p4.PaymentRequest
@@ -42,8 +42,8 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					}},
 				}, nil
 			},
-			ownerFunc: func(context.Context) (*p4.MerchantData, error) {
-				return &p4.MerchantData{
+			ownerFunc: func(context.Context) (*p4.Merchant, error) {
+				return &p4.Merchant{
 					ExtendedData: map[string]interface{}{},
 				}, nil
 			},
@@ -59,7 +59,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 				Memo:       "invoice abc123",
-				MerchantData: &p4.MerchantData{
+				MerchantData: &p4.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 				},
 			},
@@ -82,8 +82,8 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					}},
 				}, nil
 			},
-			ownerFunc: func(context.Context) (*p4.MerchantData, error) {
-				return &p4.MerchantData{
+			ownerFunc: func(context.Context) (*p4.Merchant, error) {
+				return &p4.Merchant{
 					ExtendedData: nil,
 				}, nil
 			},
@@ -99,7 +99,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 				Memo:       "invoice abc123",
-				MerchantData: &p4.MerchantData{
+				MerchantData: &p4.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 				},
 			},
@@ -122,8 +122,8 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					}},
 				}, nil
 			},
-			ownerFunc: func(context.Context) (*p4.MerchantData, error) {
-				return &p4.MerchantData{
+			ownerFunc: func(context.Context) (*p4.Merchant, error) {
+				return &p4.Merchant{
 					ExtendedData: map[string]interface{}{},
 				}, nil
 			},
@@ -139,7 +139,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				},
 				PaymentURL: "http://iamsodifferent/api/v1/payment/abc123",
 				Memo:       "invoice abc123",
-				MerchantData: &p4.MerchantData{
+				MerchantData: &p4.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 				},
 			},
@@ -162,8 +162,8 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					}},
 				}, nil
 			},
-			ownerFunc: func(context.Context) (*p4.MerchantData, error) {
-				return &p4.MerchantData{
+			ownerFunc: func(context.Context) (*p4.Merchant, error) {
+				return &p4.Merchant{
 					ExtendedData: map[string]interface{}{},
 				}, nil
 			},
@@ -179,7 +179,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/456def",
 				Memo:       "invoice 456def",
-				MerchantData: &p4.MerchantData{
+				MerchantData: &p4.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "456def"},
 				},
 			},
@@ -199,8 +199,8 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					}},
 				}, nil
 			},
-			ownerFunc: func(context.Context) (*p4.MerchantData, error) {
-				return &p4.MerchantData{
+			ownerFunc: func(context.Context) (*p4.Merchant, error) {
+				return &p4.Merchant{
 					ExtendedData: map[string]interface{}{},
 				}, nil
 			},
@@ -216,8 +216,8 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 			destinationsFunc: func(context.Context, p4.PaymentRequestArgs) (*p4.Destinations, error) {
 				return nil, errors.New("oh boi")
 			},
-			ownerFunc: func(context.Context) (*p4.MerchantData, error) {
-				return &p4.MerchantData{
+			ownerFunc: func(context.Context) (*p4.Merchant, error) {
+				return &p4.Merchant{
 					ExtendedData: map[string]interface{}{},
 				}, nil
 			},
@@ -241,7 +241,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					}},
 				}, nil
 			},
-			ownerFunc: func(context.Context) (*p4.MerchantData, error) {
+			ownerFunc: func(context.Context) (*p4.Merchant, error) {
 				return nil, errors.New("yikes")
 			},
 			expErr: errors.New("failed to read merchant data when constructing payment request: yikes"),
@@ -250,9 +250,9 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			svc := service.NewPaymentRequest(test.config, &mocks.DestinationReaderMock{
+			svc := service.NewPaymentRequest(test.config, &p4mocks.DestinationReaderMock{
 				DestinationsFunc: test.destinationsFunc,
-			}, &mocks.MerchantReaderMock{
+			}, &p4mocks.MerchantReaderMock{
 				OwnerFunc: test.ownerFunc,
 			})
 

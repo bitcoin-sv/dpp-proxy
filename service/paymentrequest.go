@@ -58,9 +58,9 @@ func (p *paymentRequest) PaymentRequest(ctx context.Context, args p4.PaymentRequ
 		ExpirationTimestamp: dests.ExpiresAt,
 		PaymentURL:          fmt.Sprintf("http://%s/api/v1/payment/%s", p.walletCfg.FQDN, args.PaymentID),
 		Memo:                fmt.Sprintf("invoice %s", args.PaymentID),
-		MerchantData: &p4.MerchantData{
+		MerchantData: &p4.Merchant{
 			AvatarURL:    merchant.AvatarURL,
-			MerchantName: merchant.MerchantName,
+			Name:         merchant.Name,
 			Email:        merchant.Email,
 			Address:      merchant.Address,
 			ExtendedData: merchant.ExtendedData,

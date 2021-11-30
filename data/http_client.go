@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	"github.com/libsv/go-p4"
+	server "github.com/libsv/p4-server"
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos/errs"
@@ -67,7 +67,7 @@ func (c *client) Do(ctx context.Context, method, endpoint string, expStatus int,
 
 func (c *client) handleErr(resp *http.Response, expStatus int) error {
 	if resp.StatusCode == http.StatusBadRequest {
-		brErr := p4.BadRequestError{
+		brErr := server.BadRequestError{
 			Errors: make(validator.ErrValidation),
 		}
 		if err := json.NewDecoder(resp.Body).Decode(&brErr); err != nil {
@@ -78,19 +78,19 @@ func (c *client) handleErr(resp *http.Response, expStatus int) error {
 
 	switch resp.StatusCode {
 	case http.StatusNotFound:
-		var msg p4.ClientError
+		var msg server.ClientError
 		if err := json.NewDecoder(resp.Body).Decode(&msg); err != nil {
 			return errors.WithStack(err)
 		}
 		return errs.NewErrNotFound(msg.Code, msg.Message)
 	case http.StatusConflict:
-		var msg p4.ClientError
+		var msg server.ClientError
 		if err := json.NewDecoder(resp.Body).Decode(&msg); err != nil {
 			return errors.WithStack(err)
 		}
 		return errs.NewErrDuplicate(msg.Code, msg.Message)
 	case http.StatusUnprocessableEntity:
-		var msg p4.ClientError
+		var msg server.ClientError
 		if err := json.NewDecoder(resp.Body).Decode(&msg); err != nil {
 			return errors.WithStack(err)
 		}

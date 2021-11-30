@@ -65,7 +65,7 @@ func (p *payd) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (
 }
 
 // PaymentCreate will send a request to payd to create and process the payment.
-func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.PaymentCreate) (*p4.PaymentACK, error) {
+func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
 	msg := sockets.NewMessage(RoutePayment, "", args.PaymentID)
 	msg.AppID = "p4"
 	msg.CorrelationID = uuid.NewString()

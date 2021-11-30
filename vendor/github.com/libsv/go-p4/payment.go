@@ -9,15 +9,15 @@ import (
 	validator "github.com/theflyingcodr/govalidator"
 )
 
-// PaymentCreate is a Payment message used in BIP270.
+// Payment is a Payment message used in BIP270.
 // See https://github.com/moneybutton/bips/blob/master/bip-0270.mediawiki#payment
-type PaymentCreate struct {
+type Payment struct {
 	// MerchantData is copied from PaymentDetails.merchantData.
 	// Payment hosts may use invoice numbers or any other data they require to match Payments to PaymentRequests.
 	// Note that malicious clients may modify the merchantData, so should be authenticated
 	// in some way (for example, signed with a payment host-only key).
 	// Maximum length is 10000 characters.
-	MerchantData MerchantData `json:"merchantData"`
+	MerchantData Merchant `json:"merchantData"`
 	// RefundTo is a paymail to send a refund to should a refund be necessary.
 	// Maximum length is 100 characters
 	RefundTo *string `json:"refundTo"  swaggertype:"primitive,string" example:"me@paymail.com"`
@@ -38,7 +38,7 @@ type PaymentCreate struct {
 }
 
 // Validate will ensure the users request is correct.
-func (p PaymentCreate) Validate() error {
+func (p Payment) Validate() error {
 	v := validator.New().
 		Validate("spvEnvelope/rawTx", func() error {
 			if p.RawTX == nil && p.SPVEnvelope == nil {
@@ -90,8 +90,8 @@ type ProofCallback struct {
 // PaymentACK message used in BIP270.
 // See https://github.com/moneybutton/bips/blob/master/bip-0270.mediawiki#paymentack
 type PaymentACK struct {
-	Payment *PaymentCreate `json:"payment"`
-	Memo    string         `json:"memo,omitempty"`
+	Payment *Payment `json:"payment"`
+	Memo    string   `json:"memo,omitempty"`
 	// A number indicating why the transaction was not accepted. 0 or undefined indicates no error.
 	// A 1 or any other positive integer indicates an error. The errors are left undefined for now;
 	// it is recommended only to use “1” and to fill the memo with a textual explanation about why
@@ -113,10 +113,10 @@ func (p PaymentCreateArgs) Validate() error {
 
 // PaymentService enforces business rules when creating payments.
 type PaymentService interface {
-	PaymentCreate(ctx context.Context, args PaymentCreateArgs, req PaymentCreate) (*PaymentACK, error)
+	PaymentCreate(ctx context.Context, args PaymentCreateArgs, req Payment) (*PaymentACK, error)
 }
 
 // PaymentWriter will write a payment to a data store.
 type PaymentWriter interface {
-	PaymentCreate(ctx context.Context, args PaymentCreateArgs, req PaymentCreate) (*PaymentACK, error)
+	PaymentCreate(ctx context.Context, args PaymentCreateArgs, req Payment) (*PaymentACK, error)
 }

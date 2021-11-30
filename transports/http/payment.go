@@ -41,7 +41,7 @@ func (h *paymentHandler) createPayment(e echo.Context) error {
 	args := p4.PaymentCreateArgs{
 		PaymentID: e.Param("paymentID"),
 	}
-	var req p4.PaymentCreate
+	var req p4.Payment
 	if err := e.Bind(&req); err != nil {
 		return errors.WithStack(err)
 	}
