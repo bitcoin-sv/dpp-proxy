@@ -132,7 +132,7 @@ func SetupHybrid(cfg config.Config, l log.Logger, e *echo.Echo) *server.SocketSe
 		noopStore := noop.NewNoOp(log.Noop{})
 		paymentSvc = service.NewPayment(log.Noop{}, noopStore)
 	}
-	paymentReqSvc := service.NewPaymentRequestProxy(paymentStore)
+	paymentReqSvc := service.NewPaymentRequestProxy(paymentStore, cfg.Transports, cfg.Server)
 	proofsSvc := service.NewProof(paymentStore)
 
 	p4Handlers.NewPaymentHandler(paymentSvc).RegisterRoutes(g)

@@ -3,8 +3,10 @@ package service
 import (
 	"context"
 	"fmt"
+	"net/url"
 
 	"github.com/libsv/go-p4"
+	"github.com/libsv/p4-server/config"
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
 )
@@ -13,14 +15,18 @@ import (
 // where another service will create the paymentRequest.
 // TODO - remove the other payment request service.
 type paymentRequestProxy struct {
-	preqRdr p4.PaymentRequestReader
+	preqRdr   p4.PaymentRequestReader
+	transCfg  *config.Transports
+	walletCfg *config.Server
 }
 
 // NewPaymentRequestProxy will setup and return a new PaymentRequest service that will generate outputs
 // using the provided outputter which is defined in server config.
-func NewPaymentRequestProxy(preqRdr p4.PaymentRequestReader) *paymentRequestProxy {
+func NewPaymentRequestProxy(preqRdr p4.PaymentRequestReader, transCfg *config.Transports, walletCfg *config.Server) *paymentRequestProxy {
 	return &paymentRequestProxy{
-		preqRdr: preqRdr,
+		preqRdr:   preqRdr,
+		transCfg:  transCfg,
+		walletCfg: walletCfg,
 	}
 }
 
@@ -40,5 +46,15 @@ func (p *paymentRequestProxy) PaymentRequest(ctx context.Context, args p4.Paymen
 	if resp.FeeRate == nil {
 		return nil, fmt.Errorf("no fees received for paymentID %s", args.PaymentID)
 	}
+
+	if p.transCfg.Mode == config.TransportModeHybrid {
+		u := url.URL{
+			Scheme: "http",
+			Host:   p.walletCfg.FQDN,
+			Path:   "/api/v1/payment/" + args.PaymentID,
+		}
+		resp.PaymentURL = u.String()
+	}
+
 	return resp, nil
 }

@@ -6,7 +6,7 @@ services:
     image: local.p4
     environment:
       LOG_LEVEL: "info"
-      TRANSPORT_MODE: 'http'
+      TRANSPORT_MODE: 'hybrid'
     ports:
       - "8445:8445"
     networks:
@@ -19,7 +19,7 @@ services:
       LOG_LEVEL: "info"
       PAYD_HOST: "payd-merchant"
       PAYD_PORT: ":28443"
-      TRANSPORT_MODE: 'http'
+      TRANSPORT_MODE: 'hybrid'
       SERVER_HOST: "p4"
       SERVER_PORT: ":28445"
     ports:
