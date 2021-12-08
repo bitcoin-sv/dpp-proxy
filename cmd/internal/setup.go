@@ -138,6 +138,7 @@ func SetupHybrid(cfg config.Config, l log.Logger, e *echo.Echo) *server.SocketSe
 	p4Handlers.NewPaymentHandler(paymentSvc).RegisterRoutes(g)
 	p4Handlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)
 	p4Handlers.NewProofs(proofsSvc).RegisterRoutes(g)
+	p4soc.NewHealthHandler().Register(s)
 
 	e.GET("/ws/:channelID", wsHandler(s))
 	return s
