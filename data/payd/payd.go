@@ -36,6 +36,16 @@ func NewPayD(cfg *config.PayD, client data.HTTPClient) *payd {
 	}
 }
 
+// PaymentRequest will fetch a payment request message from payd for a given payment.
+func (p *payd) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+	var resp p4.PaymentRequest
+	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlPayments, p.baseURL(), args.PaymentID), http.StatusOK, nil, &resp); err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
+}
+
 // PaymentCreate will post a request to payd to validate and add the txos to the wallet.
 //
 // If invalid a non 204 status code is returned.
