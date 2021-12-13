@@ -53,11 +53,11 @@ func SetupDeps(cfg config.Config, l log.Logger) *Deps {
 
 	// services
 	paymentSvc := service.NewPayment(l, paydStore)
-	paymentReqSvc := service.NewPaymentRequest(cfg.Server, paydStore, paydStore)
+	paymentReqSvc := service.NewPaymentRequest(paydStore)
 	if cfg.PayD.Noop {
 		noopStore := noop.NewNoOp(log.Noop{})
 		paymentSvc = service.NewPayment(log.Noop{}, noopStore)
-		paymentReqSvc = service.NewPaymentRequest(cfg.Server, noopStore, noopStore)
+		paymentReqSvc = service.NewPaymentRequest(noopStore)
 	}
 	proofService := service.NewProof(paydStore)
 

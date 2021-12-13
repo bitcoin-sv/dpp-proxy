@@ -2,6 +2,7 @@ package noop
 
 import (
 	"context"
+	"time"
 
 	"github.com/libsv/go-bt/v2"
 	"github.com/libsv/p4-server/log"
@@ -29,29 +30,32 @@ func (n *noop) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req
 	return &p4.PaymentACK{}, nil
 }
 
-// Owner will return information regarding the owner of a payd wallet.
-//
-// In this example, the payd wallet has no auth, in proper implementations auth would
-// be enabled and a cookie / oauth / bearer token etc would be passed down.
-func (n *noop) Owner(ctx context.Context) (*p4.Merchant, error) {
-	n.l.Info("hit noop.Owner")
-	return &p4.Merchant{
-		AvatarURL:    "noop",
-		Name:         "noop",
-		Email:        "noop",
-		Address:      "noop",
-		ExtendedData: nil,
-	}, nil
-}
-
-func (n *noop) Destinations(ctx context.Context, args p4.PaymentRequestArgs) (*p4.Destinations, error) {
-	n.l.Info("hit noop.Destinations")
-	return &p4.Destinations{
-		Outputs: []p4.Output{{
-			Amount:      0,
-			Script:      "noop",
-			Description: "noop",
-		}},
-		Fees: bt.NewFeeQuote(),
+func (n noop) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+	return &p4.PaymentRequest{
+		Network:             "noop",
+		CreationTimestamp:   time.Now(),
+		ExpirationTimestamp: time.Now().Add(time.Hour),
+		FeeRate: func() *bt.FeeQuote {
+			fq := bt.NewFeeQuote()
+			fq.UpdateExpiry(time.Now().Add(10 * time.Hour))
+			return fq
+		}(),
+		Memo:        "noop",
+		PaymentURL:  "noop",
+		SPVRequired: true,
+		MerchantData: &p4.Merchant{
+			AvatarURL:    "noop",
+			Name:         "noop",
+			Email:        "noop",
+			Address:      "noop",
+			ExtendedData: nil,
+		},
+		Destinations: p4.PaymentDestinations{
+			Outputs: []p4.Output{{
+				Amount:      0,
+				Script:      "noop",
+				Description: "noop",
+			}},
+		},
 	}, nil
 }
