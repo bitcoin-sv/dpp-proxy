@@ -31,10 +31,10 @@ func (h *paymentHandler) RegisterRoutes(g *echo.Group) {
 // @Accept json
 // @Produce json
 // @Param paymentID path string true "Payment ID"
-// @Param body body p4.PaymentCreate true "payment message used in BIP270"
+// @Param body body p4.PaymentCreateArgs true "payment message used in BIP270"
 // @Success 201 {object} p4.PaymentACK "if success, error code will be empty, otherwise it will be filled in with reason"
-// @Failure 404 {object} p4.ClientError "returned if the paymentID has not been found"
-// @Failure 400 {object} p4.ClientError "returned if the user input is invalid, usually an issue with the paymentID"
+// @Failure 404 {object} server.ClientError "returned if the paymentID has not been found"
+// @Failure 400 {object} server.ClientError "returned if the user input is invalid, usually an issue with the paymentID"
 // @Failure 500 {string} string "returned if there is an unexpected internal error"
 // @Router /api/v1/payment/{paymentID} [POST].
 func (h *paymentHandler) createPayment(e echo.Context) error {
