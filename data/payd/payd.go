@@ -17,8 +17,6 @@ import (
 // Known endpoints for the payd wallet implementing the payment protocol interface.
 const (
 	urlPayments      = "%s/api/v1/payments/%s"
-	urlOwner         = "%s/api/v1/owner"
-	urlDestinations  = "%s/api/v1/destinations/%s"
 	urlProofs        = "%s/api/v1/proofs/%s"
 	protocolInsecure = "http"
 	protocolSecure   = "https"
@@ -38,6 +36,16 @@ func NewPayD(cfg *config.PayD, client data.HTTPClient) *payd {
 	}
 }
 
+// PaymentRequest will fetch a payment request message from payd for a given payment.
+func (p *payd) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+	var resp p4.PaymentRequest
+	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlPayments, p.baseURL(), args.PaymentID), http.StatusOK, nil, &resp); err != nil {
+		return nil, err
+	}
+
+	return &resp, nil
+}
+
 // PaymentCreate will post a request to payd to validate and add the txos to the wallet.
 //
 // If invalid a non 204 status code is returned.
@@ -54,41 +62,6 @@ func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req
 		Memo:    req.Memo,
 		Payment: &req,
 	}, nil
-}
-
-// Owner will return information regarding the owner of a payd wallet.
-//
-// In this example, the payd wallet has no auth, in proper implementations auth would
-// be enabled and a cookie / oauth / bearer token etc would be passed down.
-func (p *payd) Owner(ctx context.Context) (*p4.Merchant, error) {
-	var owner *p4.Merchant
-	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlOwner, p.baseURL()), http.StatusOK, nil, &owner); err != nil {
-		return nil, errors.WithStack(err)
-	}
-	return owner, nil
-}
-
-func (p *payd) Destinations(ctx context.Context, args p4.PaymentRequestArgs) (*p4.Destinations, error) {
-	var resp models.DestinationResponse
-	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlDestinations, p.baseURL(), args.PaymentID), http.StatusOK, nil, &resp); err != nil {
-		return nil, errors.WithStack(err)
-	}
-	dests := &p4.Destinations{
-		SPVRequired: resp.SPVRequired,
-		Network:     resp.Network,
-		Outputs:     make([]p4.Output, 0),
-		Fees:        resp.Fees,
-		CreatedAt:   resp.CreatedAt,
-		ExpiresAt:   resp.ExpiresAt,
-	}
-	for _, o := range resp.Outputs {
-		dests.Outputs = append(dests.Outputs, p4.Output{
-			Amount: o.Satoshis,
-			Script: o.Script,
-		})
-	}
-
-	return dests, nil
 }
 
 // ProofCreate will pass on the proof to a payd instance for storage.

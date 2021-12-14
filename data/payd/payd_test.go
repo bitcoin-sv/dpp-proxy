@@ -133,113 +133,72 @@ func TestPayd_PaymentCreate(t *testing.T) {
 	}
 }
 
-func TestPayd_Owner(t *testing.T) {
+func TestPayd_PaymentRequest(t *testing.T) {
 	tests := map[string]struct {
-		doFunc func(context.Context, string, string, int, interface{}, interface{}) error
-		cfg    *config.PayD
-		expURL string
-		expErr error
+		doFunc        func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error
+		args          p4.PaymentRequestArgs
+		cfg           *config.PayD
+		expURL        string
+		expPaymentReq *p4.PaymentRequest
+		expErr        error
 	}{
-		"successful owner request": {
+		"successful payment request": {
 			doFunc: func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error {
-				return nil
-			},
-			cfg: &config.PayD{
-				Host: "paydowner",
-				Port: ":1122",
-			},
-			expURL: "http://paydowner:1122/api/v1/owner",
-		},
-		"successful https owner request": {
-			doFunc: func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error {
-				return nil
-			},
-			cfg: &config.PayD{
-				Host:   "securepaydowner",
-				Port:   ":2122",
-				Secure: true,
-			},
-			expURL: "https://securepaydowner:2122/api/v1/owner",
-		},
-		"error is reported": {
-			doFunc: func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error {
-				return errors.New("oh no")
-			},
-			cfg: &config.PayD{
-				Host:   "securepaydowner",
-				Port:   ":2122",
-				Secure: true,
-			},
-			expURL: "https://securepaydowner:2122/api/v1/owner",
-			expErr: errors.New("oh no"),
-		},
-	}
-
-	for name, test := range tests {
-		t.Run(name, func(t *testing.T) {
-			pd := payd.NewPayD(test.cfg, &mocks.HTTPClientMock{
-				DoFunc: func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error {
-					assert.Equal(t, test.expURL, url)
-					return test.doFunc(ctx, method, url, statusCode, req, out)
-				},
-			})
-			_, err := pd.Owner(context.Background())
-			if test.expErr != nil {
-				assert.Error(t, err)
-				assert.EqualError(t, err, test.expErr.Error())
-			} else {
-				assert.NoError(t, err)
-			}
-		})
-	}
-}
-
-func TestPayd_Destinations(t *testing.T) {
-	tests := map[string]struct {
-		doFunc   func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error
-		args     p4.PaymentRequestArgs
-		cfg      *config.PayD
-		expURL   string
-		expDests *p4.Destinations
-		expErr   error
-	}{
-		"successful destination request": {
-			doFunc: func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error {
-				return json.Unmarshal([]byte(`{
-					"spvRequired": true,
-					"network": "mainnet",
-					"outputs": [{
-						"script": "abc123",
-						"satoshis": 100
-					}, {
-						"script": "def456",
-						"satoshis": 400
-					}],
-					"fees": {
-						"data": {
-							"miningFee": {
-								"satoshis": 5,
-								"bytes": 10
-							},
-							"relayFee": {
-								"satoshis": 5,
-								"bytes": 10
+				return json.Unmarshal([]byte(`
+					{
+						"network": "mainnet",
+						"spvRequired": true,
+						"destinations": {
+							"outputs": [
+								{
+									"amount": 100,
+									"script": "525252"
+								},
+								{
+									"amount": 400,
+									"script": "535353"
+								}
+							]
+						},
+						"creationTimestamp": "2021-12-13T10:37:15.7946831Z",
+						"expirationTimestamp": "2021-12-14T10:37:15.7946831Z",
+						"paymentUrl": "http://p4:8445/api/v1/payment/6K9oZq9",
+						"memo": "invoice 6K9oZq9",
+						"merchantData": {
+							"avatar": "http://url.com",
+							"name": "Merchant Name",
+							"email": "merchant@demo.com",
+							"address": "123 Street Fake",
+							"extendedData": {
+								"dislikes": "trying to think up placeholder data",
+								"likes": "walks in the park at night",
+								"paymentReference": "6K9oZq9"
 							}
 						},
-						"standard": {
-							"miningFee": {
-								"satoshis": 5,
-								"bytes": 10
+						"fees": {
+							"data": {
+								"miningFee": {
+									"satoshis": 5,
+									"bytes": 10
+								},
+								"relayFee": {
+									"satoshis": 5,
+									"bytes": 10
+								}
 							},
-							"relayFee": {
-								"satoshis": 5,
-								"bytes": 10
+							"standard": {
+								"miningFee": {
+									"satoshis": 5,
+									"bytes": 10
+								},
+								"relayFee": {
+									"satoshis": 5,
+									"bytes": 10
+								}
 							}
 						}
-					},
-					"createdAt": "2021-10-15T08:33:51.51229Z",
-					"expiresAt": "2021-10-16T08:33:51.51229Z"
-				}`), &out)
+					}
+				`), &out)
 			},
 			args: p4.PaymentRequestArgs{
 				PaymentID: "qwe123",
@@ -248,59 +207,94 @@ func TestPayd_Destinations(t *testing.T) {
 				Host: "payddest",
 				Port: ":445",
 			},
-			expURL: "http://payddest:445/api/v1/destinations/qwe123",
-			expDests: &p4.Destinations{
+			expURL: "http://payddest:445/api/v1/payments/qwe123",
+			expPaymentReq: &p4.PaymentRequest{
 				SPVRequired: true,
 				Network:     "mainnet",
-				Outputs: []p4.Output{{
-					Script: "abc123",
-					Amount: 100,
-				}, {
-					Script: "def456",
-					Amount: 400,
-				}},
-				Fees:      bt.NewFeeQuote(),
-				CreatedAt: func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-10-15T08:33:51.51229Z"); return t }(),
-				ExpiresAt: func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-10-16T08:33:51.51229Z"); return t }(),
+				Memo:        "invoice 6K9oZq9",
+				PaymentURL:  "http://p4:8445/api/v1/payment/6K9oZq9",
+				Destinations: p4.PaymentDestinations{
+					Outputs: []p4.Output{{
+						Script: "525252",
+						Amount: 100,
+					}, {
+						Script: "535353",
+						Amount: 400,
+					}},
+				},
+				MerchantData: &p4.Merchant{
+					AvatarURL: "http://url.com",
+					Name:      "Merchant Name",
+					Email:     "merchant@demo.com",
+					Address:   "123 Street Fake",
+					ExtendedData: map[string]interface{}{
+						"dislikes":         "trying to think up placeholder data",
+						"likes":            "walks in the park at night",
+						"paymentReference": "6K9oZq9",
+					},
+				},
+				FeeRate:             bt.NewFeeQuote(),
+				CreationTimestamp:   func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-12-13T10:37:15.7946831Z"); return t }(),
+				ExpirationTimestamp: func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-12-14T10:37:15.7946831Z"); return t }(),
 			},
 		},
-		"successful https destination request": {
+		"successful https payment request": {
 			doFunc: func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error {
-				return json.Unmarshal([]byte(`{
-					"spvRequired": true,
-					"network": "mainnet",
-					"outputs": [{
-						"script": "abc123",
-						"satoshis": 100
-					}, {
-						"script": "def456",
-						"satoshis": 400
-					}],
-					"fees": {
-						"data": {
-							"miningFee": {
-								"satoshis": 5,
-								"bytes": 10
-							},
-							"relayFee": {
-								"satoshis": 5,
-								"bytes": 10
+				return json.Unmarshal([]byte(`
+					{
+						"network": "mainnet",
+						"spvRequired": true,
+						"destinations": {
+							"outputs": [
+								{
+									"amount": 100,
+									"script": "525252"
+								},
+								{
+									"amount": 400,
+									"script": "535353"
+								}
+							]
+						},
+						"creationTimestamp": "2021-12-13T10:37:15.7946831Z",
+						"expirationTimestamp": "2021-12-14T10:37:15.7946831Z",
+						"paymentUrl": "https://p4:8445/api/v1/payment/6K9oZq9",
+						"memo": "invoice 6K9oZq9",
+						"merchantData": {
+							"avatar": "http://url.com",
+							"name": "Merchant Name",
+							"email": "merchant@demo.com",
+							"address": "123 Street Fake",
+							"extendedData": {
+								"dislikes": "trying to think up placeholder data",
+								"likes": "walks in the park at night",
+								"paymentReference": "6K9oZq9"
 							}
 						},
-						"standard": {
-							"miningFee": {
-								"satoshis": 5,
-								"bytes": 10
+						"fees": {
+							"data": {
+								"miningFee": {
+									"satoshis": 5,
+									"bytes": 10
+								},
+								"relayFee": {
+									"satoshis": 5,
+									"bytes": 10
+								}
 							},
-							"relayFee": {
-								"satoshis": 5,
-								"bytes": 10
+							"standard": {
+								"miningFee": {
+									"satoshis": 5,
+									"bytes": 10
+								},
+								"relayFee": {
+									"satoshis": 5,
+									"bytes": 10
+								}
 							}
 						}
-					},
-					"createdAt": "2021-10-15T08:33:51.51229Z",
-					"expiresAt": "2021-10-16T08:33:51.51229Z"
-				}`), &out)
+					}
+				`), &out)
 			},
 			args: p4.PaymentRequestArgs{
 				PaymentID: "bwe123",
@@ -310,20 +304,35 @@ func TestPayd_Destinations(t *testing.T) {
 				Port:   ":4445",
 				Secure: true,
 			},
-			expURL: "https://securepayddest:4445/api/v1/destinations/bwe123",
-			expDests: &p4.Destinations{
+			expURL: "https://securepayddest:4445/api/v1/payments/bwe123",
+			expPaymentReq: &p4.PaymentRequest{
 				SPVRequired: true,
 				Network:     "mainnet",
-				Outputs: []p4.Output{{
-					Script: "abc123",
-					Amount: 100,
-				}, {
-					Script: "def456",
-					Amount: 400,
-				}},
-				Fees:      bt.NewFeeQuote(),
-				CreatedAt: func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-10-15T08:33:51.51229Z"); return t }(),
-				ExpiresAt: func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-10-16T08:33:51.51229Z"); return t }(),
+				Memo:        "invoice 6K9oZq9",
+				PaymentURL:  "https://p4:8445/api/v1/payment/6K9oZq9",
+				Destinations: p4.PaymentDestinations{
+					Outputs: []p4.Output{{
+						Script: "525252",
+						Amount: 100,
+					}, {
+						Script: "535353",
+						Amount: 400,
+					}},
+				},
+				MerchantData: &p4.Merchant{
+					AvatarURL: "http://url.com",
+					Name:      "Merchant Name",
+					Email:     "merchant@demo.com",
+					Address:   "123 Street Fake",
+					ExtendedData: map[string]interface{}{
+						"dislikes":         "trying to think up placeholder data",
+						"likes":            "walks in the park at night",
+						"paymentReference": "6K9oZq9",
+					},
+				},
+				FeeRate:             bt.NewFeeQuote(),
+				CreationTimestamp:   func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-12-13T10:37:15.7946831Z"); return t }(),
+				ExpirationTimestamp: func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-12-14T10:37:15.7946831Z"); return t }(),
 			},
 		},
 		"error is handled": {
@@ -338,7 +347,7 @@ func TestPayd_Destinations(t *testing.T) {
 				Port:   ":4445",
 				Secure: true,
 			},
-			expURL: "https://securepayddest:4445/api/v1/destinations/bwe123",
+			expURL: "https://securepayddest:4445/api/v1/payments/bwe123",
 			expErr: errors.New("yikes"),
 		},
 	}
@@ -351,7 +360,7 @@ func TestPayd_Destinations(t *testing.T) {
 					return test.doFunc(ctx, method, url, statusCode, req, out)
 				},
 			})
-			dests, err := pd.Destinations(context.Background(), test.args)
+			pr, err := pd.PaymentRequest(context.Background(), test.args)
 			if test.expErr != nil {
 				assert.Error(t, err)
 				assert.EqualError(t, err, test.expErr.Error())
@@ -359,18 +368,18 @@ func TestPayd_Destinations(t *testing.T) {
 				assert.NoError(t, err)
 			}
 
-			if test.expDests != nil {
-				assert.NotNil(t, dests)
-				assert.Equal(t, test.expDests.CreatedAt.String(), dests.CreatedAt.String())
-				assert.Equal(t, test.expDests.ExpiresAt.String(), dests.ExpiresAt.String())
+			if test.expPaymentReq != nil {
+				assert.NotNil(t, pr)
+				assert.Equal(t, test.expPaymentReq.CreationTimestamp.String(), pr.CreationTimestamp.String())
+				assert.Equal(t, test.expPaymentReq.ExpirationTimestamp.String(), pr.ExpirationTimestamp.String())
 
 				ts := time.Now()
-				dests.Fees.UpdateExpiry(ts)
-				test.expDests.Fees.UpdateExpiry(ts)
+				pr.FeeRate.UpdateExpiry(ts)
+				test.expPaymentReq.FeeRate.UpdateExpiry(ts)
 
-				assert.Equal(t, *test.expDests, *dests)
+				assert.Equal(t, *test.expPaymentReq, *pr)
 			} else {
-				assert.Nil(t, dests)
+				assert.Nil(t, pr)
 			}
 		})
 	}
