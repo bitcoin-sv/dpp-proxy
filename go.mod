@@ -7,7 +7,7 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/labstack/echo/v4 v4.6.1
 	github.com/libsv/go-bc v0.1.8
-	github.com/libsv/go-bk v0.1.5
+	github.com/libsv/go-bk v0.1.6
 	github.com/libsv/go-bt/v2 v2.1.0-beta.2
 	github.com/libsv/go-p4 v0.0.7
 	github.com/pkg/errors v0.9.1
