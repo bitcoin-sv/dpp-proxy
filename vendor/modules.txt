@@ -25,7 +25,7 @@ github.com/go-openapi/jsonpointer
 # github.com/go-openapi/jsonreference v0.19.6
 ## explicit; go 1.13
 github.com/go-openapi/jsonreference
-# github.com/go-openapi/spec v0.20.3
+# github.com/go-openapi/spec v0.20.4
 ## explicit; go 1.13
 github.com/go-openapi/spec
 # github.com/go-openapi/swag v0.19.15
@@ -173,8 +173,8 @@ github.com/stretchr/testify/assert
 # github.com/subosito/gotenv v1.2.0
 ## explicit
 github.com/subosito/gotenv
-# github.com/swaggo/echo-swagger v1.1.4
-## explicit; go 1.13
+# github.com/swaggo/echo-swagger v1.2.0
+## explicit; go 1.14
 github.com/swaggo/echo-swagger
 # github.com/swaggo/files v0.0.0-20210815190702-a29dd2bc99b2
 ## explicit; go 1.15
@@ -206,7 +206,7 @@ github.com/valyala/fasttemplate
 golang.org/x/crypto/acme
 golang.org/x/crypto/acme/autocert
 golang.org/x/crypto/ripemd160
-# golang.org/x/net v0.0.0-20210913180222-943fd674d43e
+# golang.org/x/net v0.0.0-20211216030914-fe4d6282115f
 ## explicit; go 1.17
 golang.org/x/net/http/httpguts
 golang.org/x/net/http2
@@ -215,7 +215,7 @@ golang.org/x/net/http2/hpack
 golang.org/x/net/idna
 golang.org/x/net/webdav
 golang.org/x/net/webdav/internal/xml
-# golang.org/x/sys v0.0.0-20211210111614-af8b64212486
+# golang.org/x/sys v0.0.0-20211216021012-1d35b9e2eb4e
 ## explicit; go 1.17
 golang.org/x/sys/execabs
 golang.org/x/sys/internal/unsafeheader
@@ -231,7 +231,7 @@ golang.org/x/text/width
 # golang.org/x/time v0.0.0-20201208040808-7e3f01d25324
 ## explicit
 golang.org/x/time/rate
-# golang.org/x/tools v0.1.7
+# golang.org/x/tools v0.1.8
 ## explicit; go 1.17
 golang.org/x/tools/go/ast/astutil
 golang.org/x/tools/go/buildutil
