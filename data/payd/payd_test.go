@@ -9,6 +9,7 @@ import (
 
 	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-bt/v2"
+	"github.com/libsv/go-bt/v2/bscript"
 	"github.com/libsv/go-p4"
 	"github.com/libsv/p4-server/config"
 	"github.com/libsv/p4-server/data/payd"
@@ -215,10 +216,18 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				PaymentURL:  "http://p4:8445/api/v1/payment/6K9oZq9",
 				Destinations: p4.PaymentDestinations{
 					Outputs: []p4.Output{{
-						Script: "525252",
+						LockingScript: func() *bscript.Script {
+							ls, err := bscript.NewFromHexString("525252")
+							assert.NoError(t, err)
+							return ls
+						}(),
 						Amount: 100,
 					}, {
-						Script: "535353",
+						LockingScript: func() *bscript.Script {
+							ls, err := bscript.NewFromHexString("535353")
+							assert.NoError(t, err)
+							return ls
+						}(),
 						Amount: 400,
 					}},
 				},
@@ -312,10 +321,18 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				PaymentURL:  "https://p4:8445/api/v1/payment/6K9oZq9",
 				Destinations: p4.PaymentDestinations{
 					Outputs: []p4.Output{{
-						Script: "525252",
+						LockingScript: func() *bscript.Script {
+							ls, err := bscript.NewFromHexString("525252")
+							assert.NoError(t, err)
+							return ls
+						}(),
 						Amount: 100,
 					}, {
-						Script: "535353",
+						LockingScript: func() *bscript.Script {
+							ls, err := bscript.NewFromHexString("535353")
+							assert.NoError(t, err)
+							return ls
+						}(),
 						Amount: 400,
 					}},
 				},

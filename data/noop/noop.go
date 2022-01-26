@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/libsv/go-bt/v2"
+	"github.com/libsv/go-bt/v2/bscript"
 	"github.com/libsv/p4-server/log"
 
 	"github.com/libsv/go-p4"
@@ -52,9 +53,9 @@ func (n noop) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*
 		},
 		Destinations: p4.PaymentDestinations{
 			Outputs: []p4.Output{{
-				Amount:      0,
-				Script:      "noop",
-				Description: "noop",
+				Amount:        0,
+				LockingScript: &bscript.Script{},
+				Description:   "noop",
 			}},
 		},
 	}, nil
