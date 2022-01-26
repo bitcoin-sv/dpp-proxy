@@ -13,8 +13,7 @@ This is written in go and integrates with a wallet running the Payment Protocol 
 
 ## Exploring Endpoints
 
-To explore the endpoints and functionality, run the server using `go run cmd/rest-server/main.go` and navigate to [Swagger](http://localhost:8445/swagger/index.html) 
-where the endpoints and their models are described in detail.
+To explore the endpoints and functionality, navigate to the [Swagger page](https://libsv.github.io/p4-server/) where the endpoints and their models are described in detail. You can also access the Swagger endpoint on the server, just run the server using `go run cmd/rest-server/main.go` and hit the [Swagger endpoint](http://localhost:8443/swagger/index.html).
 
 ## Configuring P4
 

@@ -45,13 +45,13 @@
                     "400": {
                         "description": "returned if the user input is invalid, usually an issue with the paymentID",
                         "schema": {
-                            "$ref": "#/definitions/p4.ClientError"
+                            "$ref": "#/definitions/server.ClientError"
                         }
                     },
                     "404": {
                         "description": "returned if the paymentID has not been found",
                         "schema": {
-                            "$ref": "#/definitions/p4.ClientError"
+                            "$ref": "#/definitions/server.ClientError"
                         }
                     },
                     "500": {
@@ -88,7 +88,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/p4.PaymentCreate"
+                            "$ref": "#/definitions/p4.PaymentCreateArgs"
                         }
                     }
                 ],
@@ -102,13 +102,13 @@
                     "400": {
                         "description": "returned if the user input is invalid, usually an issue with the paymentID",
                         "schema": {
-                            "$ref": "#/definitions/p4.ClientError"
+                            "$ref": "#/definitions/server.ClientError"
                         }
                     },
                     "404": {
                         "description": "returned if the paymentID has not been found",
                         "schema": {
-                            "$ref": "#/definitions/p4.ClientError"
+                            "$ref": "#/definitions/server.ClientError"
                         }
                     },
                     "500": {
@@ -120,7 +120,7 @@
                 }
             }
         },
-        "/v1/proofs/{txid}": {
+        "/api/v1/proofs/{txid}": {
             "post": {
                 "description": "Creates a json envelope proof",
                 "consumes": [
@@ -241,28 +241,7 @@
                 }
             }
         },
-        "p4.ClientError": {
-            "type": "object",
-            "properties": {
-                "code": {
-                    "type": "string",
-                    "example": "N01"
-                },
-                "id": {
-                    "type": "string",
-                    "example": "e97970bf-2a88-4bc8-90e6-2f597a80b93d"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "unable to find foo when loading bar"
-                },
-                "title": {
-                    "type": "string",
-                    "example": "not found"
-                }
-            }
-        },
-        "p4.MerchantData": {
+        "p4.Merchant": {
             "type": "object",
             "properties": {
                 "address": {
@@ -286,7 +265,7 @@
                     "additionalProperties": true
                 },
                 "name": {
-                    "description": "MerchantName is a human readable string identifying the merchant.",
+                    "description": "Name is a human readable string identifying the merchant.",
                     "type": "string",
                     "example": "merchant 1"
                 }
@@ -312,22 +291,7 @@
                 }
             }
         },
-        "p4.PaymentACK": {
-            "type": "object",
-            "properties": {
-                "error": {
-                    "description": "A number indicating why the transaction was not accepted. 0 or undefined indicates no error.\nA 1 or any other positive integer indicates an error. The errors are left undefined for now;\nit is recommended only to use “1” and to fill the memo with a textual explanation about why\nthe transaction was not accepted until further numbers are defined and standardised.",
-                    "type": "integer"
-                },
-                "memo": {
-                    "type": "string"
-                },
-                "payment": {
-                    "$ref": "#/definitions/p4.PaymentCreate"
-                }
-            }
-        },
-        "p4.PaymentCreate": {
+        "p4.Payment": {
             "type": "object",
             "properties": {
                 "memo": {
@@ -337,7 +301,7 @@
                 },
                 "merchantData": {
                     "description": "MerchantData is copied from PaymentDetails.merchantData.\nPayment hosts may use invoice numbers or any other data they require to match Payments to PaymentRequests.\nNote that malicious clients may modify the merchantData, so should be authenticated\nin some way (for example, signed with a payment host-only key).\nMaximum length is 10000 characters.",
-                    "$ref": "#/definitions/p4.MerchantData"
+                    "$ref": "#/definitions/p4.Merchant"
                 },
                 "proofCallbacks": {
                     "description": "ProofCallbacks are optional and can be supplied when the sender wants to receive\na merkleproof for the transaction they are submitting as part of the SPV Envelope.\n\nThis is especially useful if they are receiving change and means when they use it\nas an input, they can provide the merkle proof.",
@@ -358,6 +322,29 @@
                 "spvEnvelope": {
                     "description": "SPVEnvelope which contains the details of previous transaction and Merkle proof of each input UTXO.\nShould be available if SPVRequired is set to true in the paymentRequest.\nSee https://tsc.bitcoinassociation.net/standards/spv-envelope/",
                     "$ref": "#/definitions/spv.Envelope"
+                }
+            }
+        },
+        "p4.PaymentACK": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "description": "A number indicating why the transaction was not accepted. 0 or undefined indicates no error.\nA 1 or any other positive integer indicates an error. The errors are left undefined for now;\nit is recommended only to use “1” and to fill the memo with a textual explanation about why\nthe transaction was not accepted until further numbers are defined and standardised.",
+                    "type": "integer"
+                },
+                "memo": {
+                    "type": "string"
+                },
+                "payment": {
+                    "$ref": "#/definitions/p4.Payment"
+                }
+            }
+        },
+        "p4.PaymentCreateArgs": {
+            "type": "object",
+            "properties": {
+                "paymentID": {
+                    "type": "string"
                 }
             }
         },
@@ -400,7 +387,7 @@
                 },
                 "merchantData": {
                     "description": "MerchantData contains arbitrary data that may be used by the payment host to identify the PaymentRequest.\nMay be omitted if the payment host does not need to associate Payments with PaymentRequest\nor if they associate each PaymentRequest with a separate payment address.\nMaximum length is 10000 characters.",
-                    "$ref": "#/definitions/p4.MerchantData"
+                    "$ref": "#/definitions/p4.Merchant"
                 },
                 "network": {
                     "description": "Network  Always set to \"bitcoin\" (but seems to be set to 'bitcoin-sv'\noutside bip270 spec, see https://handcash.github.io/handcash-merchant-integration/#/merchant-payments)\n{enum: bitcoin, bitcoin-sv, test}\nRequired.",
@@ -430,6 +417,27 @@
             "properties": {
                 "token": {
                     "type": "string"
+                }
+            }
+        },
+        "server.ClientError": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "N01"
+                },
+                "id": {
+                    "type": "string",
+                    "example": "e97970bf-2a88-4bc8-90e6-2f597a80b93d"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "unable to find foo when loading bar"
+                },
+                "title": {
+                    "type": "string",
+                    "example": "not found"
                 }
             }
         },
