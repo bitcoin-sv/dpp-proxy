@@ -55,13 +55,11 @@ func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req
 		SPVEnvelope:    req.SPVEnvelope,
 		ProofCallbacks: req.ProofCallbacks,
 	}
-	if err := p.client.Do(ctx, http.MethodPost, fmt.Sprintf(urlPayments, p.baseURL(), args.PaymentID), http.StatusNoContent, paymentReq, nil); err != nil {
+	var ack p4.PaymentACK
+	if err := p.client.Do(ctx, http.MethodPost, fmt.Sprintf(urlPayments, p.baseURL(), args.PaymentID), http.StatusNoContent, paymentReq, &ack); err != nil {
 		return nil, err
 	}
-	return &p4.PaymentACK{
-		Memo:    req.Memo,
-		Payment: &req,
-	}, nil
+	return &ack, nil
 }
 
 // ProofCreate will pass on the proof to a payd instance for storage.

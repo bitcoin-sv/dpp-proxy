@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/libsv/go-bt/v2/bscript"
 	"github.com/libsv/go-p4"
 	p4mocks "github.com/libsv/go-p4/mocks"
 	"github.com/libsv/p4-server/service"
@@ -33,7 +34,11 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					Destinations: p4.PaymentDestinations{
 						Outputs: []p4.Output{{
 							Amount: 500,
-							Script: "abc123",
+							LockingScript: func() *bscript.Script {
+								ls, err := bscript.NewFromHexString("abc123")
+								assert.NoError(t, err)
+								return ls
+							}(),
 						}},
 					},
 					PaymentURL: "http://iamsotest/api/v1/payment/abc123",
@@ -50,7 +55,11 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				Destinations: p4.PaymentDestinations{
 					Outputs: []p4.Output{{
 						Amount: 500,
-						Script: "abc123",
+						LockingScript: func() *bscript.Script {
+							ls, err := bscript.NewFromHexString("abc123")
+							assert.NoError(t, err)
+							return ls
+						}(),
 					}},
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
@@ -72,7 +81,11 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					Destinations: p4.PaymentDestinations{
 						Outputs: []p4.Output{{
 							Amount: 500,
-							Script: "abc123",
+							LockingScript: func() *bscript.Script {
+								ls, err := bscript.NewFromHexString("abc123")
+								assert.NoError(t, err)
+								return ls
+							}(),
 						}},
 					},
 					MerchantData: &p4.Merchant{},
@@ -87,7 +100,11 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				Destinations: p4.PaymentDestinations{
 					Outputs: []p4.Output{{
 						Amount: 500,
-						Script: "abc123",
+						LockingScript: func() *bscript.Script {
+							ls, err := bscript.NewFromHexString("abc123")
+							assert.NoError(t, err)
+							return ls
+						}(),
 					}},
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
