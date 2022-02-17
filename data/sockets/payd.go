@@ -71,7 +71,7 @@ func (p *payd) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (
 	case RoutePaymentRequestError:
 		var clientErr server.ClientError
 		if err := resp.Bind(&clientErr); err != nil {
-			return nil, errors.Wrap(err, "failed to bind error respone")
+			return nil, errors.Wrap(err, "failed to bind error response")
 		}
 		return nil, clientErr
 	}
