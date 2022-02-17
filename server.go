@@ -1,7 +1,11 @@
 // Package server is needed for swagger doc generation. Do not delete.
 package server
 
-import validator "github.com/theflyingcodr/govalidator"
+import (
+	"fmt"
+
+	validator "github.com/theflyingcodr/govalidator"
+)
 
 // ClientError defines an error type that can be returned to handle client errors.
 type ClientError struct {
@@ -9,6 +13,10 @@ type ClientError struct {
 	Code    string `json:"code" example:"N01"`
 	Title   string `json:"title" example:"not found"`
 	Message string `json:"message" example:"unable to find foo when loading bar"`
+}
+
+func (c ClientError) Error() string {
+	return fmt.Sprintf("%s: %s", c.Title, c.Message)
 }
 
 // BadRequestError defines an error type to handle validation errors.

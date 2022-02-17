@@ -27,6 +27,16 @@ func ErrorHandler(l log.Logger) echo.HTTPErrorHandler {
 			return
 		}
 
+		if errors.Is(err, echo.ErrNotFound) {
+			err = errs.NewErrNotFound("404", "Not found")
+		}
+
+		var cErr server.ClientError
+		if errors.As(err, &cErr) {
+			_ = c.JSON(http.StatusInternalServerError, cErr)
+			return
+		}
+
 		// Internal error, log it to a system and return small detail
 		if !lathos.IsClientError(err) {
 			internalErr := errs.NewErrInternal(err, "500")
