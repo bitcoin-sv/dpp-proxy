@@ -12,7 +12,7 @@ require (
 	github.com/libsv/go-p4 v0.0.8
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.1
-	github.com/rs/zerolog v1.26.0
+	github.com/rs/zerolog v1.26.1
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/echo-swagger v1.3.0

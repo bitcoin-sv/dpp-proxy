@@ -2,11 +2,14 @@ package sockets
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/libsv/go-bk/envelope"
+	server "github.com/libsv/p4-server"
 	"github.com/pkg/errors"
+	"github.com/theflyingcodr/lathos/errs"
 	"github.com/theflyingcodr/sockets"
 
 	"github.com/libsv/go-p4"
@@ -16,9 +19,11 @@ import (
 const (
 	RoutePayment                = "payment"
 	RoutePaymentACK             = "payment.ack"
+	RoutePaymentError           = "payment.error"
 	RouteProofCreate            = "proof.create"
 	RoutePaymentRequestCreate   = "paymentrequest.create"
 	RoutePaymentRequestResponse = "paymentrequest.response"
+	RoutePaymentRequestError    = "paymentrequest.error"
 )
 
 type payd struct {
@@ -57,11 +62,22 @@ func (p *payd) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to broadcast message for payment request")
 	}
-	var pr *p4.PaymentRequest
-	if err := resp.Bind(&pr); err != nil {
-		return nil, errors.Wrap(err, "failed to bind payment request response")
+	switch resp.Key() {
+	case RoutePaymentRequestResponse:
+		var pr *p4.PaymentRequest
+		if err := resp.Bind(&pr); err != nil {
+			return nil, errors.Wrap(err, "failed to bind payment request response")
+		}
+		return pr, nil
+	case RoutePaymentRequestError:
+		var clientErr server.ClientError
+		if err := resp.Bind(&clientErr); err != nil {
+			return nil, errors.Wrap(err, "failed to bind error response")
+		}
+		return nil, toLathosErr(clientErr)
 	}
-	return pr, nil
+
+	return nil, fmt.Errorf("unexpected response key '%s'", resp.Key())
 }
 
 // PaymentCreate will send a request to payd to create and process the payment.
@@ -78,9 +94,29 @@ func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req
 	if err != nil {
 		return nil, errors.Wrap(err, "failed to send payment message for payment")
 	}
-	var pr *p4.PaymentACK
-	if err := resp.Bind(&pr); err != nil {
-		return nil, errors.Wrap(err, "failed to bind payment ack response")
+	switch resp.Key() {
+	case RoutePaymentACK:
+		var pr *p4.PaymentACK
+		if err := resp.Bind(&pr); err != nil {
+			return nil, errors.Wrap(err, "failed to bind payment ack response")
+		}
+		return pr, nil
+	case RoutePaymentError:
+		var clientErr server.ClientError
+		if err := resp.Bind(&clientErr); err != nil {
+			return nil, errors.Wrap(err, "failed to bind error response")
+		}
+		return nil, toLathosErr(clientErr)
 	}
-	return pr, nil
+
+	return nil, fmt.Errorf("unexpected response key '%s'", resp.Key())
+}
+
+func toLathosErr(c server.ClientError) error {
+	switch c.Code {
+	case "404", "N0001":
+		return errs.NewErrNotFound(c.Code, c.Message)
+	}
+
+	return c
 }
