@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	p4svr "github.com/libsv/p4-server"
 	"github.com/libsv/p4-server/data"
 	"github.com/libsv/p4-server/data/payd"
 	"github.com/libsv/p4-server/data/sockets"
@@ -156,7 +157,21 @@ func wsHandler(svr *server.SocketServer) echo.HandlerFunc {
 		defer func() {
 			_ = ws.Close()
 		}()
-		return svr.Listen(ws, c.Param("channelID"))
+
+		chID := c.Param("channelID")
+
+		if c.QueryParam("internal") != "true" {
+			if !svr.HasChannel(chID) {
+				return c.JSON(http.StatusNotFound, p4svr.ClientError{
+					ID:      "",
+					Code:    "404",
+					Message: fmt.Sprintf("Connection for invoice '%s' not found", chID),
+					Title:   "Not found",
+				})
+			}
+		}
+
+		return svr.Listen(ws, chID)
 	}
 }
 
