@@ -60,6 +60,9 @@ func (p *payd) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (
 
 	resp, err := p.s.BroadcastAwait(ctx, args.PaymentID, msg)
 	if err != nil {
+		if errors.Is(err, sockets.ErrChannelNotFound) {
+			return nil, errs.NewErrNotFound("N00001", "invoice not found")
+		}
 		return nil, errors.Wrap(err, "failed to broadcast message for payment request")
 	}
 	switch resp.Key() {
