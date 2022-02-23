@@ -16,7 +16,7 @@ require (
 	github.com/spf13/viper v1.10.1
 	github.com/stretchr/testify v1.7.0
 	github.com/swaggo/echo-swagger v1.3.0
-	github.com/swaggo/swag v1.7.9
+	github.com/swaggo/swag v1.8.0
 	github.com/theflyingcodr/govalidator v0.1.3
 	github.com/theflyingcodr/lathos v0.0.6
 	github.com/theflyingcodr/sockets v0.0.11-beta.0.20220222160101-76100ef886b5
