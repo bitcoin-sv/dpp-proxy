@@ -102,7 +102,7 @@ type Socket struct {
 	ChannelTimeout  time.Duration
 }
 
-// Transports enables or disables p4 transports.
+// Transports enables or disables dpp transports.
 type Transports struct {
 	Mode string
 }

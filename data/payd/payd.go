@@ -8,10 +8,10 @@ import (
 	"github.com/libsv/go-bk/envelope"
 	"github.com/pkg/errors"
 
-	"github.com/libsv/go-p4"
-	"github.com/libsv/p4-server/config"
-	"github.com/libsv/p4-server/data"
-	"github.com/libsv/p4-server/data/payd/models"
+	"github.com/libsv/dpp-proxy/config"
+	"github.com/libsv/dpp-proxy/data"
+	"github.com/libsv/dpp-proxy/data/payd/models"
+	"github.com/libsv/go-dpp"
 )
 
 // Known endpoints for the payd wallet implementing the payment protocol interface.
@@ -37,8 +37,8 @@ func NewPayD(cfg *config.PayD, client data.HTTPClient) *payd {
 }
 
 // PaymentRequest will fetch a payment request message from payd for a given payment.
-func (p *payd) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
-	var resp p4.PaymentRequest
+func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+	var resp dpp.PaymentRequest
 	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlPayments, p.baseURL(), args.PaymentID), http.StatusOK, nil, &resp); err != nil {
 		return nil, err
 	}
@@ -49,13 +49,13 @@ func (p *payd) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (
 // PaymentCreate will post a request to payd to validate and add the txos to the wallet.
 //
 // If invalid a non 204 status code is returned.
-func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
+func (p *payd) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
 	paymentReq := models.PayDPaymentRequest{
 		RawTX:          req.RawTX,
 		SPVEnvelope:    req.SPVEnvelope,
 		ProofCallbacks: req.ProofCallbacks,
 	}
-	var ack p4.PaymentACK
+	var ack dpp.PaymentACK
 	if err := p.client.Do(ctx, http.MethodPost, fmt.Sprintf(urlPayments, p.baseURL(), args.PaymentID), http.StatusNoContent, paymentReq, &ack); err != nil {
 		return nil, err
 	}
@@ -63,7 +63,7 @@ func (p *payd) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req
 }
 
 // ProofCreate will pass on the proof to a payd instance for storage.
-func (p *payd) ProofCreate(ctx context.Context, args p4.ProofCreateArgs, req envelope.JSONEnvelope) error {
+func (p *payd) ProofCreate(ctx context.Context, args dpp.ProofCreateArgs, req envelope.JSONEnvelope) error {
 	return errors.WithStack(p.client.Do(ctx, http.MethodPost, fmt.Sprintf(urlProofs, p.baseURL(), args.TxID), http.StatusCreated, req, nil))
 }
 

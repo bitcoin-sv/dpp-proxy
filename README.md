@@ -1,8 +1,8 @@
 # p4
 
-[![Release](https://img.shields.io/github/release-pre/libsv/go-p4.svg?logo=github&style=flat&v=1)](https://github.com/libsv/go-p4/releases)
-[![Build Status](https://img.shields.io/github/workflow/status/libsv/go-p4/run-go-tests?logo=github&v=3)](https://github.com/libsv/go-p4/actions)
-[![Report](https://goreportcard.com/badge/github.com/libsv/go-p4?style=flat&v=1)](https://goreportcard.com/report/github.com/libsv/go-p4)
+[![Release](https://img.shields.io/github/release-pre/libsv/go-p4.svg?logo=github&style=flat&v=1)](https://github.com/libsv/go-dpp/releases)
+[![Build Status](https://img.shields.io/github/workflow/status/libsv/go-p4/run-go-tests?logo=github&v=3)](https://github.com/libsv/go-dpp/actions)
+[![Report](https://goreportcard.com/badge/github.com/libsv/go-dpp?style=flat&v=1)](https://goreportcard.com/report/github.com/libsv/go-dpp)
 [![Go](https://img.shields.io/github/go-mod/go-version/libsv/go-p4?v=1)](https://golang.org/)
 [![Sponsor](https://img.shields.io/badge/sponsor-libsv-181717.svg?logo=github&style=flat&v=3)](https://github.com/sponsors/libsv)
 [![Donate](https://img.shields.io/badge/donate-bitcoin-ff9900.svg?logo=bitcoin&style=flat&v=3)](https://gobitcoinsv.com/#sponsor)
@@ -23,7 +23,7 @@ Values can also be passed at build time to provide information such as build inf
 ### Server
 
 | Key                    | Description                                                        | Default        |
-|------------------------|--------------------------------------------------------------------|----------------|
+| ---------------------- | ------------------------------------------------------------------ | -------------- |
 | SERVER_PORT            | Port which this server should use                                  | :8445          |
 | SERVER_HOST            | Host name under which this server is found                         | p4             |
 | SERVER_SWAGGER_ENABLED | If set to true we will expose an endpoint hosting the Swagger docs | true           |
@@ -32,7 +32,7 @@ Values can also be passed at build time to provide information such as build inf
 ### Environment / Deployment Info
 
 | Key                 | Description                                                                | Default          |
-|---------------------|----------------------------------------------------------------------------|------------------|
+| ------------------- | -------------------------------------------------------------------------- | ---------------- |
 | ENV_ENVIRONMENT     | What enviornment we are running in, for example 'production'               | dev              |
 | ENV_REGION          | Region we are running in, for example 'eu-west-1'                          | local            |
 | ENV_COMMIT          | Commit hash for the current build                                          | test             |
@@ -43,13 +43,13 @@ Values can also be passed at build time to provide information such as build inf
 ### Logging
 
 | Key       | Description                                                           | Default |
-|-----------|-----------------------------------------------------------------------|---------|
+| --------- | --------------------------------------------------------------------- | ------- |
 | LOG_LEVEL | Level of logging we want within the server (debug, error, warn, info) | info    |
 
 ### PayD Wallet
 
 | Key         | Description                                              | Default |
-|-------------|----------------------------------------------------------|---------|
+| ----------- | -------------------------------------------------------- | ------- |
 | PAYD_HOST   | Host for the wallet we are connecting to                 | payd    |
 | PAYD_PORT   | Port the PayD wallet is listening on                     | :8443   |
 | PAYD_SECURE | If true the P4 server will validate the wallet TLS certs | false   |
@@ -87,10 +87,10 @@ services:
       GOFLAGS: "-mod=vendor"
       DB_DSN: "file:data/wallet.db?cache=shared&_foreign_keys=true;"
       DB_SCHEMA_PATH: "data/sqlite/migrations"
-    command: watcher -run github.com/libsv/go-p4/cmd/rest-server/ -watch github.com/libsv/go-p4
-    working_dir: /go/src/github.com/libsv/go-p4
+    command: watcher -run github.com/libsv/go-dpp/cmd/rest-server/ -watch github.com/libsv/go-dpp
+    working_dir: /go/src/github.com/libsv/go-dpp
     volumes:
-      - ~/git/libsv/go-p4:/go/src/github.com/libsv/go-p4
+      - ~/git/libsv/go-p4:/go/src/github.com/libsv/go-dpp
 ```
 
 ## CI / CD

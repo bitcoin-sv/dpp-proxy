@@ -10,33 +10,33 @@ import (
 	"testing"
 
 	"github.com/labstack/echo/v4"
-	"github.com/libsv/go-p4"
-	p4mocks "github.com/libsv/go-p4/mocks"
+	"github.com/libsv/go-dpp"
+	dppMocks "github.com/libsv/go-dpp/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 	tests := map[string]struct {
-		paymentRequestFunc func(context.Context, p4.PaymentRequestArgs) (*p4.PaymentRequest, error)
+		paymentRequestFunc func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error)
 		paymentID          string
-		expResponse        p4.PaymentRequest
+		expResponse        dpp.PaymentRequest
 		expStatusCode      int
 		expErr             error
 	}{
 		"successful post": {
-			paymentRequestFunc: func(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
-				return &p4.PaymentRequest{
+			paymentRequestFunc: func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+				return &dpp.PaymentRequest{
 					Memo: fmt.Sprintf("payment %s", args.PaymentID),
 				}, nil
 			},
 			paymentID: "abc123",
-			expResponse: p4.PaymentRequest{
+			expResponse: dpp.PaymentRequest{
 				Memo: "payment abc123",
 			},
 			expStatusCode: http.StatusOK,
 		},
 		"error is reported back": {
-			paymentRequestFunc: func(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+			paymentRequestFunc: func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 				return nil, errors.New("nah darn")
 			},
 			paymentID: "abc123",
@@ -47,7 +47,7 @@ func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			e := echo.New()
-			h := NewPaymentRequestHandler(&p4mocks.PaymentRequestServiceMock{
+			h := NewPaymentRequestHandler(&dppMocks.PaymentRequestServiceMock{
 				PaymentRequestFunc: test.paymentRequestFunc,
 			})
 			g := e.Group("/")
@@ -74,7 +74,7 @@ func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 			defer response.Body.Close()
 			assert.Equal(t, test.expStatusCode, response.StatusCode)
 
-			var ack p4.PaymentRequest
+			var ack dpp.PaymentRequest
 			assert.NoError(t, json.NewDecoder(response.Body).Decode(&ack))
 
 			assert.Equal(t, test.expResponse, ack)

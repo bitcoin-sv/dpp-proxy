@@ -1,58 +1,7 @@
 definitions:
-  bc.MapiCallback:
-    properties:
-      apiVersion:
-        type: string
-      blockHash:
-        type: string
-      blockHeight:
-        type: integer
-      callbackPayload:
-        type: string
-      callbackReason:
-        type: string
-      callbackTxId:
-        type: string
-      minerId:
-        type: string
-      timestamp:
-        type: string
-    type: object
-  bc.MerkleProof:
-    properties:
-      composite:
-        type: boolean
-      index:
-        type: integer
-      nodes:
-        items:
-          type: string
-        type: array
-      proofType:
-        type: string
-      target:
-        type: string
-      targetType:
-        type: string
-      txOrId:
-        type: string
-    type: object
   bt.FeeQuote:
     type: object
-  envelope.JSONEnvelope:
-    properties:
-      encoding:
-        type: string
-      mimetype:
-        type: string
-      payload:
-        type: string
-      publicKey:
-        type: string
-      signature:
-        type: string
-    type: object
-  p4.Merchant:
+  dpp.Merchant:
     properties:
       address:
         description: Address is the merchants store / head office address.
@@ -76,7 +25,7 @@ definitions:
         example: merchant 1
         type: string
     type: object
-  p4.Output:
+  dpp.Output:
     properties:
       amount:
         description: Amount is the number of satoshis to be paid.
@@ -93,48 +42,7 @@ definitions:
         example: 76a91455b61be43392125d127f1780fb038437cd67ef9c88ac
         type: string
     type: object
-  p4.Payment:
-    properties:
-      memo:
-        description: Memo is a plain-text note from the customer to the payment host.
-        example: for invoice 123456
-        type: string
-      merchantData:
-        $ref: '#/definitions/p4.Merchant'
-        description: |-
-          MerchantData is copied from PaymentDetails.merchantData.
-          Payment hosts may use invoice numbers or any other data they require to match Payments to PaymentRequests.
-          Note that malicious clients may modify the merchantData, so should be authenticated
-          in some way (for example, signed with a payment host-only key).
-          Maximum length is 10000 characters.
-      proofCallbacks:
-        additionalProperties:
-          $ref: '#/definitions/p4.ProofCallback'
-        description: |-
-          ProofCallbacks are optional and can be supplied when the sender wants to receive
-          a merkleproof for the transaction they are submitting as part of the SPV Envelope.
-
-          This is especially useful if they are receiving change and means when they use it
-          as an input, they can provide the merkle proof.
-        type: object
-      rawTx:
-        description: RawTX should be sent if SPVRequired is set to false in the payment
-          request.
-        type: string
-      refundTo:
-        description: |-
-          RefundTo is a paymail to send a refund to should a refund be necessary.
-          Maximum length is 100 characters
-        example: me@paymail.com
-        type: string
-      spvEnvelope:
-        $ref: '#/definitions/spv.Envelope'
-        description: |-
-          SPVEnvelope which contains the details of previous transaction and Merkle proof of each input UTXO.
-          Should be available if SPVRequired is set to true in the paymentRequest.
-          See https://tsc.bitcoinassociation.net/standards/spv-envelope/
-    type: object
-  p4.PaymentACK:
+  dpp.PaymentACK:
     properties:
       error:
         description: |-
@@ -143,24 +51,28 @@ definitions:
           it is recommended only to use “1” and to fill the memo with a textual explanation about why
           the transaction was not accepted until further numbers are defined and standardised.
         type: integer
+      id:
+        type: string
       memo:
         type: string
-      payment:
-        $ref: '#/definitions/p4.Payment'
+      peer_channel:
+        $ref: '#/definitions/dpp.PeerChannelData'
+      tx_id:
+        type: string
     type: object
-  p4.PaymentCreateArgs:
+  dpp.PaymentCreateArgs:
     properties:
       paymentID:
         type: string
     type: object
-  p4.PaymentDestinations:
+  dpp.PaymentDestinations:
     properties:
       outputs:
         items:
-          $ref: '#/definitions/p4.Output'
+          $ref: '#/definitions/dpp.Output'
         type: array
     type: object
-  p4.PaymentRequest:
+  dpp.PaymentRequest:
     properties:
       creationTimestamp:
         description: |-
@@ -169,9 +81,9 @@ definitions:
         example: "2019-10-12T07:20:50.52Z"
         type: string
       destinations:
-        $ref: '#/definitions/p4.PaymentDestinations'
+        $ref: '#/definitions/dpp.PaymentDestinations'
         description: |-
-          Destinations contains supported payment destinations by the merchant and p4 server, initial P2PKH outputs but can be extended.
+          Destinations contains supported payment destinations by the merchant and dpp server, initial P2PKH outputs but can be extended.
           Required.
       expirationTimestamp:
         description: |-
@@ -191,7 +103,7 @@ definitions:
         example: invoice number 123456
         type: string
       merchantData:
-        $ref: '#/definitions/p4.Merchant'
+        $ref: '#/definitions/dpp.Merchant'
         description: |-
           MerchantData contains arbitrary data that may be used by the payment host to identify the PaymentRequest.
           May be omitted if the payment host does not need to associate Payments with PaymentRequest
@@ -223,9 +135,26 @@ definitions:
         example: true
         type: boolean
     type: object
-  p4.ProofCallback:
+  dpp.PeerChannelData:
     properties:
+      channel_id:
+        type: string
+      host:
+        type: string
       token:
+        type: string
+    type: object
+  envelope.JSONEnvelope:
+    properties:
+      encoding:
+        type: string
+      mimetype:
+        type: string
+      payload:
+        type: string
+      publicKey:
+        type: string
+      signature:
         type: string
     type: object
   server.ClientError:
@@ -241,23 +170,6 @@ definitions:
         type: string
       title:
         example: not found
-        type: string
-    type: object
-  spv.Envelope:
-    properties:
-      mapiResponses:
-        items:
-          $ref: '#/definitions/bc.MapiCallback'
-        type: array
-      parents:
-        additionalProperties:
-          $ref: '#/definitions/spv.Envelope'
-        type: object
-      proof:
-        $ref: '#/definitions/bc.MerkleProof'
-      rawTx:
-        type: string
-      txid:
         type: string
     type: object
 host: localhost:8445
@@ -290,7 +202,7 @@ paths:
           description: contains outputs, merchant data and expiry information, used
             by the payee to construct a transaction
           schema:
-            $ref: '#/definitions/p4.PaymentRequest'
+            $ref: '#/definitions/dpp.PaymentRequest'
         "400":
           description: returned if the user input is invalid, usually an issue with
             the paymentID
@@ -324,7 +236,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/p4.PaymentCreateArgs'
+          $ref: '#/definitions/dpp.PaymentCreateArgs'
       produces:
       - application/json
       responses:
@@ -332,7 +244,7 @@ paths:
           description: if success, error code will be empty, otherwise it will be
             filled in with reason
           schema:
-            $ref: '#/definitions/p4.PaymentACK'
+            $ref: '#/definitions/dpp.PaymentACK'
         "400":
           description: returned if the user input is invalid, usually an issue with
             the paymentID

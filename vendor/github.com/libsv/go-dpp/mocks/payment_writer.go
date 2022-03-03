@@ -5,32 +5,32 @@ package mocks
 
 import (
 	"context"
-	"github.com/libsv/go-p4"
+	"github.com/libsv/go-dpp"
 	"sync"
 )
 
-// Ensure, that PaymentWriterMock does implement p4.PaymentWriter.
+// Ensure, that PaymentWriterMock does implement dpp.PaymentWriter.
 // If this is not the case, regenerate this file with moq.
-var _ p4.PaymentWriter = &PaymentWriterMock{}
+var _ dpp.PaymentWriter = &PaymentWriterMock{}
 
-// PaymentWriterMock is a mock implementation of p4.PaymentWriter.
+// PaymentWriterMock is a mock implementation of dpp.PaymentWriter.
 //
 // 	func TestSomethingThatUsesPaymentWriter(t *testing.T) {
 //
-// 		// make and configure a mocked p4.PaymentWriter
+// 		// make and configure a mocked dpp.PaymentWriter
 // 		mockedPaymentWriter := &PaymentWriterMock{
-// 			PaymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
+// 			PaymentCreateFunc: func(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
 // 				panic("mock out the PaymentCreate method")
 // 			},
 // 		}
 //
-// 		// use mockedPaymentWriter in code that requires p4.PaymentWriter
+// 		// use mockedPaymentWriter in code that requires dpp.PaymentWriter
 // 		// and then make assertions.
 //
 // 	}
 type PaymentWriterMock struct {
 	// PaymentCreateFunc mocks the PaymentCreate method.
-	PaymentCreateFunc func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error)
+	PaymentCreateFunc func(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -39,23 +39,23 @@ type PaymentWriterMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Args is the args argument value.
-			Args p4.PaymentCreateArgs
+			Args dpp.PaymentCreateArgs
 			// Req is the req argument value.
-			Req p4.Payment
+			Req dpp.Payment
 		}
 	}
 	lockPaymentCreate sync.RWMutex
 }
 
 // PaymentCreate calls PaymentCreateFunc.
-func (mock *PaymentWriterMock) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
+func (mock *PaymentWriterMock) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
 	if mock.PaymentCreateFunc == nil {
 		panic("PaymentWriterMock.PaymentCreateFunc: method is nil but PaymentWriter.PaymentCreate was just called")
 	}
 	callInfo := struct {
 		Ctx  context.Context
-		Args p4.PaymentCreateArgs
-		Req  p4.Payment
+		Args dpp.PaymentCreateArgs
+		Req  dpp.Payment
 	}{
 		Ctx:  ctx,
 		Args: args,
@@ -72,13 +72,13 @@ func (mock *PaymentWriterMock) PaymentCreate(ctx context.Context, args p4.Paymen
 //     len(mockedPaymentWriter.PaymentCreateCalls())
 func (mock *PaymentWriterMock) PaymentCreateCalls() []struct {
 	Ctx  context.Context
-	Args p4.PaymentCreateArgs
-	Req  p4.Payment
+	Args dpp.PaymentCreateArgs
+	Req  dpp.Payment
 } {
 	var calls []struct {
 		Ctx  context.Context
-		Args p4.PaymentCreateArgs
-		Req  p4.Payment
+		Args dpp.PaymentCreateArgs
+		Req  dpp.Payment
 	}
 	mock.lockPaymentCreate.RLock()
 	calls = mock.calls.PaymentCreate

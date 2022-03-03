@@ -5,32 +5,32 @@ package mocks
 
 import (
 	"context"
-	"github.com/libsv/go-p4"
+	"github.com/libsv/go-dpp"
 	"sync"
 )
 
-// Ensure, that PaymentRequestServiceMock does implement p4.PaymentRequestService.
+// Ensure, that PaymentRequestServiceMock does implement dpp.PaymentRequestService.
 // If this is not the case, regenerate this file with moq.
-var _ p4.PaymentRequestService = &PaymentRequestServiceMock{}
+var _ dpp.PaymentRequestService = &PaymentRequestServiceMock{}
 
-// PaymentRequestServiceMock is a mock implementation of p4.PaymentRequestService.
+// PaymentRequestServiceMock is a mock implementation of dpp.PaymentRequestService.
 //
 // 	func TestSomethingThatUsesPaymentRequestService(t *testing.T) {
 //
-// 		// make and configure a mocked p4.PaymentRequestService
+// 		// make and configure a mocked dpp.PaymentRequestService
 // 		mockedPaymentRequestService := &PaymentRequestServiceMock{
-// 			PaymentRequestFunc: func(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+// 			PaymentRequestFunc: func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 // 				panic("mock out the PaymentRequest method")
 // 			},
 // 		}
 //
-// 		// use mockedPaymentRequestService in code that requires p4.PaymentRequestService
+// 		// use mockedPaymentRequestService in code that requires dpp.PaymentRequestService
 // 		// and then make assertions.
 //
 // 	}
 type PaymentRequestServiceMock struct {
 	// PaymentRequestFunc mocks the PaymentRequest method.
-	PaymentRequestFunc func(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error)
+	PaymentRequestFunc func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -39,20 +39,20 @@ type PaymentRequestServiceMock struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Args is the args argument value.
-			Args p4.PaymentRequestArgs
+			Args dpp.PaymentRequestArgs
 		}
 	}
 	lockPaymentRequest sync.RWMutex
 }
 
 // PaymentRequest calls PaymentRequestFunc.
-func (mock *PaymentRequestServiceMock) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+func (mock *PaymentRequestServiceMock) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 	if mock.PaymentRequestFunc == nil {
 		panic("PaymentRequestServiceMock.PaymentRequestFunc: method is nil but PaymentRequestService.PaymentRequest was just called")
 	}
 	callInfo := struct {
 		Ctx  context.Context
-		Args p4.PaymentRequestArgs
+		Args dpp.PaymentRequestArgs
 	}{
 		Ctx:  ctx,
 		Args: args,
@@ -68,11 +68,11 @@ func (mock *PaymentRequestServiceMock) PaymentRequest(ctx context.Context, args 
 //     len(mockedPaymentRequestService.PaymentRequestCalls())
 func (mock *PaymentRequestServiceMock) PaymentRequestCalls() []struct {
 	Ctx  context.Context
-	Args p4.PaymentRequestArgs
+	Args dpp.PaymentRequestArgs
 } {
 	var calls []struct {
 		Ctx  context.Context
-		Args p4.PaymentRequestArgs
+		Args dpp.PaymentRequestArgs
 	}
 	mock.lockPaymentRequest.RLock()
 	calls = mock.calls.PaymentRequest

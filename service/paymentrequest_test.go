@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
+	"github.com/libsv/dpp-proxy/service"
 	"github.com/libsv/go-bt/v2/bscript"
-	"github.com/libsv/go-p4"
-	p4mocks "github.com/libsv/go-p4/mocks"
-	"github.com/libsv/p4-server/service"
+	"github.com/libsv/go-dpp"
+	dppMocks "github.com/libsv/go-dpp/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -17,22 +17,22 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 	created := time.Now()
 	expired := created.Add(time.Hour * 24)
 	tests := map[string]struct {
-		paymentRequestFunc func(context.Context, p4.PaymentRequestArgs) (*p4.PaymentRequest, error)
-		args               p4.PaymentRequestArgs
-		expResp            *p4.PaymentRequest
+		paymentRequestFunc func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error)
+		args               dpp.PaymentRequestArgs
+		expResp            *dpp.PaymentRequest
 		expErr             error
 	}{
 		"successful request": {
-			args: p4.PaymentRequestArgs{
+			args: dpp.PaymentRequestArgs{
 				PaymentID: "abc123",
 			},
-			paymentRequestFunc: func(context.Context, p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
-				return &p4.PaymentRequest{
+			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+				return &dpp.PaymentRequest{
 					SPVRequired:         false,
 					CreationTimestamp:   created,
 					ExpirationTimestamp: expired,
-					Destinations: p4.PaymentDestinations{
-						Outputs: []p4.Output{{
+					Destinations: dpp.PaymentDestinations{
+						Outputs: []dpp.Output{{
 							Amount: 500,
 							LockingScript: func() *bscript.Script {
 								ls, err := bscript.NewFromHexString("abc123")
@@ -43,17 +43,17 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					},
 					PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 					Memo:       "invoice abc123",
-					MerchantData: &p4.Merchant{
+					MerchantData: &dpp.Merchant{
 						ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 					},
 				}, nil
 			},
-			expResp: &p4.PaymentRequest{
+			expResp: &dpp.PaymentRequest{
 				SPVRequired:         false,
 				CreationTimestamp:   created,
 				ExpirationTimestamp: expired,
-				Destinations: p4.PaymentDestinations{
-					Outputs: []p4.Output{{
+				Destinations: dpp.PaymentDestinations{
+					Outputs: []dpp.Output{{
 						Amount: 500,
 						LockingScript: func() *bscript.Script {
 							ls, err := bscript.NewFromHexString("abc123")
@@ -64,22 +64,22 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 				Memo:       "invoice abc123",
-				MerchantData: &p4.Merchant{
+				MerchantData: &dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 				},
 			},
 		},
 		"successful request with nil extended data": {
-			args: p4.PaymentRequestArgs{
+			args: dpp.PaymentRequestArgs{
 				PaymentID: "abc123",
 			},
-			paymentRequestFunc: func(context.Context, p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
-				return &p4.PaymentRequest{
+			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+				return &dpp.PaymentRequest{
 					SPVRequired:         false,
 					CreationTimestamp:   created,
 					ExpirationTimestamp: expired,
-					Destinations: p4.PaymentDestinations{
-						Outputs: []p4.Output{{
+					Destinations: dpp.PaymentDestinations{
+						Outputs: []dpp.Output{{
 							Amount: 500,
 							LockingScript: func() *bscript.Script {
 								ls, err := bscript.NewFromHexString("abc123")
@@ -88,17 +88,17 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 							}(),
 						}},
 					},
-					MerchantData: &p4.Merchant{},
+					MerchantData: &dpp.Merchant{},
 					PaymentURL:   "http://iamsotest/api/v1/payment/abc123",
 					Memo:         "invoice abc123",
 				}, nil
 			},
-			expResp: &p4.PaymentRequest{
+			expResp: &dpp.PaymentRequest{
 				SPVRequired:         false,
 				CreationTimestamp:   created,
 				ExpirationTimestamp: expired,
-				Destinations: p4.PaymentDestinations{
-					Outputs: []p4.Output{{
+				Destinations: dpp.PaymentDestinations{
+					Outputs: []dpp.Output{{
 						Amount: 500,
 						LockingScript: func() *bscript.Script {
 							ls, err := bscript.NewFromHexString("abc123")
@@ -109,7 +109,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 				Memo:       "invoice abc123",
-				MerchantData: &p4.Merchant{
+				MerchantData: &dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 				},
 			},
@@ -118,10 +118,10 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 			expErr: errors.New("[paymentID: value cannot be empty]"),
 		},
 		"payment request reader error handled and reported": {
-			args: p4.PaymentRequestArgs{
+			args: dpp.PaymentRequestArgs{
 				PaymentID: "abc123",
 			},
-			paymentRequestFunc: func(context.Context, p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 				return nil, errors.New("oh boi")
 			},
 			expErr: errors.New("failed to get payment request for paymentID abc123: oh boi"),
@@ -130,7 +130,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
-			svc := service.NewPaymentRequest(&p4mocks.PaymentRequestServiceMock{
+			svc := service.NewPaymentRequest(&dppMocks.PaymentRequestServiceMock{
 				PaymentRequestFunc: test.paymentRequestFunc,
 			})
 

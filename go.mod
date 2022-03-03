@@ -1,4 +1,4 @@
-module github.com/libsv/p4-server
+module github.com/libsv/dpp-proxy
 
 go 1.17
 
@@ -9,7 +9,7 @@ require (
 	github.com/libsv/go-bc v0.1.8
 	github.com/libsv/go-bk v0.1.6
 	github.com/libsv/go-bt/v2 v2.1.0-beta.2
-	github.com/libsv/go-p4 v0.0.8
+	github.com/libsv/go-dpp v0.0.8
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.1
 	github.com/rs/zerolog v1.26.1

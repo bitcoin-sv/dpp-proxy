@@ -39,7 +39,7 @@
                     "201": {
                         "description": "contains outputs, merchant data and expiry information, used by the payee to construct a transaction",
                         "schema": {
-                            "$ref": "#/definitions/p4.PaymentRequest"
+                            "$ref": "#/definitions/dpp.PaymentRequest"
                         }
                     },
                     "400": {
@@ -88,7 +88,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/p4.PaymentCreateArgs"
+                            "$ref": "#/definitions/dpp.PaymentCreateArgs"
                         }
                     }
                 ],
@@ -96,7 +96,7 @@
                     "201": {
                         "description": "if success, error code will be empty, otherwise it will be filled in with reason",
                         "schema": {
-                            "$ref": "#/definitions/p4.PaymentACK"
+                            "$ref": "#/definitions/dpp.PaymentACK"
                         }
                     },
                     "400": {
@@ -160,88 +160,10 @@
         }
     },
     "definitions": {
-        "bc.MapiCallback": {
-            "type": "object",
-            "properties": {
-                "apiVersion": {
-                    "type": "string"
-                },
-                "blockHash": {
-                    "type": "string"
-                },
-                "blockHeight": {
-                    "type": "integer"
-                },
-                "callbackPayload": {
-                    "type": "string"
-                },
-                "callbackReason": {
-                    "type": "string"
-                },
-                "callbackTxId": {
-                    "type": "string"
-                },
-                "minerId": {
-                    "type": "string"
-                },
-                "timestamp": {
-                    "type": "string"
-                }
-            }
-        },
-        "bc.MerkleProof": {
-            "type": "object",
-            "properties": {
-                "composite": {
-                    "type": "boolean"
-                },
-                "index": {
-                    "type": "integer"
-                },
-                "nodes": {
-                    "type": "array",
-                    "items": {
-                        "type": "string"
-                    }
-                },
-                "proofType": {
-                    "type": "string"
-                },
-                "target": {
-                    "type": "string"
-                },
-                "targetType": {
-                    "type": "string"
-                },
-                "txOrId": {
-                    "type": "string"
-                }
-            }
-        },
         "bt.FeeQuote": {
             "type": "object"
         },
-        "envelope.JSONEnvelope": {
-            "type": "object",
-            "properties": {
-                "encoding": {
-                    "type": "string"
-                },
-                "mimetype": {
-                    "type": "string"
-                },
-                "payload": {
-                    "type": "string"
-                },
-                "publicKey": {
-                    "type": "string"
-                },
-                "signature": {
-                    "type": "string"
-                }
-            }
-        },
-        "p4.Merchant": {
+        "dpp.Merchant": {
             "type": "object",
             "properties": {
                 "address": {
@@ -271,7 +193,7 @@
                 }
             }
         },
-        "p4.Output": {
+        "dpp.Output": {
             "type": "object",
             "properties": {
                 "amount": {
@@ -291,56 +213,28 @@
                 }
             }
         },
-        "p4.Payment": {
-            "type": "object",
-            "properties": {
-                "memo": {
-                    "description": "Memo is a plain-text note from the customer to the payment host.",
-                    "type": "string",
-                    "example": "for invoice 123456"
-                },
-                "merchantData": {
-                    "description": "MerchantData is copied from PaymentDetails.merchantData.\nPayment hosts may use invoice numbers or any other data they require to match Payments to PaymentRequests.\nNote that malicious clients may modify the merchantData, so should be authenticated\nin some way (for example, signed with a payment host-only key).\nMaximum length is 10000 characters.",
-                    "$ref": "#/definitions/p4.Merchant"
-                },
-                "proofCallbacks": {
-                    "description": "ProofCallbacks are optional and can be supplied when the sender wants to receive\na merkleproof for the transaction they are submitting as part of the SPV Envelope.\n\nThis is especially useful if they are receiving change and means when they use it\nas an input, they can provide the merkle proof.",
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/p4.ProofCallback"
-                    }
-                },
-                "rawTx": {
-                    "description": "RawTX should be sent if SPVRequired is set to false in the payment request.",
-                    "type": "string"
-                },
-                "refundTo": {
-                    "description": "RefundTo is a paymail to send a refund to should a refund be necessary.\nMaximum length is 100 characters",
-                    "type": "string",
-                    "example": "me@paymail.com"
-                },
-                "spvEnvelope": {
-                    "description": "SPVEnvelope which contains the details of previous transaction and Merkle proof of each input UTXO.\nShould be available if SPVRequired is set to true in the paymentRequest.\nSee https://tsc.bitcoinassociation.net/standards/spv-envelope/",
-                    "$ref": "#/definitions/spv.Envelope"
-                }
-            }
-        },
-        "p4.PaymentACK": {
+        "dpp.PaymentACK": {
             "type": "object",
             "properties": {
                 "error": {
                     "description": "A number indicating why the transaction was not accepted. 0 or undefined indicates no error.\nA 1 or any other positive integer indicates an error. The errors are left undefined for now;\nit is recommended only to use “1” and to fill the memo with a textual explanation about why\nthe transaction was not accepted until further numbers are defined and standardised.",
                     "type": "integer"
                 },
+                "id": {
+                    "type": "string"
+                },
                 "memo": {
                     "type": "string"
                 },
-                "payment": {
-                    "$ref": "#/definitions/p4.Payment"
+                "peer_channel": {
+                    "$ref": "#/definitions/dpp.PeerChannelData"
+                },
+                "tx_id": {
+                    "type": "string"
                 }
             }
         },
-        "p4.PaymentCreateArgs": {
+        "dpp.PaymentCreateArgs": {
             "type": "object",
             "properties": {
                 "paymentID": {
@@ -348,18 +242,18 @@
                 }
             }
         },
-        "p4.PaymentDestinations": {
+        "dpp.PaymentDestinations": {
             "type": "object",
             "properties": {
                 "outputs": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/p4.Output"
+                        "$ref": "#/definitions/dpp.Output"
                     }
                 }
             }
         },
-        "p4.PaymentRequest": {
+        "dpp.PaymentRequest": {
             "type": "object",
             "properties": {
                 "creationTimestamp": {
@@ -368,8 +262,8 @@
                     "example": "2019-10-12T07:20:50.52Z"
                 },
                 "destinations": {
-                    "description": "Destinations contains supported payment destinations by the merchant and p4 server, initial P2PKH outputs but can be extended.\nRequired.",
-                    "$ref": "#/definitions/p4.PaymentDestinations"
+                    "description": "Destinations contains supported payment destinations by the merchant and dpp server, initial P2PKH outputs but can be extended.\nRequired.",
+                    "$ref": "#/definitions/dpp.PaymentDestinations"
                 },
                 "expirationTimestamp": {
                     "description": "ExpirationTimestamp Unix timestamp (UTC) after which the PaymentRequest should be considered invalid.\nOptional.",
@@ -387,7 +281,7 @@
                 },
                 "merchantData": {
                     "description": "MerchantData contains arbitrary data that may be used by the payment host to identify the PaymentRequest.\nMay be omitted if the payment host does not need to associate Payments with PaymentRequest\nor if they associate each PaymentRequest with a separate payment address.\nMaximum length is 10000 characters.",
-                    "$ref": "#/definitions/p4.Merchant"
+                    "$ref": "#/definitions/dpp.Merchant"
                 },
                 "network": {
                     "description": "Network  Always set to \"bitcoin\" (but seems to be set to 'bitcoin-sv'\noutside bip270 spec, see https://handcash.github.io/handcash-merchant-integration/#/merchant-payments)\n{enum: bitcoin, bitcoin-sv, test}\nRequired.",
@@ -412,10 +306,36 @@
                 }
             }
         },
-        "p4.ProofCallback": {
+        "dpp.PeerChannelData": {
             "type": "object",
             "properties": {
+                "channel_id": {
+                    "type": "string"
+                },
+                "host": {
+                    "type": "string"
+                },
                 "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "envelope.JSONEnvelope": {
+            "type": "object",
+            "properties": {
+                "encoding": {
+                    "type": "string"
+                },
+                "mimetype": {
+                    "type": "string"
+                },
+                "payload": {
+                    "type": "string"
+                },
+                "publicKey": {
+                    "type": "string"
+                },
+                "signature": {
                     "type": "string"
                 }
             }
@@ -438,32 +358,6 @@
                 "title": {
                     "type": "string",
                     "example": "not found"
-                }
-            }
-        },
-        "spv.Envelope": {
-            "type": "object",
-            "properties": {
-                "mapiResponses": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/bc.MapiCallback"
-                    }
-                },
-                "parents": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "$ref": "#/definitions/spv.Envelope"
-                    }
-                },
-                "proof": {
-                    "$ref": "#/definitions/bc.MerkleProof"
-                },
-                "rawTx": {
-                    "type": "string"
-                },
-                "txid": {
-                    "type": "string"
                 }
             }
         }
