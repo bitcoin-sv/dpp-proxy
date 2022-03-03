@@ -24,6 +24,8 @@ const (
 	RoutePaymentRequestCreate   = "paymentrequest.create"
 	RoutePaymentRequestResponse = "paymentrequest.response"
 	RoutePaymentRequestError    = "paymentrequest.error"
+
+	appID = "dpp"
 )
 
 type payd struct {
@@ -38,7 +40,7 @@ func NewPayd(b sockets.ServerChannelBroadcaster) *payd {
 // ProofCreate will broadcast the proof to all currently listening clients on the socket channel.
 func (p *payd) ProofCreate(ctx context.Context, args dpp.ProofCreateArgs, req envelope.JSONEnvelope) error {
 	msg := sockets.NewMessage("proof.create", "", args.PaymentReference)
-	msg.AppID = "dpp"
+	msg.AppID = appID
 	msg.CorrelationID = args.TxID
 	if err := msg.WithBody(req); err != nil {
 		return err
@@ -52,7 +54,7 @@ func (p *payd) ProofCreate(ctx context.Context, args dpp.ProofCreateArgs, req en
 // It will wait on a response before returnign the payment request.
 func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 	msg := sockets.NewMessage(RoutePaymentRequestCreate, "", args.PaymentID)
-	msg.AppID = "dpp"
+	msg.AppID = appID
 	msg.CorrelationID = uuid.NewString()
 
 	ctx, cancel := context.WithTimeout(ctx, 10*time.Second)
@@ -86,7 +88,7 @@ func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) 
 // PaymentCreate will send a request to payd to create and process the payment.
 func (p *payd) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
 	msg := sockets.NewMessage(RoutePayment, "", args.PaymentID)
-	msg.AppID = "dpp"
+	msg.AppID = appID
 	msg.CorrelationID = uuid.NewString()
 	if err := msg.WithBody(req); err != nil {
 		return nil, err
