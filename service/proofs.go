@@ -5,19 +5,18 @@ import (
 	"encoding/json"
 
 	"github.com/libsv/go-bk/envelope"
+	"github.com/libsv/go-dpp"
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
-
-	"github.com/libsv/go-p4"
 )
 
 // proof enforces business rules.
 type proof struct {
-	store p4.ProofsWriter
+	store dpp.ProofsWriter
 }
 
 // NewProof will setup a new proof service.
-func NewProof(store p4.ProofsWriter) *proof {
+func NewProof(store dpp.ProofsWriter) *proof {
 	return &proof{
 		store: store,
 	}
@@ -25,8 +24,8 @@ func NewProof(store p4.ProofsWriter) *proof {
 
 // Create will add an object to the data store, rejecting the request
 // if it fails to match required validation params.
-func (s *proof) Create(ctx context.Context, args p4.ProofCreateArgs, req envelope.JSONEnvelope) error {
-	var proof *p4.ProofWrapper
+func (s *proof) Create(ctx context.Context, args dpp.ProofCreateArgs, req envelope.JSONEnvelope) error {
+	var proof *dpp.ProofWrapper
 	if err := json.Unmarshal([]byte(req.Payload), &proof); err != nil {
 		return errors.Wrap(err, "failed to unmarshall JSONEnvelope")
 	}

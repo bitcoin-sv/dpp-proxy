@@ -89,10 +89,10 @@ github.com/libsv/go-bk/envelope
 github.com/libsv/go-bt/v2
 github.com/libsv/go-bt/v2/bscript
 github.com/libsv/go-bt/v2/sighash
-# github.com/libsv/go-p4 v0.0.8
+# github.com/libsv/go-dpp v0.0.9
 ## explicit; go 1.17
-github.com/libsv/go-p4
-github.com/libsv/go-p4/mocks
+github.com/libsv/go-dpp
+github.com/libsv/go-dpp/mocks
 # github.com/magiconair/properties v1.8.5
 ## explicit; go 1.13
 github.com/magiconair/properties

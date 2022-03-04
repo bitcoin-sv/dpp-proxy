@@ -9,15 +9,15 @@ import (
 	"github.com/gorilla/websocket"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	p4svr "github.com/libsv/p4-server"
-	"github.com/libsv/p4-server/data"
-	"github.com/libsv/p4-server/data/payd"
-	"github.com/libsv/p4-server/data/sockets"
-	"github.com/libsv/p4-server/docs"
-	"github.com/libsv/p4-server/log"
-	p4Handlers "github.com/libsv/p4-server/transports/http"
-	p4Middleware "github.com/libsv/p4-server/transports/http/middleware"
-	p4soc "github.com/libsv/p4-server/transports/sockets"
+	dppProxy "github.com/libsv/dpp-proxy"
+	"github.com/libsv/dpp-proxy/data"
+	"github.com/libsv/dpp-proxy/data/payd"
+	"github.com/libsv/dpp-proxy/data/sockets"
+	"github.com/libsv/dpp-proxy/docs"
+	"github.com/libsv/dpp-proxy/log"
+	dppHandlers "github.com/libsv/dpp-proxy/transports/http"
+	dppMiddleware "github.com/libsv/dpp-proxy/transports/http/middleware"
+	dppSoc "github.com/libsv/dpp-proxy/transports/sockets"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_golang/prometheus/promauto"
 	"github.com/spf13/viper"
@@ -25,18 +25,18 @@ import (
 	smw "github.com/theflyingcodr/sockets/middleware"
 	"github.com/theflyingcodr/sockets/server"
 
-	"github.com/libsv/go-p4"
-	"github.com/libsv/p4-server/config"
-	"github.com/libsv/p4-server/data/noop"
-	socData "github.com/libsv/p4-server/data/sockets"
-	"github.com/libsv/p4-server/service"
+	"github.com/libsv/dpp-proxy/config"
+	"github.com/libsv/dpp-proxy/data/noop"
+	socData "github.com/libsv/dpp-proxy/data/sockets"
+	"github.com/libsv/dpp-proxy/service"
+	"github.com/libsv/go-dpp"
 )
 
 // Deps holds all the dependencies.
 type Deps struct {
-	PaymentService        p4.PaymentService
-	PaymentRequestService p4.PaymentRequestService
-	ProofsService         p4.ProofsService
+	PaymentService        dpp.PaymentService
+	PaymentRequestService dpp.PaymentRequestService
+	ProofsService         dpp.ProofsService
 }
 
 // SetupDeps will setup all required dependent services.
@@ -82,7 +82,7 @@ func SetupEcho(l log.Logger) *echo.Echo {
 		AllowOrigins: []string{"*"},
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
-	e.HTTPErrorHandler = p4Middleware.ErrorHandler(l)
+	e.HTTPErrorHandler = dppMiddleware.ErrorHandler(l)
 	return e
 }
 
@@ -96,9 +96,9 @@ func SetupSwagger(cfg config.Server, e *echo.Echo) {
 func SetupHTTPEndpoints(deps *Deps, e *echo.Echo) {
 	g := e.Group("/")
 	// handlers
-	p4Handlers.NewPaymentHandler(deps.PaymentService).RegisterRoutes(g)
-	p4Handlers.NewPaymentRequestHandler(deps.PaymentRequestService).RegisterRoutes(g)
-	p4Handlers.NewProofs(deps.ProofsService).RegisterRoutes(g)
+	dppHandlers.NewPaymentHandler(deps.PaymentService).RegisterRoutes(g)
+	dppHandlers.NewPaymentRequestHandler(deps.PaymentRequestService).RegisterRoutes(g)
+	dppHandlers.NewProofs(deps.ProofsService).RegisterRoutes(g)
 }
 
 // SetupSockets will setup handlers and socket server.
@@ -112,9 +112,9 @@ func SetupSockets(cfg config.Socket, e *echo.Echo) *server.SocketServer {
 	// add middleware, with panic going first
 	s.WithMiddleware(smw.PanicHandler, smw.Timeout(smw.NewTimeoutConfig()), smw.Metrics())
 
-	p4soc.NewPaymentRequest().Register(s)
-	p4soc.NewPayment().Register(s)
-	p4Handlers.NewProofs(service.NewProof(sockets.NewPayd(s))).RegisterRoutes(g)
+	dppSoc.NewPaymentRequest().Register(s)
+	dppSoc.NewPayment().Register(s)
+	dppHandlers.NewProofs(service.NewProof(sockets.NewPayd(s))).RegisterRoutes(g)
 
 	// this is our websocket endpoint, clients will hit this with the channelID they wish to connect to
 	e.GET("/ws/:channelID", wsHandler(s))
@@ -136,10 +136,10 @@ func SetupHybrid(cfg config.Config, l log.Logger, e *echo.Echo) *server.SocketSe
 	paymentReqSvc := service.NewPaymentRequestProxy(paymentStore, cfg.Transports, cfg.Server)
 	proofsSvc := service.NewProof(paymentStore)
 
-	p4Handlers.NewPaymentHandler(paymentSvc).RegisterRoutes(g)
-	p4Handlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)
-	p4Handlers.NewProofs(proofsSvc).RegisterRoutes(g)
-	p4soc.NewHealthHandler().Register(s)
+	dppHandlers.NewPaymentHandler(paymentSvc).RegisterRoutes(g)
+	dppHandlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)
+	dppHandlers.NewProofs(proofsSvc).RegisterRoutes(g)
+	dppSoc.NewHealthHandler().Register(s)
 
 	e.GET("/ws/:channelID", wsHandler(s))
 	return s
@@ -162,7 +162,7 @@ func wsHandler(svr *server.SocketServer) echo.HandlerFunc {
 
 		if c.QueryParam("internal") != "true" {
 			if !svr.HasChannel(chID) {
-				return c.JSON(http.StatusNotFound, p4svr.ClientError{
+				return c.JSON(http.StatusNotFound, dppProxy.ClientError{
 					ID:      "",
 					Code:    "404",
 					Message: fmt.Sprintf("Connection for invoice '%s' not found", chID),

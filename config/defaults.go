@@ -11,9 +11,9 @@ import (
 // These can be overwritten when running the service.
 func SetupDefaults() {
 	// Web server defaults
-	viper.SetDefault(EnvServerHost, "p4")
+	viper.SetDefault(EnvServerHost, "dpp")
 	viper.SetDefault(EnvServerPort, ":8445")
-	viper.SetDefault(EnvServerFQDN, "p4:8445")
+	viper.SetDefault(EnvServerFQDN, "dpp:8445")
 	viper.SetDefault(EnvServerSwaggerEnabled, true)
 	viper.SetDefault(EnvServerSwaggerHost, "localhost:8445")
 

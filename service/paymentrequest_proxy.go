@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/libsv/go-p4"
-	"github.com/libsv/p4-server/config"
+	"github.com/libsv/dpp-proxy/config"
+	"github.com/libsv/go-dpp"
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
 )
@@ -15,14 +15,14 @@ import (
 // where another service will create the paymentRequest.
 // TODO - remove the other payment request service.
 type paymentRequestProxy struct {
-	preqRdr   p4.PaymentRequestReader
+	preqRdr   dpp.PaymentRequestReader
 	transCfg  *config.Transports
 	walletCfg *config.Server
 }
 
 // NewPaymentRequestProxy will setup and return a new PaymentRequest service that will generate outputs
 // using the provided outputter which is defined in server config.
-func NewPaymentRequestProxy(preqRdr p4.PaymentRequestReader, transCfg *config.Transports, walletCfg *config.Server) *paymentRequestProxy {
+func NewPaymentRequestProxy(preqRdr dpp.PaymentRequestReader, transCfg *config.Transports, walletCfg *config.Server) *paymentRequestProxy {
 	return &paymentRequestProxy{
 		preqRdr:   preqRdr,
 		transCfg:  transCfg,
@@ -31,7 +31,7 @@ func NewPaymentRequestProxy(preqRdr p4.PaymentRequestReader, transCfg *config.Tr
 }
 
 // PaymentRequest will call to the data layer to return a full payment request.
-func (p *paymentRequestProxy) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+func (p *paymentRequestProxy) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 	if err := validator.New().
 		Validate("paymentID", validator.NotEmpty(args.PaymentID)); err.Err() != nil {
 		return nil, err

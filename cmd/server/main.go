@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/libsv/p4-server/cmd/internal"
-	"github.com/libsv/p4-server/config"
-	"github.com/libsv/p4-server/log"
+	"github.com/libsv/dpp-proxy/cmd/internal"
+	"github.com/libsv/dpp-proxy/config"
+	"github.com/libsv/dpp-proxy/log"
 )
 
 const appname = "payment-protocol-rest-server"

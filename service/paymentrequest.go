@@ -3,26 +3,25 @@ package service
 import (
 	"context"
 
+	"github.com/libsv/go-dpp"
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
-
-	"github.com/libsv/go-p4"
 )
 
 type paymentRequest struct {
-	prRdr p4.PaymentRequestReader
+	prRdr dpp.PaymentRequestReader
 }
 
 // NewPaymentRequest will setup and return a new PaymentRequest service that will generate outputs
 // using the provided outputter which is defined in server config.
-func NewPaymentRequest(prRdr p4.PaymentRequestReader) *paymentRequest {
+func NewPaymentRequest(prRdr dpp.PaymentRequestReader) *paymentRequest {
 	return &paymentRequest{
 		prRdr: prRdr,
 	}
 }
 
 // PaymentRequest handles setting up a new PaymentRequest response and will validate that we have a paymentID.
-func (p *paymentRequest) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
+func (p *paymentRequest) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 	if err := validator.New().
 		Validate("paymentID", validator.NotEmpty(args.PaymentID)); err.Err() != nil {
 		return nil, err

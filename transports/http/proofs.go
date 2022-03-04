@@ -5,19 +5,18 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"github.com/libsv/go-bk/envelope"
+	"github.com/libsv/go-dpp"
 	"github.com/pkg/errors"
-
-	"github.com/libsv/go-p4"
 )
 
 // proofs is used to accept merkle proofs from transactions
 // submitted by the payment protocol server.
 type proofs struct {
-	svc p4.ProofsService
+	svc dpp.ProofsService
 }
 
 // NewProofs will setup and return a new proofs http handler.
-func NewProofs(svc p4.ProofsService) *proofs {
+func NewProofs(svc dpp.ProofsService) *proofs {
 	return &proofs{svc: svc}
 }
 
@@ -41,7 +40,7 @@ func (p *proofs) create(c echo.Context) error {
 	if err := c.Bind(&req); err != nil {
 		return errors.WithStack(err)
 	}
-	args := p4.ProofCreateArgs{TxID: c.Param("txid"),
+	args := dpp.ProofCreateArgs{TxID: c.Param("txid"),
 		PaymentReference: c.QueryParam("i"),
 	}
 	if err := p.svc.Create(c.Request().Context(), args, req); err != nil {

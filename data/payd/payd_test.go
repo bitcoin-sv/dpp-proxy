@@ -7,22 +7,22 @@ import (
 	"testing"
 	"time"
 
+	"github.com/libsv/dpp-proxy/config"
+	"github.com/libsv/dpp-proxy/data/payd"
+	"github.com/libsv/dpp-proxy/data/payd/models"
+	"github.com/libsv/dpp-proxy/mocks"
 	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-bt/v2"
 	"github.com/libsv/go-bt/v2/bscript"
-	"github.com/libsv/go-p4"
-	"github.com/libsv/p4-server/config"
-	"github.com/libsv/p4-server/data/payd"
-	"github.com/libsv/p4-server/data/payd/models"
-	"github.com/libsv/p4-server/mocks"
+	"github.com/libsv/go-dpp"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPayd_PaymentCreate(t *testing.T) {
 	tests := map[string]struct {
 		doFunc func(context.Context, string, string, int, interface{}, interface{}) error
-		args   p4.PaymentCreateArgs
-		req    p4.Payment
+		args   dpp.PaymentCreateArgs
+		req    dpp.Payment
 		cfg    *config.PayD
 		expURL string
 		expReq models.PayDPaymentRequest
@@ -32,20 +32,20 @@ func TestPayd_PaymentCreate(t *testing.T) {
 			doFunc: func(context.Context, string, string, int, interface{}, interface{}) error {
 				return nil
 			},
-			args: p4.PaymentCreateArgs{
+			args: dpp.PaymentCreateArgs{
 				PaymentID: "qwe123",
 			},
-			req: p4.Payment{
+			req: dpp.Payment{
 				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
 				SPVEnvelope: &spv.Envelope{},
-				ProofCallbacks: map[string]p4.ProofCallback{
+				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
 				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
 				SPVEnvelope: &spv.Envelope{},
-				ProofCallbacks: map[string]p4.ProofCallback{
+				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
@@ -59,20 +59,20 @@ func TestPayd_PaymentCreate(t *testing.T) {
 			doFunc: func(context.Context, string, string, int, interface{}, interface{}) error {
 				return nil
 			},
-			args: p4.PaymentCreateArgs{
+			args: dpp.PaymentCreateArgs{
 				PaymentID: "qwe123",
 			},
-			req: p4.Payment{
+			req: dpp.Payment{
 				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
 				SPVEnvelope: &spv.Envelope{},
-				ProofCallbacks: map[string]p4.ProofCallback{
+				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
 				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
 				SPVEnvelope: &spv.Envelope{},
-				ProofCallbacks: map[string]p4.ProofCallback{
+				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
@@ -87,20 +87,20 @@ func TestPayd_PaymentCreate(t *testing.T) {
 			doFunc: func(context.Context, string, string, int, interface{}, interface{}) error {
 				return errors.New("i tried so hard")
 			},
-			args: p4.PaymentCreateArgs{
+			args: dpp.PaymentCreateArgs{
 				PaymentID: "qwe123",
 			},
-			req: p4.Payment{
+			req: dpp.Payment{
 				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
 				SPVEnvelope: &spv.Envelope{},
-				ProofCallbacks: map[string]p4.ProofCallback{
+				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
 				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
 				SPVEnvelope: &spv.Envelope{},
-				ProofCallbacks: map[string]p4.ProofCallback{
+				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
@@ -137,10 +137,10 @@ func TestPayd_PaymentCreate(t *testing.T) {
 func TestPayd_PaymentRequest(t *testing.T) {
 	tests := map[string]struct {
 		doFunc        func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error
-		args          p4.PaymentRequestArgs
+		args          dpp.PaymentRequestArgs
 		cfg           *config.PayD
 		expURL        string
-		expPaymentReq *p4.PaymentRequest
+		expPaymentReq *dpp.PaymentRequest
 		expErr        error
 	}{
 		"successful payment request": {
@@ -163,7 +163,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 						},
 						"creationTimestamp": "2021-12-13T10:37:15.7946831Z",
 						"expirationTimestamp": "2021-12-14T10:37:15.7946831Z",
-						"paymentUrl": "http://p4:8445/api/v1/payment/6K9oZq9",
+						"paymentUrl": "http://dpp:8445/api/v1/payment/6K9oZq9",
 						"memo": "invoice 6K9oZq9",
 						"merchantData": {
 							"avatar": "http://url.com",
@@ -201,7 +201,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 					}
 				`), &out)
 			},
-			args: p4.PaymentRequestArgs{
+			args: dpp.PaymentRequestArgs{
 				PaymentID: "qwe123",
 			},
 			cfg: &config.PayD{
@@ -209,13 +209,13 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				Port: ":445",
 			},
 			expURL: "http://payddest:445/api/v1/payments/qwe123",
-			expPaymentReq: &p4.PaymentRequest{
+			expPaymentReq: &dpp.PaymentRequest{
 				SPVRequired: true,
 				Network:     "mainnet",
 				Memo:        "invoice 6K9oZq9",
-				PaymentURL:  "http://p4:8445/api/v1/payment/6K9oZq9",
-				Destinations: p4.PaymentDestinations{
-					Outputs: []p4.Output{{
+				PaymentURL:  "http://dpp:8445/api/v1/payment/6K9oZq9",
+				Destinations: dpp.PaymentDestinations{
+					Outputs: []dpp.Output{{
 						LockingScript: func() *bscript.Script {
 							ls, err := bscript.NewFromHexString("525252")
 							assert.NoError(t, err)
@@ -231,7 +231,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 						Amount: 400,
 					}},
 				},
-				MerchantData: &p4.Merchant{
+				MerchantData: &dpp.Merchant{
 					AvatarURL: "http://url.com",
 					Name:      "Merchant Name",
 					Email:     "merchant@demo.com",
@@ -267,7 +267,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 						},
 						"creationTimestamp": "2021-12-13T10:37:15.7946831Z",
 						"expirationTimestamp": "2021-12-14T10:37:15.7946831Z",
-						"paymentUrl": "https://p4:8445/api/v1/payment/6K9oZq9",
+						"paymentUrl": "https://dpp:8445/api/v1/payment/6K9oZq9",
 						"memo": "invoice 6K9oZq9",
 						"merchantData": {
 							"avatar": "http://url.com",
@@ -305,7 +305,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 					}
 				`), &out)
 			},
-			args: p4.PaymentRequestArgs{
+			args: dpp.PaymentRequestArgs{
 				PaymentID: "bwe123",
 			},
 			cfg: &config.PayD{
@@ -314,13 +314,13 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				Secure: true,
 			},
 			expURL: "https://securepayddest:4445/api/v1/payments/bwe123",
-			expPaymentReq: &p4.PaymentRequest{
+			expPaymentReq: &dpp.PaymentRequest{
 				SPVRequired: true,
 				Network:     "mainnet",
 				Memo:        "invoice 6K9oZq9",
-				PaymentURL:  "https://p4:8445/api/v1/payment/6K9oZq9",
-				Destinations: p4.PaymentDestinations{
-					Outputs: []p4.Output{{
+				PaymentURL:  "https://dpp:8445/api/v1/payment/6K9oZq9",
+				Destinations: dpp.PaymentDestinations{
+					Outputs: []dpp.Output{{
 						LockingScript: func() *bscript.Script {
 							ls, err := bscript.NewFromHexString("525252")
 							assert.NoError(t, err)
@@ -336,7 +336,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 						Amount: 400,
 					}},
 				},
-				MerchantData: &p4.Merchant{
+				MerchantData: &dpp.Merchant{
 					AvatarURL: "http://url.com",
 					Name:      "Merchant Name",
 					Email:     "merchant@demo.com",
@@ -356,7 +356,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 			doFunc: func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error {
 				return errors.New("yikes")
 			},
-			args: p4.PaymentRequestArgs{
+			args: dpp.PaymentRequestArgs{
 				PaymentID: "bwe123",
 			},
 			cfg: &config.PayD{

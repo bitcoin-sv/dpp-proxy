@@ -5,81 +5,81 @@ import (
 	"errors"
 	"testing"
 
+	"github.com/libsv/dpp-proxy/log"
+	"github.com/libsv/dpp-proxy/service"
 	"github.com/libsv/go-bc/spv"
-	"github.com/libsv/go-p4"
-	p4mocks "github.com/libsv/go-p4/mocks"
-	"github.com/libsv/p4-server/log"
-	"github.com/libsv/p4-server/service"
+	"github.com/libsv/go-dpp"
+	dppMocks "github.com/libsv/go-dpp/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPayment_Create(t *testing.T) {
 	tests := map[string]struct {
-		paymentCreateFn func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error)
-		args            p4.PaymentCreateArgs
-		req             p4.Payment
+		paymentCreateFn func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error)
+		args            dpp.PaymentCreateArgs
+		req             dpp.Payment
 		expErr          error
 	}{
 		"successful payment create": {
-			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error) {
-				return &p4.PaymentACK{}, nil
+			paymentCreateFn: func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error) {
+				return &dpp.PaymentACK{}, nil
 			},
-			req: p4.Payment{
+			req: dpp.Payment{
 				SPVEnvelope: &spv.Envelope{
 					RawTx: "01000000000000000000",
 					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
 				},
-				MerchantData: p4.Merchant{
+				MerchantData: dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
-			args: p4.PaymentCreateArgs{
+			args: dpp.PaymentCreateArgs{
 				PaymentID: "abc123",
 			},
 		},
 		"invalid args errors": {
-			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error) {
-				return &p4.PaymentACK{}, nil
+			paymentCreateFn: func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error) {
+				return &dpp.PaymentACK{}, nil
 			},
-			args: p4.PaymentCreateArgs{},
-			req: p4.Payment{
+			args: dpp.PaymentCreateArgs{},
+			req: dpp.Payment{
 				SPVEnvelope: &spv.Envelope{
 					RawTx: "01000000000000000000",
 					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
 				},
-				MerchantData: p4.Merchant{
+				MerchantData: dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
 			expErr: errors.New("[paymentID: value cannot be empty]"),
 		},
 		"missing raw tx errors": {
-			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error) {
-				return &p4.PaymentACK{}, nil
+			paymentCreateFn: func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error) {
+				return &dpp.PaymentACK{}, nil
 			},
-			args: p4.PaymentCreateArgs{
+			args: dpp.PaymentCreateArgs{
 				PaymentID: "abc123",
 			},
-			req: p4.Payment{
-				MerchantData: p4.Merchant{
+			req: dpp.Payment{
+				MerchantData: dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
 			expErr: errors.New("[spvEnvelope/rawTx: either an SPVEnvelope or a rawTX are required]"),
 		},
 		"error on payment create is handled": {
-			paymentCreateFn: func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error) {
+			paymentCreateFn: func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error) {
 				return nil, errors.New("lol oh boi")
 			},
-			args: p4.PaymentCreateArgs{
+			args: dpp.PaymentCreateArgs{
 				PaymentID: "abc123",
 			},
-			req: p4.Payment{
+			req: dpp.Payment{
 				SPVEnvelope: &spv.Envelope{
 					RawTx: "01000000000000000000",
 					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
 				},
-				MerchantData: p4.Merchant{
+				MerchantData: dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
@@ -91,7 +91,7 @@ func TestPayment_Create(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			svc := service.NewPayment(
 				log.Noop{},
-				&p4mocks.PaymentWriterMock{
+				&dppMocks.PaymentWriterMock{
 					PaymentCreateFunc: test.paymentCreateFn,
 				})
 

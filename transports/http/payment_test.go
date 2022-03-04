@@ -11,54 +11,54 @@ import (
 	"testing"
 
 	"github.com/labstack/echo/v4"
-	"github.com/libsv/go-p4"
-	p4mocks "github.com/libsv/go-p4/mocks"
+	"github.com/libsv/go-dpp"
+	dppMocks "github.com/libsv/go-dpp/mocks"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPaymentHandler_CreatedPayment(t *testing.T) {
 	tests := map[string]struct {
-		paymentCreateFunc func(context.Context, p4.PaymentCreateArgs, p4.Payment) (*p4.PaymentACK, error)
-		reqBody           p4.Payment
+		paymentCreateFunc func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error)
+		reqBody           dpp.Payment
 		paymentID         string
-		expResponse       p4.PaymentACK
+		expResponse       dpp.PaymentACK
 		expStatusCode     int
 		expErr            error
 	}{
 		"successful post": {
-			paymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
-				return &p4.PaymentACK{
+			paymentCreateFunc: func(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
+				return &dpp.PaymentACK{
 					Memo: fmt.Sprintf("payment %s", args.PaymentID),
 				}, nil
 			},
 			paymentID: "abc123",
-			reqBody:   p4.Payment{},
-			expResponse: p4.PaymentACK{
+			reqBody:   dpp.Payment{},
+			expResponse: dpp.PaymentACK{
 				Memo: "payment abc123",
 			},
 			expStatusCode: http.StatusCreated,
 		},
 		"error response returns 422": {
-			paymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
-				return &p4.PaymentACK{
+			paymentCreateFunc: func(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
+				return &dpp.PaymentACK{
 					Memo:  "failed",
 					Error: 1,
 				}, nil
 			},
 			paymentID: "abc123",
-			reqBody:   p4.Payment{},
-			expResponse: p4.PaymentACK{
+			reqBody:   dpp.Payment{},
+			expResponse: dpp.PaymentACK{
 				Error: 1,
 				Memo:  "failed",
 			},
 			expStatusCode: http.StatusUnprocessableEntity,
 		},
 		"payment create service error is handled": {
-			paymentCreateFunc: func(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
+			paymentCreateFunc: func(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
 				return nil, errors.New("ohnonono")
 			},
 			paymentID:     "abc123",
-			reqBody:       p4.Payment{},
+			reqBody:       dpp.Payment{},
 			expStatusCode: http.StatusInternalServerError,
 			expErr:        errors.New("ohnonono"),
 		},
@@ -67,7 +67,7 @@ func TestPaymentHandler_CreatedPayment(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			e := echo.New()
-			h := NewPaymentHandler(&p4mocks.PaymentServiceMock{
+			h := NewPaymentHandler(&dppMocks.PaymentServiceMock{
 				PaymentCreateFunc: test.paymentCreateFunc,
 			})
 			g := e.Group("/")
@@ -97,7 +97,7 @@ func TestPaymentHandler_CreatedPayment(t *testing.T) {
 			defer response.Body.Close()
 			assert.Equal(t, test.expStatusCode, response.StatusCode)
 
-			var ack p4.PaymentACK
+			var ack dpp.PaymentACK
 			assert.NoError(t, json.NewDecoder(response.Body).Decode(&ack))
 
 			assert.Equal(t, test.expResponse, ack)

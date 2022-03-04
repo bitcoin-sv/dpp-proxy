@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	server "github.com/libsv/p4-server"
+	server "github.com/libsv/dpp-proxy"
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos/errs"

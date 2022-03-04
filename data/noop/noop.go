@@ -4,11 +4,11 @@ import (
 	"context"
 	"time"
 
+	"github.com/libsv/dpp-proxy/log"
 	"github.com/libsv/go-bt/v2"
 	"github.com/libsv/go-bt/v2/bscript"
-	"github.com/libsv/p4-server/log"
 
-	"github.com/libsv/go-p4"
+	"github.com/libsv/go-dpp"
 )
 
 type noop struct {
@@ -26,13 +26,13 @@ func NewNoOp(l log.Logger) *noop {
 // PaymentCreate will post a request to payd to validate and add the txos to the wallet.
 //
 // If invalid a non 204 status code is returned.
-func (n *noop) PaymentCreate(ctx context.Context, args p4.PaymentCreateArgs, req p4.Payment) (*p4.PaymentACK, error) {
+func (n *noop) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
 	n.l.Info("hit noop.PaymentCreate")
-	return &p4.PaymentACK{}, nil
+	return &dpp.PaymentACK{}, nil
 }
 
-func (n noop) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*p4.PaymentRequest, error) {
-	return &p4.PaymentRequest{
+func (n noop) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+	return &dpp.PaymentRequest{
 		Network:             "noop",
 		CreationTimestamp:   time.Now(),
 		ExpirationTimestamp: time.Now().Add(time.Hour),
@@ -44,15 +44,15 @@ func (n noop) PaymentRequest(ctx context.Context, args p4.PaymentRequestArgs) (*
 		Memo:        "noop",
 		PaymentURL:  "noop",
 		SPVRequired: true,
-		MerchantData: &p4.Merchant{
+		MerchantData: &dpp.Merchant{
 			AvatarURL:    "noop",
 			Name:         "noop",
 			Email:        "noop",
 			Address:      "noop",
 			ExtendedData: nil,
 		},
-		Destinations: p4.PaymentDestinations{
-			Outputs: []p4.Output{{
+		Destinations: dpp.PaymentDestinations{
+			Outputs: []dpp.Output{{
 				Amount:        0,
 				LockingScript: &bscript.Script{},
 				Description:   "noop",
