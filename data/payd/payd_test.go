@@ -36,15 +36,15 @@ func TestPayd_PaymentCreate(t *testing.T) {
 				PaymentID: "qwe123",
 			},
 			req: dpp.Payment{
-				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
-				SPVEnvelope: &spv.Envelope{},
+				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
+				Ancestors: &spv.Envelope{},
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
-				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
-				SPVEnvelope: &spv.Envelope{},
+				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
+				Ancestors: &spv.Envelope{},
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
@@ -63,15 +63,15 @@ func TestPayd_PaymentCreate(t *testing.T) {
 				PaymentID: "qwe123",
 			},
 			req: dpp.Payment{
-				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
-				SPVEnvelope: &spv.Envelope{},
+				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
+				Ancestors: &spv.Envelope{},
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
-				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
-				SPVEnvelope: &spv.Envelope{},
+				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
+				Ancestors: &spv.Envelope{},
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
@@ -91,15 +91,15 @@ func TestPayd_PaymentCreate(t *testing.T) {
 				PaymentID: "qwe123",
 			},
 			req: dpp.Payment{
-				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
-				SPVEnvelope: &spv.Envelope{},
+				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
+				Ancestors: &spv.Envelope{},
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
-				RawTX:       func() *string { s := "rawrawraw"; return &s }(),
-				SPVEnvelope: &spv.Envelope{},
+				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
+				Ancestors: &spv.Envelope{},
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
@@ -148,7 +148,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				return json.Unmarshal([]byte(`
 					{
 						"network": "mainnet",
-						"spvRequired": true,
+						"ancestryRequired": true,
 						"destinations": {
 							"outputs": [
 								{
@@ -210,10 +210,10 @@ func TestPayd_PaymentRequest(t *testing.T) {
 			},
 			expURL: "http://payddest:445/api/v1/payments/qwe123",
 			expPaymentReq: &dpp.PaymentRequest{
-				SPVRequired: true,
-				Network:     "mainnet",
-				Memo:        "invoice 6K9oZq9",
-				PaymentURL:  "http://dpp:8445/api/v1/payment/6K9oZq9",
+				AncestryRequired: true,
+				Network:          "mainnet",
+				Memo:             "invoice 6K9oZq9",
+				PaymentURL:       "http://dpp:8445/api/v1/payment/6K9oZq9",
 				Destinations: dpp.PaymentDestinations{
 					Outputs: []dpp.Output{{
 						LockingScript: func() *bscript.Script {
@@ -252,7 +252,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				return json.Unmarshal([]byte(`
 					{
 						"network": "mainnet",
-						"spvRequired": true,
+						"ancestryRequired": true,
 						"destinations": {
 							"outputs": [
 								{
@@ -315,10 +315,10 @@ func TestPayd_PaymentRequest(t *testing.T) {
 			},
 			expURL: "https://securepayddest:4445/api/v1/payments/bwe123",
 			expPaymentReq: &dpp.PaymentRequest{
-				SPVRequired: true,
-				Network:     "mainnet",
-				Memo:        "invoice 6K9oZq9",
-				PaymentURL:  "https://dpp:8445/api/v1/payment/6K9oZq9",
+				AncestryRequired: true,
+				Network:          "mainnet",
+				Memo:             "invoice 6K9oZq9",
+				PaymentURL:       "https://dpp:8445/api/v1/payment/6K9oZq9",
 				Destinations: dpp.PaymentDestinations{
 					Outputs: []dpp.Output{{
 						LockingScript: func() *bscript.Script {

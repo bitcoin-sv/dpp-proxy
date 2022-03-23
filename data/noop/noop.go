@@ -41,9 +41,9 @@ func (n noop) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (
 			fq.UpdateExpiry(time.Now().Add(10 * time.Hour))
 			return fq
 		}(),
-		Memo:        "noop",
-		PaymentURL:  "noop",
-		SPVRequired: true,
+		Memo:             "noop",
+		PaymentURL:       "noop",
+		AncestryRequired: true,
 		MerchantData: &dpp.Merchant{
 			AvatarURL:    "noop",
 			Name:         "noop",

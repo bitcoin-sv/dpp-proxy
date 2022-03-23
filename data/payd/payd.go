@@ -52,7 +52,7 @@ func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) 
 func (p *payd) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
 	paymentReq := models.PayDPaymentRequest{
 		RawTX:          req.RawTX,
-		SPVEnvelope:    req.SPVEnvelope,
+		Ancestors:      req.Ancestors,
 		ProofCallbacks: req.ProofCallbacks,
 	}
 	var ack dpp.PaymentACK

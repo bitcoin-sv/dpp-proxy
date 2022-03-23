@@ -25,7 +25,7 @@ func TestPayment_Create(t *testing.T) {
 				return &dpp.PaymentACK{}, nil
 			},
 			req: dpp.Payment{
-				SPVEnvelope: &spv.Envelope{
+				Ancestors: &spv.Envelope{
 					RawTx: "01000000000000000000",
 					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
 				},
@@ -43,7 +43,7 @@ func TestPayment_Create(t *testing.T) {
 			},
 			args: dpp.PaymentCreateArgs{},
 			req: dpp.Payment{
-				SPVEnvelope: &spv.Envelope{
+				Ancestors: &spv.Envelope{
 					RawTx: "01000000000000000000",
 					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
 				},
@@ -65,7 +65,7 @@ func TestPayment_Create(t *testing.T) {
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
-			expErr: errors.New("[spvEnvelope/rawTx: either an SPVEnvelope or a rawTX are required]"),
+			expErr: errors.New("[ancestors/rawTx: either ancestors or a rawTX are required]"),
 		},
 		"error on payment create is handled": {
 			paymentCreateFn: func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error) {
@@ -75,7 +75,7 @@ func TestPayment_Create(t *testing.T) {
 				PaymentID: "abc123",
 			},
 			req: dpp.Payment{
-				SPVEnvelope: &spv.Envelope{
+				Ancestors: &spv.Envelope{
 					RawTx: "01000000000000000000",
 					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
 				},
