@@ -6,7 +6,7 @@ require (
 	github.com/google/uuid v1.3.0
 	github.com/gorilla/websocket v1.5.0
 	github.com/labstack/echo/v4 v4.7.2
-	github.com/libsv/go-bc v0.1.8
+	github.com/libsv/go-bc v0.1.9
 	github.com/libsv/go-bk v0.1.6
 	github.com/libsv/go-bt/v2 v2.1.0-beta.2
 	github.com/libsv/go-dpp v0.0.9
