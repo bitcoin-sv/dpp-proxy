@@ -11,7 +11,6 @@ import (
 	"github.com/libsv/dpp-proxy/data/payd"
 	"github.com/libsv/dpp-proxy/data/payd/models"
 	"github.com/libsv/dpp-proxy/mocks"
-	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-bt/v2"
 	"github.com/libsv/go-bt/v2/bscript"
 	"github.com/libsv/go-dpp"
@@ -36,15 +35,13 @@ func TestPayd_PaymentCreate(t *testing.T) {
 				PaymentID: "qwe123",
 			},
 			req: dpp.Payment{
-				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
-				Ancestors: &spv.Envelope{},
+				RawTx: func() *string { s := "rawrawraw"; return &s }(),
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
-				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
-				Ancestors: &spv.Envelope{},
+				RawTx: func() *string { s := "rawrawraw"; return &s }(),
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
@@ -63,15 +60,13 @@ func TestPayd_PaymentCreate(t *testing.T) {
 				PaymentID: "qwe123",
 			},
 			req: dpp.Payment{
-				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
-				Ancestors: &spv.Envelope{},
+				RawTx: func() *string { s := "rawrawraw"; return &s }(),
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
-				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
-				Ancestors: &spv.Envelope{},
+				RawTx: func() *string { s := "rawrawraw"; return &s }(),
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
@@ -91,15 +86,13 @@ func TestPayd_PaymentCreate(t *testing.T) {
 				PaymentID: "qwe123",
 			},
 			req: dpp.Payment{
-				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
-				Ancestors: &spv.Envelope{},
+				RawTx: func() *string { s := "rawrawraw"; return &s }(),
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
-				RawTX:     func() *string { s := "rawrawraw"; return &s }(),
-				Ancestors: &spv.Envelope{},
+				RawTx: func() *string { s := "rawrawraw"; return &s }(),
 				ProofCallbacks: map[string]dpp.ProofCallback{
 					"abc.com": {Token: "mYtOkEn"},
 				},
