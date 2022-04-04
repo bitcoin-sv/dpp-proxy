@@ -9,7 +9,7 @@ require (
 	github.com/libsv/go-bc v0.1.9
 	github.com/libsv/go-bk v0.1.6
 	github.com/libsv/go-bt/v2 v2.1.0-beta.2
-	github.com/libsv/go-dpp v0.0.9
+	github.com/libsv/go-dpp v0.0.10-0.20220404121630-0c117ccbe02a
 	github.com/pkg/errors v0.9.1
 	github.com/prometheus/client_golang v1.12.1
 	github.com/rs/zerolog v1.26.1
@@ -69,5 +69,3 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
-
-replace github.com/libsv/go-dpp => /Users/t.carroll/go/src/github.com/libsv/go-dpp

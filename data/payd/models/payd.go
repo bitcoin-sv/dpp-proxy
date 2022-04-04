@@ -3,7 +3,6 @@ package models
 import (
 	"time"
 
-	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-bt/v2"
 
 	"github.com/libsv/go-dpp"
@@ -11,8 +10,8 @@ import (
 
 // PayDPaymentRequest is used to send a payment to PayD for valdiation and storage.
 type PayDPaymentRequest struct {
-	Ancestors      *spv.Envelope                `json:"ancestors"`
-	RawTX          *string                      `json:"rawTx"`
+	Ancestry       *string                      `json:"ancestry"`
+	RawTx          *string                      `json:"rawTx"`
 	ProofCallbacks map[string]dpp.ProofCallback `json:"proofCallbacks"`
 }
 
