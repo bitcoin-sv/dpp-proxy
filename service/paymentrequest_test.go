@@ -28,7 +28,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 			},
 			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 				return &dpp.PaymentRequest{
-					SPVRequired:         false,
+					AncestryRequired:    false,
 					CreationTimestamp:   created,
 					ExpirationTimestamp: expired,
 					Destinations: dpp.PaymentDestinations{
@@ -49,7 +49,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				}, nil
 			},
 			expResp: &dpp.PaymentRequest{
-				SPVRequired:         false,
+				AncestryRequired:    false,
 				CreationTimestamp:   created,
 				ExpirationTimestamp: expired,
 				Destinations: dpp.PaymentDestinations{
@@ -75,7 +75,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 			},
 			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 				return &dpp.PaymentRequest{
-					SPVRequired:         false,
+					AncestryRequired:    false,
 					CreationTimestamp:   created,
 					ExpirationTimestamp: expired,
 					Destinations: dpp.PaymentDestinations{
@@ -94,7 +94,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				}, nil
 			},
 			expResp: &dpp.PaymentRequest{
-				SPVRequired:         false,
+				AncestryRequired:    false,
 				CreationTimestamp:   created,
 				ExpirationTimestamp: expired,
 				Destinations: dpp.PaymentDestinations{

@@ -2,6 +2,7 @@ package service_test
 
 import (
 	"context"
+	"encoding/hex"
 	"errors"
 	"testing"
 
@@ -25,10 +26,13 @@ func TestPayment_Create(t *testing.T) {
 				return &dpp.PaymentACK{}, nil
 			},
 			req: dpp.Payment{
-				SPVEnvelope: &spv.Envelope{
-					RawTx: "01000000000000000000",
-					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
-				},
+				Ancestry: func() *string {
+					s := &spv.Envelope{}
+					bb, _ := s.Bytes()
+					ss := hex.EncodeToString(bb)
+					return &ss
+				}(),
+				RawTx: func() *string { s := "01000000000000000000"; return &s }(),
 				MerchantData: dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
@@ -43,10 +47,7 @@ func TestPayment_Create(t *testing.T) {
 			},
 			args: dpp.PaymentCreateArgs{},
 			req: dpp.Payment{
-				SPVEnvelope: &spv.Envelope{
-					RawTx: "01000000000000000000",
-					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
-				},
+				RawTx: func() *string { s := "01000000000000000000"; return &s }(),
 				MerchantData: dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
@@ -65,7 +66,7 @@ func TestPayment_Create(t *testing.T) {
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
-			expErr: errors.New("[spvEnvelope/rawTx: either an SPVEnvelope or a rawTX are required]"),
+			expErr: errors.New("[ancestry/rawTx: either ancestry or a rawTX are required]"),
 		},
 		"error on payment create is handled": {
 			paymentCreateFn: func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error) {
@@ -75,10 +76,7 @@ func TestPayment_Create(t *testing.T) {
 				PaymentID: "abc123",
 			},
 			req: dpp.Payment{
-				SPVEnvelope: &spv.Envelope{
-					RawTx: "01000000000000000000",
-					TxID:  "d21633ba23f70118185227be58a63527675641ad37967e2aa461559f577aec43",
-				},
+				RawTx: func() *string { s := "01000000000000000000"; return &s }(),
 				MerchantData: dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},

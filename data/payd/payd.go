@@ -51,8 +51,8 @@ func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) 
 // If invalid a non 204 status code is returned.
 func (p *payd) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
 	paymentReq := models.PayDPaymentRequest{
-		RawTX:          req.RawTX,
-		SPVEnvelope:    req.SPVEnvelope,
+		RawTx:          req.RawTx,
+		Ancestry:       req.Ancestry,
 		ProofCallbacks: req.ProofCallbacks,
 	}
 	var ack dpp.PaymentACK
