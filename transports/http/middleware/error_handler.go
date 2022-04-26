@@ -5,8 +5,8 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	server "github.com/libsv/dpp-proxy"
-	"github.com/libsv/dpp-proxy/log"
+	server "github.com/libsv/dp3"
+	"github.com/libsv/dp3/log"
 	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos"
 	"github.com/theflyingcodr/lathos/errs"

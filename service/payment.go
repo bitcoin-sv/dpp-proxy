@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/libsv/dpp-proxy/log"
+	"github.com/libsv/dp3/log"
 	"github.com/libsv/go-dpp"
 )
 

@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/libsv/dpp-proxy/config"
+	"github.com/libsv/dp3/config"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

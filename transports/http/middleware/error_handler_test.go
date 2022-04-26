@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/labstack/echo/v4"
-	"github.com/libsv/dpp-proxy/log"
-	"github.com/libsv/dpp-proxy/transports/http/middleware"
+	"github.com/libsv/dp3/log"
+	"github.com/libsv/dp3/transports/http/middleware"
 	"github.com/stretchr/testify/assert"
 	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos/errs"

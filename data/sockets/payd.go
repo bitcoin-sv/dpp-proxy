@@ -6,7 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	server "github.com/libsv/dpp-proxy"
+	server "github.com/libsv/dp3"
 	"github.com/libsv/go-bk/envelope"
 	"github.com/pkg/errors"
 	"github.com/theflyingcodr/lathos/errs"

@@ -1,9 +1,9 @@
 # DPP Proxy (DP3)
 
-[![Release](https://img.shields.io/github/release-pre/libsv/go-dpp-proxy.svg?logo=github&style=flat&v=1)](https://github.com/libsv/go-dpp/releases)
-[![Build Status](https://img.shields.io/github/workflow/status/libsv/go-dpp-proxy/run-go-tests?logo=github&v=3)](https://github.com/libsv/go-dpp/actions)
+[![Release](https://img.shields.io/github/release-pre/libsv/go-dp3.svg?logo=github&style=flat&v=1)](https://github.com/libsv/go-dpp/releases)
+[![Build Status](https://img.shields.io/github/workflow/status/libsv/go-dp3/run-go-tests?logo=github&v=3)](https://github.com/libsv/go-dpp/actions)
 [![Report](https://goreportcard.com/badge/github.com/libsv/go-dpp?style=flat&v=1)](https://goreportcard.com/report/github.com/libsv/go-dpp)
-[![Go](https://img.shields.io/github/go-mod/go-version/libsv/go-dpp-proxy?v=1)](https://golang.org/)
+[![Go](https://img.shields.io/github/go-mod/go-version/libsv/go-dp3?v=1)](https://golang.org/)
 [![Sponsor](https://img.shields.io/badge/sponsor-libsv-181717.svg?logo=github&style=flat&v=3)](https://github.com/sponsors/libsv)
 [![Donate](https://img.shields.io/badge/donate-bitcoin-ff9900.svg?logo=bitcoin&style=flat&v=3)](https://gobitcoinsv.com/#sponsor)
 
@@ -13,9 +13,9 @@ This is written in go and integrates with a wallet running the Payment Protocol 
 
 ## Exploring Endpoints
 
-To explore the endpoints and functionality, navigate to the [Swagger page](https://libsv.github.io/dpp-proxy/) where the endpoints and their models are described in detail. You can also access the Swagger endpoint on the server, just run the proxy server using `go run cmd/rest-server/main.go` and hit the [Swagger endpoint](http://localhost:8443/swagger/index.html).
+To explore the endpoints and functionality, navigate to the [Swagger page](https://libsv.github.io/dp3/) where the endpoints and their models are described in detail. You can also access the Swagger endpoint on the server, just run the proxy server using `go run cmd/rest-server/main.go` and hit the [Swagger endpoint](http://localhost:8443/swagger/index.html).
 
-## Configuring dpp-proxy
+## Configuring dp3
 
 The server has a series of environment variables that allow you to configure the behaviours and integrations of the server.
 Values can also be passed at build time to provide information such as build information, region, version etc.
@@ -25,7 +25,7 @@ Values can also be passed at build time to provide information such as build inf
 | Key                    | Description                                                        | Default        |
 | ---------------------- | ------------------------------------------------------------------ | -------------- |
 | SERVER_PORT            | Port which this server should use                                  | :8445          |
-| SERVER_HOST            | Host name under which this server is found                         | dpp-proxy             |
+| SERVER_HOST            | Host name under which this server is found                         | dp3             |
 | SERVER_SWAGGER_ENABLED | If set to true we will expose an endpoint hosting the Swagger docs | true           |
 | SERVER_SWAGGER_HOST    | Sets the base url for swagger ui calls                             | localhost:8445 |
 
@@ -52,10 +52,10 @@ Values can also be passed at build time to provide information such as build inf
 | ----------- | -------------------------------------------------------- | ------- |
 | PAYD_HOST   | Host for the wallet we are connecting to                 | payd    |
 | PAYD_PORT   | Port the PayD wallet is listening on                     | :8443   |
-| PAYD_SECURE | If true the dpp-proxy server will validate the wallet TLS certs | false   |
+| PAYD_SECURE | If true the dp3 server will validate the wallet TLS certs | false   |
 | PAYD_NOOP   | If true we will use a dummy data store in place of payd  | true    |
 
-## Working with dpp-proxy
+## Working with dp3
 
 There are a set of makefile commands listed under the [Makefile](Makefile) which give some useful shortcuts when working
 with the repo.
@@ -64,9 +64,9 @@ Some of the more common commands are listed below:
 
 `make pre-commit` - ensures dependencies are up to date and runs linter and unit tests.
 
-`make build-image` - builds a local docker image, useful when testing dpp-proxy in docker.
+`make build-image` - builds a local docker image, useful when testing dp3 in docker.
 
-`make run-compose` - runs dpp-proxy in compose, a reference PayD wallet will be added to compose soon NOTE the above command will need ran first.
+`make run-compose` - runs dp3 in compose, a reference PayD wallet will be added to compose soon NOTE the above command will need ran first.
 
 ### Rebuild on code change
 
@@ -80,7 +80,7 @@ The file I use has a watcher which means it auto rebuilds the image on code chan
 version: "3.7"
 
 services:
-  dpp-proxy:
+  dp3:
     image: theflyingcodr/go-watcher:1.15.8
     environment:
       GO111MODULE: "on"
@@ -90,7 +90,7 @@ services:
     command: watcher -run github.com/libsv/go-dpp/cmd/rest-server/ -watch github.com/libsv/go-dpp
     working_dir: /go/src/github.com/libsv/go-dpp
     volumes:
-      - ~/git/libsv/go-dpp-proxy:/go/src/github.com/libsv/go-dpp
+      - ~/git/libsv/go-dp3:/go/src/github.com/libsv/go-dpp
 ```
 
 ## CI / CD

@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/libsv/dpp-proxy/cmd/internal"
-	"github.com/libsv/dpp-proxy/config"
-	"github.com/libsv/dpp-proxy/log"
+	"github.com/libsv/dp3/cmd/internal"
+	"github.com/libsv/dp3/config"
+	"github.com/libsv/dp3/log"
 )
 
 const appname = "payment-protocol-rest-server"

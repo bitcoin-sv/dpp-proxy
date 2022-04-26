@@ -1,4 +1,4 @@
-module github.com/libsv/dpp-proxy
+module github.com/libsv/dp3
 
 go 1.17
 
