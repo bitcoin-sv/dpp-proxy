@@ -49,5 +49,5 @@ dockers:
       - "--platform=linux/amd64"
     dockerfile: Dockerfile.releaser
     image_templates:
-      - "libsv/p4:latest"
-      - "libsv/p4:{{.Version}}"
+      - "libsv/dp3:latest"
+      - "libsv/dp3:{{.Version}}"
