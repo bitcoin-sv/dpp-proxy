@@ -1,4 +1,4 @@
-module github.com/libsv/dp3
+module github.com/bitcoin-sv/dp3
 
 go 1.17
 

@@ -8,9 +8,9 @@ import (
 	"github.com/libsv/go-bk/envelope"
 	"github.com/pkg/errors"
 
-	"github.com/libsv/dp3/config"
-	"github.com/libsv/dp3/data"
-	"github.com/libsv/dp3/data/payd/models"
+	"github.com/bitcoin-sv/dp3/config"
+	"github.com/bitcoin-sv/dp3/data"
+	"github.com/bitcoin-sv/dp3/data/payd/models"
 	"github.com/libsv/go-dpp"
 )
 

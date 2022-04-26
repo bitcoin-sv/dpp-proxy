@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	server "github.com/bitcoin-sv/dp3"
 	"github.com/google/uuid"
-	server "github.com/libsv/dp3"
 	"github.com/libsv/go-bk/envelope"
 	"github.com/pkg/errors"
 	"github.com/theflyingcodr/lathos/errs"

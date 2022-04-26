@@ -8,7 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 
-	server "github.com/libsv/dp3"
+	server "github.com/bitcoin-sv/dp3"
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos/errs"

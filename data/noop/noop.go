@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/libsv/dp3/log"
+	"github.com/bitcoin-sv/dp3/log"
 	"github.com/libsv/go-bt/v2"
 	"github.com/libsv/go-bt/v2/bscript"
 

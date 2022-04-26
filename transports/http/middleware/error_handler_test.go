@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/bitcoin-sv/dp3/log"
+	"github.com/bitcoin-sv/dp3/transports/http/middleware"
 	"github.com/labstack/echo/v4"
-	"github.com/libsv/dp3/log"
-	"github.com/libsv/dp3/transports/http/middleware"
 	"github.com/stretchr/testify/assert"
 	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos/errs"

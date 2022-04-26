@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
+	server "github.com/bitcoin-sv/dp3"
+	"github.com/bitcoin-sv/dp3/log"
 	"github.com/labstack/echo/v4"
-	server "github.com/libsv/dp3"
-	"github.com/libsv/dp3/log"
 	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos"
 	"github.com/theflyingcodr/lathos/errs"

@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/libsv/dp3/service"
+	"github.com/bitcoin-sv/dp3/service"
 	"github.com/libsv/go-bt/v2/bscript"
 	"github.com/libsv/go-dpp"
 	dppMocks "github.com/libsv/go-dpp/mocks"

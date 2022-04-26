@@ -5,7 +5,7 @@ package mocks
 
 import (
 	"context"
-	"github.com/libsv/dp3/data"
+	"github.com/bitcoin-sv/dp3/data"
 	"sync"
 )
 
