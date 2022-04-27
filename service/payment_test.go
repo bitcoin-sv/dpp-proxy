@@ -6,8 +6,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/libsv/dpp-proxy/log"
-	"github.com/libsv/dpp-proxy/service"
+	"github.com/bitcoin-sv/dpp-proxy/log"
+	"github.com/bitcoin-sv/dpp-proxy/service"
 	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-dpp"
 	dppMocks "github.com/libsv/go-dpp/mocks"

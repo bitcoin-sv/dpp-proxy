@@ -49,5 +49,5 @@ dockers:
       - "--platform=linux/amd64"
     dockerfile: Dockerfile.releaser
     image_templates:
-      - "libsv/p4:latest"
-      - "libsv/p4:{{.Version}}"
+      - "bitcoinsv/dpp-proxy:latest"
+      - "bitcoinsv/dpp-proxy:{{.Version}}"

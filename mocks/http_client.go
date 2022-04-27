@@ -5,7 +5,7 @@ package mocks
 
 import (
 	"context"
-	"github.com/libsv/dpp-proxy/data"
+	"github.com/bitcoin-sv/dpp-proxy/data"
 	"sync"
 )
 

@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
+	server "github.com/bitcoin-sv/dpp-proxy"
 	"github.com/google/uuid"
-	server "github.com/libsv/dpp-proxy"
 	"github.com/libsv/go-bk/envelope"
 	"github.com/pkg/errors"
 	"github.com/theflyingcodr/lathos/errs"

@@ -4,9 +4,9 @@ import (
 	"errors"
 	"net/http"
 
+	server "github.com/bitcoin-sv/dpp-proxy"
+	"github.com/bitcoin-sv/dpp-proxy/log"
 	"github.com/labstack/echo/v4"
-	server "github.com/libsv/dpp-proxy"
-	"github.com/libsv/dpp-proxy/log"
 	validator "github.com/theflyingcodr/govalidator"
 	"github.com/theflyingcodr/lathos"
 	"github.com/theflyingcodr/lathos/errs"
