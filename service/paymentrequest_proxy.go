@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/url"
 
-	"github.com/bitcoin-sv/dp3/config"
+	"github.com/bitcoin-sv/dpp-proxy/config"
 	"github.com/libsv/go-dpp"
 	"github.com/pkg/errors"
 	validator "github.com/theflyingcodr/govalidator"

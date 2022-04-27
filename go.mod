@@ -1,4 +1,4 @@
-module github.com/bitcoin-sv/dp3
+module github.com/bitcoin-sv/dpp-proxy
 
 go 1.17
 

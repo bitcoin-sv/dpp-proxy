@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	"github.com/bitcoin-sv/dp3/log"
+	"github.com/bitcoin-sv/dpp-proxy/log"
 	"github.com/libsv/go-dpp"
 )
 

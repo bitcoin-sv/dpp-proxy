@@ -1,7 +1,7 @@
 package log
 
 import (
-	"github.com/bitcoin-sv/dp3/config"
+	"github.com/bitcoin-sv/dpp-proxy/config"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	server "github.com/bitcoin-sv/dp3"
+	server "github.com/bitcoin-sv/dpp-proxy"
 	"github.com/google/uuid"
 	"github.com/libsv/go-bk/envelope"
 	"github.com/pkg/errors"

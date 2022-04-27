@@ -6,9 +6,9 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/bitcoin-sv/dp3/cmd/internal"
-	"github.com/bitcoin-sv/dp3/config"
-	"github.com/bitcoin-sv/dp3/log"
+	"github.com/bitcoin-sv/dpp-proxy/cmd/internal"
+	"github.com/bitcoin-sv/dpp-proxy/config"
+	"github.com/bitcoin-sv/dpp-proxy/log"
 )
 
 const appname = "payment-protocol-rest-server"
