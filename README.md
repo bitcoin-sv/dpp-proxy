@@ -13,7 +13,7 @@ This is written in go and integrates with a wallet running the Payment Protocol 
 
 ## Exploring Endpoints
 
-To explore the endpoints and functionality, navigate to the [Swagger page](https://bitcoinsv.github.io/dpp-proxy/) where the endpoints and their models are described in detail. You can also access the Swagger endpoint on the server, just run the proxy server using `go run cmd/rest-server/main.go` and hit the [Swagger endpoint](http://localhost:8443/swagger/index.html).
+To explore the endpoints and functionality, navigate to the [Swagger page](https://bitcoin-sv.github.io/dpp-proxy/) where the endpoints and their models are described in detail. You can also access the Swagger endpoint on the server, just run the proxy server using `go run cmd/rest-server/main.go` and hit the [Swagger endpoint](http://localhost:8443/swagger/index.html).
 
 ## Configuring dpp-proxy
 
