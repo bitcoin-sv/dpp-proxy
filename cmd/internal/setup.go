@@ -127,6 +127,9 @@ func SetupHybrid(cfg config.Config, l log.Logger, e *echo.Echo) *server.SocketSe
 	s := server.New(
 		server.WithMaxMessageSize(int64(cfg.Sockets.MaxMessageBytes)),
 		server.WithChannelTimeout(cfg.Sockets.ChannelTimeout))
+	// add middleware, with panic going first
+	s.WithMiddleware(smw.PanicHandler, smw.Timeout(smw.NewTimeoutConfig()), smw.Metrics())
+
 	paymentStore := socData.NewPayd(s)
 	paymentSvc := service.NewPayment(l, paymentStore)
 	if cfg.PayD.Noop {
@@ -140,6 +143,8 @@ func SetupHybrid(cfg config.Config, l log.Logger, e *echo.Echo) *server.SocketSe
 	dppHandlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)
 	dppHandlers.NewProofs(proofsSvc).RegisterRoutes(g)
 	dppSoc.NewHealthHandler().Register(s)
+	dppSoc.NewPaymentRequest().Register(s)
+	dppSoc.NewPayment().Register(s)
 
 	e.GET("/ws/:channelID", wsHandler(s))
 	return s
@@ -149,6 +154,9 @@ func SetupHybrid(cfg config.Config, l log.Logger, e *echo.Echo) *server.SocketSe
 func wsHandler(svr *server.SocketServer) echo.HandlerFunc {
 	upgrader := websocket.Upgrader{}
 	return func(c echo.Context) error {
+		upgrader.CheckOrigin = func(r *http.Request) bool {
+			return true
+		}
 		ws, err := upgrader.Upgrade(c.Response(), c.Request(), nil)
 		if err != nil {
 			return err
