@@ -143,8 +143,6 @@ func SetupHybrid(cfg config.Config, l log.Logger, e *echo.Echo) *server.SocketSe
 	dppHandlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)
 	dppHandlers.NewProofs(proofsSvc).RegisterRoutes(g)
 	dppSoc.NewHealthHandler().Register(s)
-	dppSoc.NewPaymentRequest().Register(s)
-	dppSoc.NewPayment().Register(s)
 
 	e.GET("/ws/:channelID", wsHandler(s))
 	return s
