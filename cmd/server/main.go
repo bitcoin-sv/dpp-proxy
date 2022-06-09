@@ -57,7 +57,7 @@ func main() {
 		log.Fatal(err, "config error")
 	}
 
-	e := internal.SetupEcho(log)
+	e := internal.SetupEcho(cfg,log)
 
 	if cfg.Server.SwaggerEnabled {
 		internal.SetupSwagger(*cfg.Server, e)

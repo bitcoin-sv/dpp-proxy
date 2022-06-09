@@ -70,13 +70,17 @@ func SetupDeps(cfg config.Config, l log.Logger) *Deps {
 }
 
 // SetupEcho will set up and return an echo server.
-func SetupEcho(l log.Logger) *echo.Echo {
+func SetupEcho(cfg *config.Config, l log.Logger) *echo.Echo {
 	e := echo.New()
 	e.HideBanner = true
 
 	// Middleware
 	e.Use(middleware.Recover())
-	e.Use(middleware.Logger())
+	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+		Skipper: func(c echo.Context) bool {
+			return cfg.Logging.Level != config.LogDebug
+		},
+	}))
 	e.Use(middleware.RequestID())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins: []string{"*"},
