@@ -11,7 +11,7 @@ require (
 	github.com/libsv/go-bt/v2 v2.1.0-beta.2
 	github.com/libsv/go-dpp v0.1.11
 	github.com/pkg/errors v0.9.1
-	github.com/prometheus/client_golang v1.12.1
+	github.com/prometheus/client_golang v1.12.2
 	github.com/rs/zerolog v1.26.1
 	github.com/spf13/viper v1.11.0
 	github.com/stretchr/testify v1.7.1
