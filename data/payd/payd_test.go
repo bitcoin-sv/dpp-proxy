@@ -11,7 +11,6 @@ import (
 	"github.com/bitcoin-sv/dpp-proxy/data/payd"
 	"github.com/bitcoin-sv/dpp-proxy/data/payd/models"
 	"github.com/bitcoin-sv/dpp-proxy/mocks"
-	"github.com/libsv/go-bt/v2"
 	"github.com/libsv/go-bt/v2/bscript"
 	"github.com/libsv/go-dpp"
 	"github.com/stretchr/testify/assert"
@@ -141,24 +140,39 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				return json.Unmarshal([]byte(`
 					{
 						"network": "mainnet",
+						"version": "1.0",
 						"ancestryRequired": true,
-						"destinations": {
-							"outputs": [
-								{
-									"amount": 100,
-									"script": "525252"
-								},
-								{
-									"amount": 400,
-									"script": "535353"
-								}
-							]
-						},
-						"creationTimestamp": "2021-12-13T10:37:15.7946831Z",
-						"expirationTimestamp": "2021-12-14T10:37:15.7946831Z",
+						"modes": {"ef63d9775da5": {
+							"choiceID0": {
+								"transactions": [
+									{
+										"outputs": {
+											"native": [
+												{
+													"amount": 100,
+													"script": "525252"
+												},
+												{
+													"amount": 400,
+													"script": "535353"
+												}
+											]
+										},
+										"policies": {
+											"fees":
+												{"standard": {"satoshis": 100, "bytes": 200},
+													"data": {"satoshis": 100, "bytes": 200}},
+											"SPVRequired": false
+										}
+									}
+								]
+							}
+						}},
+						"creationTimestamp": 1639391835,
+						"expirationTimestamp": 1639478235,
 						"paymentUrl": "http://dpp:8445/api/v1/payment/6K9oZq9",
 						"memo": "invoice 6K9oZq9",
-						"merchantData": {
+						"beneficiary": {
 							"avatar": "http://url.com",
 							"name": "Merchant Name",
 							"email": "merchant@demo.com",
@@ -167,28 +181,6 @@ func TestPayd_PaymentRequest(t *testing.T) {
 								"dislikes": "trying to think up placeholder data",
 								"likes": "walks in the park at night",
 								"paymentReference": "6K9oZq9"
-							}
-						},
-						"fees": {
-							"data": {
-								"miningFee": {
-									"satoshis": 5,
-									"bytes": 10
-								},
-								"relayFee": {
-									"satoshis": 5,
-									"bytes": 10
-								}
-							},
-							"standard": {
-								"miningFee": {
-									"satoshis": 5,
-									"bytes": 10
-								},
-								"relayFee": {
-									"satoshis": 5,
-									"bytes": 10
-								}
 							}
 						}
 					}
@@ -203,28 +195,49 @@ func TestPayd_PaymentRequest(t *testing.T) {
 			},
 			expURL: "http://payddest:445/api/v1/payments/qwe123",
 			expPaymentReq: &dpp.PaymentRequest{
-				AncestryRequired: true,
 				Network:          "mainnet",
+				Version:		  "1.0",
 				Memo:             "invoice 6K9oZq9",
 				PaymentURL:       "http://dpp:8445/api/v1/payment/6K9oZq9",
-				Destinations: dpp.PaymentDestinations{
-					Outputs: []dpp.Output{{
-						LockingScript: func() *bscript.Script {
-							ls, err := bscript.NewFromHexString("525252")
-							assert.NoError(t, err)
-							return ls
-						}(),
-						Amount: 100,
-					}, {
-						LockingScript: func() *bscript.Script {
-							ls, err := bscript.NewFromHexString("535353")
-							assert.NoError(t, err)
-							return ls
-						}(),
-						Amount: 400,
-					}},
+				Modes: &dpp.PaymentModes{
+					HybridPaymentMode: map[string]map[string][]dpp.TransactionTerms{
+						"choiceID0": {
+							"transactions": {
+								dpp.TransactionTerms{
+									Outputs: dpp.Outputs{ NativeOutputs: []dpp.NativeOutput{
+										{
+											Amount:        100,
+											LockingScript: func() *bscript.Script {
+												ls, _ := bscript.NewFromHexString("525252")
+												return ls
+											}(),
+										},
+										{
+											Amount:        400,
+											LockingScript: func() *bscript.Script {
+												ls, _ := bscript.NewFromHexString("535353")
+												return ls
+											}(),
+										},
+									} },
+									Inputs: dpp.Inputs{},
+									Policies: &dpp.Policies{
+										FeeRate: map[string]map[string]int{
+											"data":
+												{"bytes":200,"satoshis":100},
+												"standard":
+												{"bytes":200,"satoshis":100},
+										},
+										SPVRequired: false,
+										LockTime:    0,
+									},
+								},
+							},
+						},
+
+					},
 				},
-				MerchantData: &dpp.Merchant{
+				Beneficiary: &dpp.Merchant{
 					AvatarURL: "http://url.com",
 					Name:      "Merchant Name",
 					Email:     "merchant@demo.com",
@@ -235,9 +248,8 @@ func TestPayd_PaymentRequest(t *testing.T) {
 						"paymentReference": "6K9oZq9",
 					},
 				},
-				FeeRate:             bt.NewFeeQuote(),
-				CreationTimestamp:   func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-12-13T10:37:15.7946831Z"); return t }(),
-				ExpirationTimestamp: func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-12-14T10:37:15.7946831Z"); return t }(),
+				CreationTimestamp:   func() int64 { t, _ := time.Parse(time.RFC3339, "2021-12-13T10:37:15.7946831Z"); return t.Unix() }(),
+				ExpirationTimestamp: func() int64 { t, _ := time.Parse(time.RFC3339, "2021-12-14T10:37:15.7946831Z"); return t.Unix() }(),
 			},
 		},
 		"successful https payment request": {
@@ -245,24 +257,39 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				return json.Unmarshal([]byte(`
 					{
 						"network": "mainnet",
+						"version": "1.0",
 						"ancestryRequired": true,
-						"destinations": {
-							"outputs": [
-								{
-									"amount": 100,
-									"script": "525252"
-								},
-								{
-									"amount": 400,
-									"script": "535353"
-								}
-							]
-						},
-						"creationTimestamp": "2021-12-13T10:37:15.7946831Z",
-						"expirationTimestamp": "2021-12-14T10:37:15.7946831Z",
+						"modes": {"ef63d9775da5": {
+							"choiceID0": {
+								"transactions": [
+									{
+										"outputs": {
+											"native": [
+												{
+													"amount": 100,
+													"script": "525252"
+												},
+												{
+													"amount": 400,
+													"script": "535353"
+												}
+											]
+										},
+										"policies": {
+											"fees":
+												{"standard": {"satoshis": 100, "bytes": 200},
+													"data": {"satoshis": 100, "bytes": 200}},
+											"SPVRequired": false
+										}
+									}
+								]
+							}
+						}},
+						"creationTimestamp": 1639391835,
+						"expirationTimestamp": 1639478235,
 						"paymentUrl": "https://dpp:8445/api/v1/payment/6K9oZq9",
 						"memo": "invoice 6K9oZq9",
-						"merchantData": {
+						"beneficiary": {
 							"avatar": "http://url.com",
 							"name": "Merchant Name",
 							"email": "merchant@demo.com",
@@ -271,28 +298,6 @@ func TestPayd_PaymentRequest(t *testing.T) {
 								"dislikes": "trying to think up placeholder data",
 								"likes": "walks in the park at night",
 								"paymentReference": "6K9oZq9"
-							}
-						},
-						"fees": {
-							"data": {
-								"miningFee": {
-									"satoshis": 5,
-									"bytes": 10
-								},
-								"relayFee": {
-									"satoshis": 5,
-									"bytes": 10
-								}
-							},
-							"standard": {
-								"miningFee": {
-									"satoshis": 5,
-									"bytes": 10
-								},
-								"relayFee": {
-									"satoshis": 5,
-									"bytes": 10
-								}
 							}
 						}
 					}
@@ -308,28 +313,49 @@ func TestPayd_PaymentRequest(t *testing.T) {
 			},
 			expURL: "https://securepayddest:4445/api/v1/payments/bwe123",
 			expPaymentReq: &dpp.PaymentRequest{
-				AncestryRequired: true,
 				Network:          "mainnet",
+				Version:		  "1.0",
 				Memo:             "invoice 6K9oZq9",
 				PaymentURL:       "https://dpp:8445/api/v1/payment/6K9oZq9",
-				Destinations: dpp.PaymentDestinations{
-					Outputs: []dpp.Output{{
-						LockingScript: func() *bscript.Script {
-							ls, err := bscript.NewFromHexString("525252")
-							assert.NoError(t, err)
-							return ls
-						}(),
-						Amount: 100,
-					}, {
-						LockingScript: func() *bscript.Script {
-							ls, err := bscript.NewFromHexString("535353")
-							assert.NoError(t, err)
-							return ls
-						}(),
-						Amount: 400,
-					}},
+				Modes: &dpp.PaymentModes{
+					HybridPaymentMode: map[string]map[string][]dpp.TransactionTerms{
+						"choiceID0": {
+							"transactions": {
+								dpp.TransactionTerms{
+									Outputs: dpp.Outputs{ NativeOutputs: []dpp.NativeOutput{
+										{
+											Amount:        100,
+											LockingScript: func() *bscript.Script {
+												ls, _ := bscript.NewFromHexString("525252")
+												return ls
+											}(),
+										},
+										{
+											Amount:        400,
+											LockingScript: func() *bscript.Script {
+												ls, _ := bscript.NewFromHexString("535353")
+												return ls
+											}(),
+										},
+									} },
+									Inputs: dpp.Inputs{},
+									Policies: &dpp.Policies{
+										FeeRate: map[string]map[string]int{
+											"data":
+												{"bytes":200,"satoshis":100},
+												"standard":
+												{"bytes":200,"satoshis":100},
+										},
+										SPVRequired: false,
+										LockTime:    0,
+									},
+								},
+							},
+						},
+
+					},
 				},
-				MerchantData: &dpp.Merchant{
+				Beneficiary: &dpp.Merchant{
 					AvatarURL: "http://url.com",
 					Name:      "Merchant Name",
 					Email:     "merchant@demo.com",
@@ -340,9 +366,8 @@ func TestPayd_PaymentRequest(t *testing.T) {
 						"paymentReference": "6K9oZq9",
 					},
 				},
-				FeeRate:             bt.NewFeeQuote(),
-				CreationTimestamp:   func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-12-13T10:37:15.7946831Z"); return t }(),
-				ExpirationTimestamp: func() time.Time { t, _ := time.Parse(time.RFC3339, "2021-12-14T10:37:15.7946831Z"); return t }(),
+				CreationTimestamp:   func() int64 { t, _ := time.Parse(time.RFC3339, "2021-12-13T10:37:15.7946831Z"); return t.Unix() }(),
+				ExpirationTimestamp: func() int64 { t, _ := time.Parse(time.RFC3339, "2021-12-14T10:37:15.7946831Z"); return t.Unix() }(),
 			},
 		},
 		"error is handled": {
@@ -380,12 +405,8 @@ func TestPayd_PaymentRequest(t *testing.T) {
 
 			if test.expPaymentReq != nil {
 				assert.NotNil(t, pr)
-				assert.Equal(t, test.expPaymentReq.CreationTimestamp.String(), pr.CreationTimestamp.String())
-				assert.Equal(t, test.expPaymentReq.ExpirationTimestamp.String(), pr.ExpirationTimestamp.String())
-
-				ts := time.Now()
-				pr.FeeRate.UpdateExpiry(ts)
-				test.expPaymentReq.FeeRate.UpdateExpiry(ts)
+				assert.Equal(t, test.expPaymentReq.CreationTimestamp, pr.CreationTimestamp)
+				assert.Equal(t, test.expPaymentReq.ExpirationTimestamp, pr.ExpirationTimestamp)
 
 				assert.Equal(t, *test.expPaymentReq, *pr)
 			} else {

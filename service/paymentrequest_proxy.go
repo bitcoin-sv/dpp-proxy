@@ -40,10 +40,12 @@ func (p *paymentRequestProxy) PaymentRequest(ctx context.Context, args dpp.Payme
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to read payment request for paymentID %s", args.PaymentID)
 	}
-	if len(resp.Destinations.Outputs) == 0 {
+
+	if len(resp.Modes.HybridPaymentMode["choiceID0"]["transactions"][0].Outputs.NativeOutputs) == 0 {
 		return nil, fmt.Errorf("no outputs received for paymentID %s", args.PaymentID)
 	}
-	if resp.FeeRate == nil {
+
+	if resp.Modes.HybridPaymentMode["choiceID0"]["transactions"][0].Policies.FeeRate == nil {
 		return nil, fmt.Errorf("no fees received for paymentID %s", args.PaymentID)
 	}
 

@@ -2,13 +2,11 @@ package service_test
 
 import (
 	"context"
-	"encoding/hex"
 	"errors"
 	"testing"
 
 	"github.com/bitcoin-sv/dpp-proxy/log"
 	"github.com/bitcoin-sv/dpp-proxy/service"
-	"github.com/libsv/go-bc/spv"
 	"github.com/libsv/go-dpp"
 	dppMocks "github.com/libsv/go-dpp/mocks"
 	"github.com/stretchr/testify/assert"
@@ -27,9 +25,10 @@ func TestPayment_Create(t *testing.T) {
 			},
 			req: dpp.Payment{
 				Ancestry: func() *string {
-					s := &spv.Envelope{}
-					bb, _ := s.Bytes()
-					ss := hex.EncodeToString(bb)
+					//s := &spv.Envelope{}
+					//bb, _ := s.Bytes()
+					//ss := hex.EncodeToString(bb)
+					ss := "aaaaaaaaaaaaaaaaaaaa"
 					return &ss
 				}(),
 				RawTx: func() *string { s := "01000000000000000000"; return &s }(),

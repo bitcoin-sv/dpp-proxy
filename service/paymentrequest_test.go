@@ -28,43 +28,73 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 			},
 			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 				return &dpp.PaymentRequest{
-					AncestryRequired:    false,
-					CreationTimestamp:   created,
-					ExpirationTimestamp: expired,
-					Destinations: dpp.PaymentDestinations{
-						Outputs: []dpp.Output{{
-							Amount: 500,
-							LockingScript: func() *bscript.Script {
-								ls, err := bscript.NewFromHexString("abc123")
-								assert.NoError(t, err)
-								return ls
-							}(),
-						}},
+					Network:             "regtest",
+					Version:			 "1.0",
+					CreationTimestamp:   created.Unix(),
+					ExpirationTimestamp: expired.Unix(),
+					Modes: &dpp.PaymentModes{
+						HybridPaymentMode: map[string]map[string][]dpp.TransactionTerms{
+							"choiceID0": {
+								"transactions": {
+									dpp.TransactionTerms{
+										Outputs: dpp.Outputs{ NativeOutputs: []dpp.NativeOutput{
+											{
+												Amount:        1000,
+												LockingScript: func() *bscript.Script {
+													ls, _ := bscript.NewFromHexString(
+														"76a91493d0d43918a5df78f08cfe22a4e022846b6736c288ac")
+													return ls
+												}(),
+												Description:   "noop description",
+											},
+										} },
+										Inputs: dpp.Inputs{},
+										Policies: &dpp.Policies{},
+									},
+								},
+							},
+
+						},
 					},
 					PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 					Memo:       "invoice abc123",
-					MerchantData: &dpp.Merchant{
+					Beneficiary: &dpp.Merchant{
 						ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 					},
 				}, nil
 			},
 			expResp: &dpp.PaymentRequest{
-				AncestryRequired:    false,
-				CreationTimestamp:   created,
-				ExpirationTimestamp: expired,
-				Destinations: dpp.PaymentDestinations{
-					Outputs: []dpp.Output{{
-						Amount: 500,
-						LockingScript: func() *bscript.Script {
-							ls, err := bscript.NewFromHexString("abc123")
-							assert.NoError(t, err)
-							return ls
-						}(),
-					}},
+				Network:             "regtest",
+				Version:			 "1.0",
+				CreationTimestamp:   created.Unix(),
+				ExpirationTimestamp: expired.Unix(),
+				Modes: &dpp.PaymentModes{
+					HybridPaymentMode: map[string]map[string][]dpp.TransactionTerms{
+						"choiceID0": {
+							"transactions": {
+								dpp.TransactionTerms{
+									Outputs: dpp.Outputs{ NativeOutputs: []dpp.NativeOutput{
+										{
+											Amount:        1000,
+											LockingScript: func() *bscript.Script {
+												ls, _ := bscript.NewFromHexString(
+													"76a91493d0d43918a5df78f08cfe22a4e022846b6736c288ac")
+												return ls
+											}(),
+											Description:   "noop description",
+										},
+									} },
+									Inputs: dpp.Inputs{},
+									Policies: &dpp.Policies{},
+								},
+							},
+						},
+
+					},
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 				Memo:       "invoice abc123",
-				MerchantData: &dpp.Merchant{
+				Beneficiary: &dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 				},
 			},
@@ -75,41 +105,71 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 			},
 			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
 				return &dpp.PaymentRequest{
-					AncestryRequired:    false,
-					CreationTimestamp:   created,
-					ExpirationTimestamp: expired,
-					Destinations: dpp.PaymentDestinations{
-						Outputs: []dpp.Output{{
-							Amount: 500,
-							LockingScript: func() *bscript.Script {
-								ls, err := bscript.NewFromHexString("abc123")
-								assert.NoError(t, err)
-								return ls
-							}(),
-						}},
+					Network:             "regtest",
+					Version:			 "1.0",
+					CreationTimestamp:   created.Unix(),
+					ExpirationTimestamp: expired.Unix(),
+					Modes: &dpp.PaymentModes{
+						HybridPaymentMode: map[string]map[string][]dpp.TransactionTerms{
+							"choiceID0": {
+								"transactions": {
+									dpp.TransactionTerms{
+										Outputs: dpp.Outputs{ NativeOutputs: []dpp.NativeOutput{
+											{
+												Amount:        1000,
+												LockingScript: func() *bscript.Script {
+													ls, _ := bscript.NewFromHexString(
+														"76a91493d0d43918a5df78f08cfe22a4e022846b6736c288ac")
+													return ls
+												}(),
+												Description:   "noop description",
+											},
+										} },
+										Inputs: dpp.Inputs{},
+										Policies: &dpp.Policies{},
+									},
+								},
+							},
+
+						},
 					},
-					MerchantData: &dpp.Merchant{},
+					Beneficiary: &dpp.Merchant{},
 					PaymentURL:   "http://iamsotest/api/v1/payment/abc123",
 					Memo:         "invoice abc123",
 				}, nil
 			},
 			expResp: &dpp.PaymentRequest{
-				AncestryRequired:    false,
-				CreationTimestamp:   created,
-				ExpirationTimestamp: expired,
-				Destinations: dpp.PaymentDestinations{
-					Outputs: []dpp.Output{{
-						Amount: 500,
-						LockingScript: func() *bscript.Script {
-							ls, err := bscript.NewFromHexString("abc123")
-							assert.NoError(t, err)
-							return ls
-						}(),
-					}},
+				Network:             "regtest",
+				Version:			 "1.0",
+				CreationTimestamp:   created.Unix(),
+				ExpirationTimestamp: expired.Unix(),
+				Modes: &dpp.PaymentModes{
+					HybridPaymentMode: map[string]map[string][]dpp.TransactionTerms{
+						"choiceID0": {
+							"transactions": {
+								dpp.TransactionTerms{
+									Outputs: dpp.Outputs{ NativeOutputs: []dpp.NativeOutput{
+										{
+											Amount:        1000,
+											LockingScript: func() *bscript.Script {
+												ls, _ := bscript.NewFromHexString(
+													"76a91493d0d43918a5df78f08cfe22a4e022846b6736c288ac")
+												return ls
+											}(),
+											Description:   "noop description",
+										},
+									} },
+									Inputs: dpp.Inputs{},
+									Policies: &dpp.Policies{},
+								},
+							},
+						},
+
+					},
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 				Memo:       "invoice abc123",
-				MerchantData: &dpp.Merchant{
+				Beneficiary: &dpp.Merchant{
 					ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 				},
 			},

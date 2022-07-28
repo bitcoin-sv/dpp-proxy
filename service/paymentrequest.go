@@ -31,8 +31,8 @@ func (p *paymentRequest) PaymentRequest(ctx context.Context, args dpp.PaymentReq
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to get payment request for paymentID %s", args.PaymentID)
 	}
-	if pReq.MerchantData != nil && pReq.MerchantData.ExtendedData == nil {
-		pReq.MerchantData.ExtendedData = map[string]interface{}{
+	if pReq.Beneficiary != nil && pReq.Beneficiary.ExtendedData == nil {
+		pReq.Beneficiary.ExtendedData = map[string]interface{}{
 			"paymentReference": args.PaymentID,
 		}
 	}
