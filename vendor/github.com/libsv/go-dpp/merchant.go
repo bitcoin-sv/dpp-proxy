@@ -12,4 +12,6 @@ type Merchant struct {
 	Address string `json:"address" example:"1 the street, the town, B1 1AA"`
 	// ExtendedData can be supplied if the merchant wishes to send some arbitrary data back to the wallet.
 	ExtendedData map[string]interface{} `json:"extendedData,omitempty"`
+	// PaymentReference ID of invoice.
+	PaymentReference string `json:"paymentReference" example:"Order-325214"`
 }

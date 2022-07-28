@@ -72,10 +72,9 @@ github.com/labstack/gommon/bytes
 github.com/labstack/gommon/color
 github.com/labstack/gommon/log
 github.com/labstack/gommon/random
-# github.com/libsv/go-bc v0.1.10
+# github.com/libsv/go-bc v0.1.11
 ## explicit; go 1.17
 github.com/libsv/go-bc
-github.com/libsv/go-bc/spv
 # github.com/libsv/go-bk v0.1.6
 ## explicit; go 1.17
 github.com/libsv/go-bk/base58
@@ -84,12 +83,12 @@ github.com/libsv/go-bk/bip32
 github.com/libsv/go-bk/chaincfg
 github.com/libsv/go-bk/crypto
 github.com/libsv/go-bk/envelope
-# github.com/libsv/go-bt/v2 v2.1.0-beta.2
+# github.com/libsv/go-bt/v2 v2.1.0-beta.4
 ## explicit; go 1.17
 github.com/libsv/go-bt/v2
 github.com/libsv/go-bt/v2/bscript
 github.com/libsv/go-bt/v2/sighash
-# github.com/libsv/go-dpp v0.1.11
+# github.com/libsv/go-dpp v0.1.12-0.20220728095149-0d2956038099
 ## explicit; go 1.17
 github.com/libsv/go-dpp
 github.com/libsv/go-dpp/mocks
