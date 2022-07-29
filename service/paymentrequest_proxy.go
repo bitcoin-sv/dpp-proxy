@@ -31,7 +31,7 @@ func NewPaymentRequestProxy(preqRdr dpp.PaymentRequestReader, transCfg *config.T
 }
 
 // PaymentRequest will call to the data layer to return a full payment request.
-func (p *paymentRequestProxy) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+func (p *paymentRequestProxy) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
 	if err := validator.New().
 		Validate("paymentID", validator.NotEmpty(args.PaymentID)); err.Err() != nil {
 		return nil, err

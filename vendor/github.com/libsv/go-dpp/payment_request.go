@@ -7,7 +7,6 @@ import (
 // These structures are defined in the TSC spec:
 // See https://tsc.bitcoinassociation.net/standards/direct_payment_protocol
 
-
 // Policies An object containing some policy information like fees or whether Ancestors are
 // required in the `Payment`.
 type Policies struct {
@@ -43,7 +42,7 @@ type Outputs struct {
 // "ef63d9775da5" in the DPP TSC spec.
 type TransactionTerms struct {
 	Outputs  Outputs   `json:"outputs"`
-	Inputs   Inputs     `json:"inputs,omitempty"`
+	Inputs   Inputs    `json:"inputs,omitempty"`
 	Policies *Policies `json:"policies"`
 }
 
@@ -54,8 +53,8 @@ type PaymentModes struct {
 	HybridPaymentMode map[string]map[string][]TransactionTerms `json:"ef63d9775da5"`
 }
 
-// PaymentRequest message as defined in the DPP T$C spec.
-type PaymentRequest struct {
+// PaymentTerms message as defined in the DPP T$C spec.
+type PaymentTerms struct {
 	// Network  Always set to "bitcoin" (but seems to be set to 'bitcoin-sv'
 	// outside bip270 spec, see https://handcash.github.io/handcash-merchant-integration/#/merchant-payments)
 	// {enum: bitcoin, bitcoin-sv, test}
@@ -85,7 +84,7 @@ type PaymentRequest struct {
 	// or if they associate each PaymentRequest with a separate payment address.
 	// Maximum length is 10000 characters.
 	// Optional.
-	Beneficiary *Merchant `json:"beneficiary,omitempty"`
+	Beneficiary *Beneficiary `json:"beneficiary,omitempty"`
 	// Modes TSC payment modes specified by ID (and well defined) modes customer can choose to pay
 	// A key-value map. required field but not if legacy BIP270 outputs are provided
 	Modes *PaymentModes `json:"modes"`
@@ -105,5 +104,5 @@ type PaymentRequestService interface {
 
 // PaymentRequestReader will return a new payment request.
 type PaymentRequestReader interface {
-	PaymentRequest(ctx context.Context, args PaymentRequestArgs) (*PaymentRequest, error)
+	PaymentRequest(ctx context.Context, args PaymentRequestArgs) (*PaymentTerms, error)
 }

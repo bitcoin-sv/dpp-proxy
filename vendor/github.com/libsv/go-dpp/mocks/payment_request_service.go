@@ -30,7 +30,7 @@ var _ dpp.PaymentRequestService = &PaymentRequestServiceMock{}
 // 	}
 type PaymentRequestServiceMock struct {
 	// PaymentRequestFunc mocks the PaymentRequest method.
-	PaymentRequestFunc func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error)
+	PaymentRequestFunc func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
@@ -46,7 +46,7 @@ type PaymentRequestServiceMock struct {
 }
 
 // PaymentRequest calls PaymentRequestFunc.
-func (mock *PaymentRequestServiceMock) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+func (mock *PaymentRequestServiceMock) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
 	if mock.PaymentRequestFunc == nil {
 		panic("PaymentRequestServiceMock.PaymentRequestFunc: method is nil but PaymentRequestService.PaymentRequest was just called")
 	}

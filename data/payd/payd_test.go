@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/libsv/go-bc/spv"
 	"testing"
 	"time"
 
@@ -34,15 +35,19 @@ func TestPayd_PaymentCreate(t *testing.T) {
 				PaymentID: "qwe123",
 			},
 			req: dpp.Payment{
-				RawTx: func() *string { s := "rawrawraw"; return &s }(),
-				ProofCallbacks: map[string]dpp.ProofCallback{
-					"abc.com": {Token: "mYtOkEn"},
+				ModeID: "ef63d9775da5",
+				Mode: dpp.HybridPaymentModePayment{
+					OptionID:     "choiceID0",
+					Transactions: []string{"tx1 hex", "tx2 hex"},
+					Ancestors:    map[string]spv.TSCAncestryJSON{},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
-				RawTx: func() *string { s := "rawrawraw"; return &s }(),
-				ProofCallbacks: map[string]dpp.ProofCallback{
-					"abc.com": {Token: "mYtOkEn"},
+				ModeID: "ef63d9775da5",
+				Mode: dpp.HybridPaymentModePayment{
+					OptionID:     "choiceID0",
+					Transactions: []string{"tx1 hex", "tx2 hex"},
+					Ancestors:    map[string]spv.TSCAncestryJSON{},
 				},
 			},
 			cfg: &config.PayD{
@@ -59,15 +64,19 @@ func TestPayd_PaymentCreate(t *testing.T) {
 				PaymentID: "qwe123",
 			},
 			req: dpp.Payment{
-				RawTx: func() *string { s := "rawrawraw"; return &s }(),
-				ProofCallbacks: map[string]dpp.ProofCallback{
-					"abc.com": {Token: "mYtOkEn"},
+				ModeID: "ef63d9775da5",
+				Mode: dpp.HybridPaymentModePayment{
+					OptionID:     "choiceID0",
+					Transactions: []string{"tx1 hex", "tx2 hex"},
+					Ancestors:    map[string]spv.TSCAncestryJSON{},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
-				RawTx: func() *string { s := "rawrawraw"; return &s }(),
-				ProofCallbacks: map[string]dpp.ProofCallback{
-					"abc.com": {Token: "mYtOkEn"},
+				ModeID: "ef63d9775da5",
+				Mode: dpp.HybridPaymentModePayment{
+					OptionID:     "choiceID0",
+					Transactions: []string{"tx1 hex", "tx2 hex"},
+					Ancestors:    map[string]spv.TSCAncestryJSON{},
 				},
 			},
 			cfg: &config.PayD{
@@ -85,15 +94,31 @@ func TestPayd_PaymentCreate(t *testing.T) {
 				PaymentID: "qwe123",
 			},
 			req: dpp.Payment{
-				RawTx: func() *string { s := "rawrawraw"; return &s }(),
-				ProofCallbacks: map[string]dpp.ProofCallback{
-					"abc.com": {Token: "mYtOkEn"},
+				ModeID: "ef63d9775da5",
+				Mode: dpp.HybridPaymentModePayment{
+					OptionID:     "choiceID0",
+					Transactions: []string{"tx1 hex", "tx2 hex"},
+					Ancestors:    map[string]spv.TSCAncestryJSON{},
+				},
+				Originator: dpp.Originator{
+					Name: 		"Bob the builder",
+					Paymail: 	"bob@bestpaymail.com",
+					Avatar:  	"https://iamges.com/vtwe4eerf",
+					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
 			expReq: models.PayDPaymentRequest{
-				RawTx: func() *string { s := "rawrawraw"; return &s }(),
-				ProofCallbacks: map[string]dpp.ProofCallback{
-					"abc.com": {Token: "mYtOkEn"},
+				ModeID: "ef63d9775da5",
+				Mode: dpp.HybridPaymentModePayment{
+					OptionID:     "choiceID0",
+					Transactions: []string{"tx1 hex", "tx2 hex"},
+					Ancestors:    map[string]spv.TSCAncestryJSON{},
+				},
+				Originator: dpp.Originator{
+					Name: 		"Bob the builder",
+					Paymail: 	"bob@bestpaymail.com",
+					Avatar:  	"https://iamges.com/vtwe4eerf",
+					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
 			cfg: &config.PayD{
@@ -132,7 +157,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 		args          dpp.PaymentRequestArgs
 		cfg           *config.PayD
 		expURL        string
-		expPaymentReq *dpp.PaymentRequest
+		expPaymentReq *dpp.PaymentTerms
 		expErr        error
 	}{
 		"successful payment request": {
@@ -194,7 +219,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				Port: ":445",
 			},
 			expURL: "http://payddest:445/api/v1/payments/qwe123",
-			expPaymentReq: &dpp.PaymentRequest{
+			expPaymentReq: &dpp.PaymentTerms{
 				Network:          "mainnet",
 				Version:		  "1.0",
 				Memo:             "invoice 6K9oZq9",
@@ -237,7 +262,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 
 					},
 				},
-				Beneficiary: &dpp.Merchant{
+				Beneficiary: &dpp.Beneficiary{
 					AvatarURL: "http://url.com",
 					Name:      "Merchant Name",
 					Email:     "merchant@demo.com",
@@ -312,7 +337,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				Secure: true,
 			},
 			expURL: "https://securepayddest:4445/api/v1/payments/bwe123",
-			expPaymentReq: &dpp.PaymentRequest{
+			expPaymentReq: &dpp.PaymentTerms{
 				Network:          "mainnet",
 				Version:		  "1.0",
 				Memo:             "invoice 6K9oZq9",
@@ -355,7 +380,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 
 					},
 				},
-				Beneficiary: &dpp.Merchant{
+				Beneficiary: &dpp.Beneficiary{
 					AvatarURL: "http://url.com",
 					Name:      "Merchant Name",
 					Email:     "merchant@demo.com",

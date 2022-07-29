@@ -1,7 +1,7 @@
 package dpp
 
-// Merchant to be displayed to the user.
-type Merchant struct {
+// Beneficiary to be displayed to the user.
+type Beneficiary struct {
 	// AvatarURL displays a canonical url to a merchants avatar.
 	AvatarURL string `json:"avatar" example:"http://url.com"`
 	// Name is a human readable string identifying the merchant.

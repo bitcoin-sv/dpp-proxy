@@ -52,7 +52,7 @@ func (p *payd) ProofCreate(ctx context.Context, args dpp.ProofCreateArgs, req en
 
 // PaymentRequest will send a socket request to a payd client for a payment request.
 // It will wait on a response before returnign the payment request.
-func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
 	msg := sockets.NewMessage(RoutePaymentRequestCreate, "", args.PaymentID)
 	msg.AppID = appID
 	msg.CorrelationID = uuid.NewString()
@@ -69,7 +69,7 @@ func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) 
 	}
 	switch resp.Key() {
 	case RoutePaymentRequestResponse:
-		var pr *dpp.PaymentRequest
+		var pr *dpp.PaymentTerms
 		if err := resp.Bind(&pr); err != nil {
 			return nil, errors.Wrap(err, "failed to bind payment request response")
 		}

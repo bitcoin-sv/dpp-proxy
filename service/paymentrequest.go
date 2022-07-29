@@ -21,7 +21,7 @@ func NewPaymentRequest(prRdr dpp.PaymentRequestReader) *paymentRequest {
 }
 
 // PaymentRequest handles setting up a new PaymentRequest response and will validate that we have a paymentID.
-func (p *paymentRequest) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+func (p *paymentRequest) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
 	if err := validator.New().
 		Validate("paymentID", validator.NotEmpty(args.PaymentID)); err.Err() != nil {
 		return nil, err

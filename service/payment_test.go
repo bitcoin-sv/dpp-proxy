@@ -3,6 +3,7 @@ package service_test
 import (
 	"context"
 	"errors"
+	"github.com/libsv/go-bc/spv"
 	"testing"
 
 	"github.com/bitcoin-sv/dpp-proxy/log"
@@ -24,15 +25,16 @@ func TestPayment_Create(t *testing.T) {
 				return &dpp.PaymentACK{}, nil
 			},
 			req: dpp.Payment{
-				Ancestry: func() *string {
-					//s := &spv.Envelope{}
-					//bb, _ := s.Bytes()
-					//ss := hex.EncodeToString(bb)
-					ss := "aaaaaaaaaaaaaaaaaaaa"
-					return &ss
-				}(),
-				RawTx: func() *string { s := "01000000000000000000"; return &s }(),
-				MerchantData: dpp.Merchant{
+				ModeID: "ef63d9775da5",
+				Mode: dpp.HybridPaymentModePayment{
+					OptionID:     "choiceID0",
+					Transactions: []string{"tx1 hex", "tx2 hex"},
+					Ancestors:    map[string]spv.TSCAncestryJSON{},
+				},
+				Originator: dpp.Originator{
+					Name: 		"Bob the builder",
+					Paymail: 	"bob@bestpaymail.com",
+					Avatar:  	"https://iamges.com/vtwe4eerf",
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
@@ -46,14 +48,22 @@ func TestPayment_Create(t *testing.T) {
 			},
 			args: dpp.PaymentCreateArgs{},
 			req: dpp.Payment{
-				RawTx: func() *string { s := "01000000000000000000"; return &s }(),
-				MerchantData: dpp.Merchant{
+				ModeID: "ef63d9775da5",
+				Mode: dpp.HybridPaymentModePayment{
+					OptionID:     "choiceID0",
+					Transactions: []string{"tx1 hex", "tx2 hex"},
+					Ancestors:    map[string]spv.TSCAncestryJSON{},
+				},
+				Originator: dpp.Originator{
+					Name: 		"Bob the builder",
+					Paymail: 	"bob@bestpaymail.com",
+					Avatar:  	"https://iamges.com/vtwe4eerf",
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
 			expErr: errors.New("[paymentID: value cannot be empty]"),
 		},
-		"missing raw tx errors": {
+		"missing mode errors": {
 			paymentCreateFn: func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error) {
 				return &dpp.PaymentACK{}, nil
 			},
@@ -61,11 +71,15 @@ func TestPayment_Create(t *testing.T) {
 				PaymentID: "abc123",
 			},
 			req: dpp.Payment{
-				MerchantData: dpp.Merchant{
+				ModeID: "ef63d9775da5",
+				Originator: dpp.Originator{
+					Name: 		"Bob the builder",
+					Paymail: 	"bob@bestpaymail.com",
+					Avatar:  	"https://iamges.com/vtwe4eerf",
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
-			expErr: errors.New("[ancestry/rawTx: either ancestry or a rawTX are required]"),
+			expErr: errors.New("[mode.optionId: value cannot be empty], [mode.transactions: value cannot be empty], [mode: value cannot be empty]"),
 		},
 		"error on payment create is handled": {
 			paymentCreateFn: func(context.Context, dpp.PaymentCreateArgs, dpp.Payment) (*dpp.PaymentACK, error) {
@@ -75,8 +89,16 @@ func TestPayment_Create(t *testing.T) {
 				PaymentID: "abc123",
 			},
 			req: dpp.Payment{
-				RawTx: func() *string { s := "01000000000000000000"; return &s }(),
-				MerchantData: dpp.Merchant{
+				ModeID: "ef63d9775da5",
+				Mode: dpp.HybridPaymentModePayment{
+					OptionID:     "choiceID0",
+					Transactions: []string{"tx1 hex", "tx2 hex"},
+					Ancestors:    map[string]spv.TSCAncestryJSON{},
+				},
+				Originator: dpp.Originator{
+					Name: 		"Bob the builder",
+					Paymail: 	"bob@bestpaymail.com",
+					Avatar:  	"https://iamges.com/vtwe4eerf",
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},

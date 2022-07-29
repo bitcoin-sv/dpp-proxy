@@ -29,15 +29,15 @@ func (n *noop) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, re
 	return &dpp.PaymentACK{}, nil
 }
 
-func (n noop) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
-	return &dpp.PaymentRequest{
+func (n noop) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
+	return &dpp.PaymentTerms{
 		Network:             "noop",
 		Version:			 "1.0",
 		CreationTimestamp:   time.Now().Unix(),
 		ExpirationTimestamp: time.Now().Add(time.Hour).Unix(),
 		Memo:                "noop",
 		PaymentURL:          "noop",
-		Beneficiary: &dpp.Merchant{
+		Beneficiary: &dpp.Beneficiary{
 			AvatarURL:        "noop",
 			Name:             "noop",
 			Email:            "noop",

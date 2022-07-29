@@ -17,17 +17,17 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 	created := time.Now()
 	expired := created.Add(time.Hour * 24)
 	tests := map[string]struct {
-		paymentRequestFunc func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error)
+		paymentRequestFunc func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error)
 		args               dpp.PaymentRequestArgs
-		expResp            *dpp.PaymentRequest
+		expResp            *dpp.PaymentTerms
 		expErr             error
 	}{
 		"successful request": {
 			args: dpp.PaymentRequestArgs{
 				PaymentID: "abc123",
 			},
-			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
-				return &dpp.PaymentRequest{
+			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
+				return &dpp.PaymentTerms{
 					Network:             "regtest",
 					Version:			 "1.0",
 					CreationTimestamp:   created.Unix(),
@@ -58,12 +58,12 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 					},
 					PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 					Memo:       "invoice abc123",
-					Beneficiary: &dpp.Merchant{
+					Beneficiary: &dpp.Beneficiary{
 						ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 					},
 				}, nil
 			},
-			expResp: &dpp.PaymentRequest{
+			expResp: &dpp.PaymentTerms{
 				Network:             "regtest",
 				Version:			 "1.0",
 				CreationTimestamp:   created.Unix(),
@@ -94,7 +94,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 				Memo:       "invoice abc123",
-				Beneficiary: &dpp.Merchant{
+				Beneficiary: &dpp.Beneficiary{
 					ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 				},
 			},
@@ -103,8 +103,8 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 			args: dpp.PaymentRequestArgs{
 				PaymentID: "abc123",
 			},
-			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
-				return &dpp.PaymentRequest{
+			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
+				return &dpp.PaymentTerms{
 					Network:             "regtest",
 					Version:			 "1.0",
 					CreationTimestamp:   created.Unix(),
@@ -133,12 +133,12 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 
 						},
 					},
-					Beneficiary: &dpp.Merchant{},
+					Beneficiary: &dpp.Beneficiary{},
 					PaymentURL:   "http://iamsotest/api/v1/payment/abc123",
 					Memo:         "invoice abc123",
 				}, nil
 			},
-			expResp: &dpp.PaymentRequest{
+			expResp: &dpp.PaymentTerms{
 				Network:             "regtest",
 				Version:			 "1.0",
 				CreationTimestamp:   created.Unix(),
@@ -169,7 +169,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 				},
 				PaymentURL: "http://iamsotest/api/v1/payment/abc123",
 				Memo:       "invoice abc123",
-				Beneficiary: &dpp.Merchant{
+				Beneficiary: &dpp.Beneficiary{
 					ExtendedData: map[string]interface{}{"paymentReference": "abc123"},
 				},
 			},
@@ -181,7 +181,7 @@ func TestPaymentRequest_PaymentRequest(t *testing.T) {
 			args: dpp.PaymentRequestArgs{
 				PaymentID: "abc123",
 			},
-			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+			paymentRequestFunc: func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
 				return nil, errors.New("oh boi")
 			},
 			expErr: errors.New("failed to get payment request for paymentID abc123: oh boi"),

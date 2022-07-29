@@ -4,7 +4,6 @@ import (
 	"github.com/libsv/go-bt/v2/bscript"
 )
 
-
 // NativeOutput defines a native type output as opposed to a token for example.
 type NativeOutput struct {
 	// Amount is the number of satoshis to be paid.
