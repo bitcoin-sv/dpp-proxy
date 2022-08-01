@@ -54,7 +54,7 @@ var doc = `{
                     "201": {
                         "description": "contains outputs, merchant data and expiry information, used by the payee to construct a transaction",
                         "schema": {
-                            "$ref": "#/definitions/dpp.PaymentRequest"
+                            "$ref": "#/definitions/dpp.PaymentTerms"
                         }
                     },
                     "400": {
@@ -268,11 +268,11 @@ var doc = `{
                 }
             }
         },
-        "dpp.PaymentRequest": {
+        "dpp.PaymentTerms": {
             "type": "object",
             "properties": {
                 "creationTimestamp": {
-                    "description": "CreationTimestamp Unix timestamp (seconds since 1-Jan-1970 UTC) when the PaymentRequest was created.\nRequired.",
+                    "description": "CreationTimestamp Unix timestamp (seconds since 1-Jan-1970 UTC) when the PaymentTerms was created.\nRequired.",
                     "type": "string",
                     "example": "2019-10-12T07:20:50.52Z"
                 },
@@ -281,7 +281,7 @@ var doc = `{
                     "$ref": "#/definitions/dpp.PaymentDestinations"
                 },
                 "expirationTimestamp": {
-                    "description": "ExpirationTimestamp Unix timestamp (UTC) after which the PaymentRequest should be considered invalid.\nOptional.",
+                    "description": "ExpirationTimestamp Unix timestamp (UTC) after which the PaymentTerms should be considered invalid.\nOptional.",
                     "type": "string",
                     "example": "2019-10-12T07:20:50.52Z"
                 },
@@ -290,12 +290,12 @@ var doc = `{
                     "$ref": "#/definitions/bt.FeeQuote"
                 },
                 "memo": {
-                    "description": "Memo Optional note that should be displayed to the customer, explaining what this PaymentRequest is for.\nMaximum length is 50 characters.",
+                    "description": "Memo Optional note that should be displayed to the customer, explaining what this PaymentTerms is for.\nMaximum length is 50 characters.",
                     "type": "string",
                     "example": "invoice number 123456"
                 },
                 "merchantData": {
-                    "description": "MerchantData contains arbitrary data that may be used by the payment host to identify the PaymentRequest.\nMay be omitted if the payment host does not need to associate Payments with PaymentRequest\nor if they associate each PaymentRequest with a separate payment address.\nMaximum length is 10000 characters.",
+                    "description": "MerchantData contains arbitrary data that may be used by the payment host to identify the PaymentTerms.\nMay be omitted if the payment host does not need to associate Payments with PaymentTerms\nor if they associate each PaymentTerms with a separate payment address.\nMaximum length is 10000 characters.",
                     "$ref": "#/definitions/dpp.Merchant"
                 },
                 "network": {

@@ -1,7 +1,7 @@
 package dpp
 
-// Merchant to be displayed to the user.
-type Merchant struct {
+// Beneficiary to be displayed to the user.
+type Beneficiary struct {
 	// AvatarURL displays a canonical url to a merchants avatar.
 	AvatarURL string `json:"avatar" example:"http://url.com"`
 	// Name is a human readable string identifying the merchant.
@@ -12,4 +12,6 @@ type Merchant struct {
 	Address string `json:"address" example:"1 the street, the town, B1 1AA"`
 	// ExtendedData can be supplied if the merchant wishes to send some arbitrary data back to the wallet.
 	ExtendedData map[string]interface{} `json:"extendedData,omitempty"`
+	// PaymentReference ID of invoice.
+	PaymentReference string `json:"paymentReference" example:"Order-325214"`
 }

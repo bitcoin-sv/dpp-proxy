@@ -21,9 +21,9 @@ const (
 	RoutePaymentACK             = "payment.ack"
 	RoutePaymentError           = "payment.error"
 	RouteProofCreate            = "proof.create"
-	RoutePaymentRequestCreate   = "paymentrequest.create"
-	RoutePaymentRequestResponse = "paymentrequest.response"
-	RoutePaymentRequestError    = "paymentrequest.error"
+	RoutePaymentTermsCreate   	= "paymentterms.create"
+	RoutePaymentTermsResponse 	= "paymentterms.response"
+	RoutePaymentTermsError    	= "paymentterms.error"
 
 	appID = "dpp"
 )
@@ -50,10 +50,10 @@ func (p *payd) ProofCreate(ctx context.Context, args dpp.ProofCreateArgs, req en
 	return nil
 }
 
-// PaymentRequest will send a socket request to a payd client for a payment request.
+// PaymentTerms will send a socket request to a payd client for a payment request.
 // It will wait on a response before returnign the payment request.
-func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
-	msg := sockets.NewMessage(RoutePaymentRequestCreate, "", args.PaymentID)
+func (p *payd) PaymentTerms(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
+	msg := sockets.NewMessage(RoutePaymentTermsCreate, "", args.PaymentID)
 	msg.AppID = appID
 	msg.CorrelationID = uuid.NewString()
 
@@ -68,13 +68,13 @@ func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) 
 		return nil, errors.Wrap(err, "failed to broadcast message for payment request")
 	}
 	switch resp.Key() {
-	case RoutePaymentRequestResponse:
-		var pr *dpp.PaymentRequest
+	case RoutePaymentTermsResponse:
+		var pr *dpp.PaymentTerms
 		if err := resp.Bind(&pr); err != nil {
 			return nil, errors.Wrap(err, "failed to bind payment request response")
 		}
 		return pr, nil
-	case RoutePaymentRequestError:
+	case RoutePaymentTermsError:
 		var clientErr server.ClientError
 		if err := resp.Bind(&clientErr); err != nil {
 			return nil, errors.Wrap(err, "failed to bind error response")

@@ -2,13 +2,13 @@ package noop
 
 import (
 	"context"
+	"github.com/libsv/go-dpp/modes/hybridmode"
 	"time"
 
 	"github.com/bitcoin-sv/dpp-proxy/log"
-	"github.com/libsv/go-bt/v2"
 	"github.com/libsv/go-bt/v2/bscript"
-
 	"github.com/libsv/go-dpp"
+	"github.com/libsv/go-dpp/nativetypes"
 )
 
 type noop struct {
@@ -31,32 +31,45 @@ func (n *noop) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, re
 	return &dpp.PaymentACK{}, nil
 }
 
-func (n noop) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
-	return &dpp.PaymentRequest{
+func (n noop) PaymentTerms(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
+	return &dpp.PaymentTerms{
 		Network:             "noop",
-		CreationTimestamp:   time.Now(),
-		ExpirationTimestamp: time.Now().Add(time.Hour),
-		FeeRate: func() *bt.FeeQuote {
-			fq := bt.NewFeeQuote()
-			fq.UpdateExpiry(time.Now().Add(10 * time.Hour))
-			return fq
-		}(),
-		Memo:             "noop",
-		PaymentURL:       "noop",
-		AncestryRequired: true,
-		MerchantData: &dpp.Merchant{
-			AvatarURL:    "noop",
-			Name:         "noop",
-			Email:        "noop",
-			Address:      "noop",
-			ExtendedData: nil,
+		Version:			 "1.0",
+		CreationTimestamp:   time.Now().Unix(),
+		ExpirationTimestamp: time.Now().Add(time.Hour).Unix(),
+		Memo:                "noop",
+		PaymentURL:          "noop",
+		Beneficiary: &dpp.Beneficiary{
+			AvatarURL:        "noop",
+			Name:             "noop",
+			Email:            "noop",
+			Address:          "noop",
+			ExtendedData:     nil,
+			PaymentReference: "noop",
 		},
-		Destinations: dpp.PaymentDestinations{
-			Outputs: []dpp.Output{{
-				Amount:        0,
-				LockingScript: &bscript.Script{},
-				Description:   "noop",
-			}},
+		Modes: &dpp.PaymentTermsModes{
+			Hybrid: hybridmode.PaymentTerms{
+				"choiceID0": {
+					"transactions": {
+						hybridmode.TransactionTerms{
+							Outputs: hybridmode.Outputs{ NativeOutputs: []nativetypes.NativeOutput{
+								{
+									Amount:        1000,
+									LockingScript: func() *bscript.Script {
+										ls, _ := bscript.NewFromHexString(
+											"76a91493d0d43918a5df78f08cfe22a4e022846b6736c288ac")
+										return ls
+									}(),
+									Description:   "noop description",
+								},
+							} },
+							Inputs: hybridmode.Inputs{},
+							Policies: &hybridmode.Policies{},
+						},
+					},
+				},
+
+			},
 		},
 	}, nil
 }

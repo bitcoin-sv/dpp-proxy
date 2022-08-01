@@ -15,28 +15,28 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
+func TestPaymentTermsHandler_BuildPaymentTerms(t *testing.T) {
 	tests := map[string]struct {
-		paymentRequestFunc func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error)
+		paymentTermsFunc func(context.Context, dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error)
 		paymentID          string
-		expResponse        dpp.PaymentRequest
+		expResponse        dpp.PaymentTerms
 		expStatusCode      int
 		expErr             error
 	}{
 		"successful post": {
-			paymentRequestFunc: func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
-				return &dpp.PaymentRequest{
+			paymentTermsFunc: func(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
+				return &dpp.PaymentTerms{
 					Memo: fmt.Sprintf("payment %s", args.PaymentID),
 				}, nil
 			},
 			paymentID: "abc123",
-			expResponse: dpp.PaymentRequest{
+			expResponse: dpp.PaymentTerms{
 				Memo: "payment abc123",
 			},
 			expStatusCode: http.StatusOK,
 		},
 		"error is reported back": {
-			paymentRequestFunc: func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
+			paymentTermsFunc: func(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
 				return nil, errors.New("nah darn")
 			},
 			paymentID: "abc123",
@@ -47,8 +47,8 @@ func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			e := echo.New()
-			h := NewPaymentRequestHandler(&dppMocks.PaymentRequestServiceMock{
-				PaymentRequestFunc: test.paymentRequestFunc,
+			h := NewPaymentTermsHandler(&dppMocks.PaymentTermsServiceMock{
+				PaymentTermsFunc: test.paymentTermsFunc,
 			})
 			g := e.Group("/")
 			e.HideBanner = true
@@ -63,7 +63,7 @@ func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 			ctx.SetParamNames("paymentID")
 			ctx.SetParamValues(test.paymentID)
 
-			err := h.buildPaymentRequest(ctx)
+			err := h.buildPaymentTerms(ctx)
 			if test.expErr != nil {
 				assert.Error(t, err)
 				assert.EqualError(t, test.expErr, err.Error())
@@ -74,7 +74,7 @@ func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 			defer response.Body.Close()
 			assert.Equal(t, test.expStatusCode, response.StatusCode)
 
-			var ack dpp.PaymentRequest
+			var ack dpp.PaymentTerms
 			assert.NoError(t, json.NewDecoder(response.Body).Decode(&ack))
 
 			assert.Equal(t, test.expResponse, ack)

@@ -35,7 +35,7 @@ import (
 // Deps holds all the dependencies.
 type Deps struct {
 	PaymentService        dpp.PaymentService
-	PaymentRequestService dpp.PaymentRequestService
+	PaymentTermsService dpp.PaymentTermsService
 	ProofsService         dpp.ProofsService
 }
 
@@ -54,17 +54,17 @@ func SetupDeps(cfg config.Config, l log.Logger) *Deps {
 
 	// services
 	paymentSvc := service.NewPayment(l, paydStore)
-	paymentReqSvc := service.NewPaymentRequest(paydStore)
+	paymentReqSvc := service.NewPaymentTerms(paydStore)
 	if cfg.PayD.Noop {
 		noopStore := noop.NewNoOp(log.Noop{})
 		paymentSvc = service.NewPayment(log.Noop{}, noopStore)
-		paymentReqSvc = service.NewPaymentRequest(noopStore)
+		paymentReqSvc = service.NewPaymentTerms(noopStore)
 	}
 	proofService := service.NewProof(paydStore)
 
 	return &Deps{
 		PaymentService:        paymentSvc,
-		PaymentRequestService: paymentReqSvc,
+		PaymentTermsService:   paymentReqSvc,
 		ProofsService:         proofService,
 	}
 }
@@ -101,7 +101,7 @@ func SetupHTTPEndpoints(deps *Deps, e *echo.Echo) {
 	g := e.Group("/")
 	// handlers
 	dppHandlers.NewPaymentHandler(deps.PaymentService).RegisterRoutes(g)
-	dppHandlers.NewPaymentRequestHandler(deps.PaymentRequestService).RegisterRoutes(g)
+	dppHandlers.NewPaymentTermsHandler(deps.PaymentTermsService).RegisterRoutes(g)
 	dppHandlers.NewProofs(deps.ProofsService).RegisterRoutes(g)
 }
 
@@ -116,7 +116,7 @@ func SetupSockets(cfg config.Socket, e *echo.Echo) *server.SocketServer {
 	// add middleware, with panic going first
 	s.WithMiddleware(smw.PanicHandler, smw.Timeout(smw.NewTimeoutConfig()), smw.Metrics())
 
-	dppSoc.NewPaymentRequest().Register(s)
+	dppSoc.NewPaymentTerms().Register(s)
 	dppSoc.NewPayment().Register(s)
 	dppHandlers.NewProofs(service.NewProof(sockets.NewPayd(s))).RegisterRoutes(g)
 
@@ -140,11 +140,11 @@ func SetupHybrid(cfg config.Config, l log.Logger, e *echo.Echo) *server.SocketSe
 		noopStore := noop.NewNoOp(log.Noop{})
 		paymentSvc = service.NewPayment(log.Noop{}, noopStore)
 	}
-	paymentReqSvc := service.NewPaymentRequestProxy(paymentStore, cfg.Transports, cfg.Server)
+	paymentReqSvc := service.NewPaymentTermsProxy(paymentStore, cfg.Transports, cfg.Server)
 	proofsSvc := service.NewProof(paymentStore)
 
 	dppHandlers.NewPaymentHandler(paymentSvc).RegisterRoutes(g)
-	dppHandlers.NewPaymentRequestHandler(paymentReqSvc).RegisterRoutes(g)
+	dppHandlers.NewPaymentTermsHandler(paymentReqSvc).RegisterRoutes(g)
 	dppHandlers.NewProofs(proofsSvc).RegisterRoutes(g)
 	dppSoc.NewHealthHandler().Register(s)
 
