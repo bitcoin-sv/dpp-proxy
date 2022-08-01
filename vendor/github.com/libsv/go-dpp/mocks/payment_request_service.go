@@ -9,73 +9,73 @@ import (
 	"sync"
 )
 
-// Ensure, that PaymentRequestServiceMock does implement dpp.PaymentRequestService.
+// Ensure, that PaymentTermsServiceMock does implement dpp.PaymentTermsService.
 // If this is not the case, regenerate this file with moq.
-var _ dpp.PaymentRequestService = &PaymentRequestServiceMock{}
+var _ dpp.PaymentTermsService = &PaymentTermsServiceMock{}
 
-// PaymentRequestServiceMock is a mock implementation of dpp.PaymentRequestService.
+// PaymentTermsServiceMock is a mock implementation of dpp.PaymentTermsService.
 //
-// 	func TestSomethingThatUsesPaymentRequestService(t *testing.T) {
+// 	func TestSomethingThatUsesPaymentTermsService(t *testing.T) {
 //
-// 		// make and configure a mocked dpp.PaymentRequestService
-// 		mockedPaymentRequestService := &PaymentRequestServiceMock{
-// 			PaymentRequestFunc: func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentRequest, error) {
-// 				panic("mock out the PaymentRequest method")
+// 		// make and configure a mocked dpp.PaymentTermsService
+// 		mockedPaymentTermsService := &PaymentTermsServiceMock{
+// 			PaymentTermsFunc: func(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
+// 				panic("mock out the PaymentTerms method")
 // 			},
 // 		}
 //
-// 		// use mockedPaymentRequestService in code that requires dpp.PaymentRequestService
+// 		// use mockedPaymentTermsService in code that requires dpp.PaymentTermsService
 // 		// and then make assertions.
 //
 // 	}
-type PaymentRequestServiceMock struct {
-	// PaymentRequestFunc mocks the PaymentRequest method.
-	PaymentRequestFunc func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error)
+type PaymentTermsServiceMock struct {
+	// PaymentTermsFunc mocks the PaymentTerms method.
+	PaymentTermsFunc func(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error)
 
 	// calls tracks calls to the methods.
 	calls struct {
-		// PaymentRequest holds details about calls to the PaymentRequest method.
-		PaymentRequest []struct {
+		// PaymentTerms holds details about calls to the PaymentTerms method.
+		PaymentTerms []struct {
 			// Ctx is the ctx argument value.
 			Ctx context.Context
 			// Args is the args argument value.
-			Args dpp.PaymentRequestArgs
+			Args dpp.PaymentTermsArgs
 		}
 	}
-	lockPaymentRequest sync.RWMutex
+	lockPaymentTerms sync.RWMutex
 }
 
-// PaymentRequest calls PaymentRequestFunc.
-func (mock *PaymentRequestServiceMock) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
-	if mock.PaymentRequestFunc == nil {
-		panic("PaymentRequestServiceMock.PaymentRequestFunc: method is nil but PaymentRequestService.PaymentRequest was just called")
+// PaymentTerms calls PaymentTermsFunc.
+func (mock *PaymentTermsServiceMock) PaymentTerms(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
+	if mock.PaymentTermsFunc == nil {
+		panic("PaymentTermsServiceMock.PaymentTermsFunc: method is nil but PaymentTermsService.PaymentTerms was just called")
 	}
 	callInfo := struct {
 		Ctx  context.Context
-		Args dpp.PaymentRequestArgs
+		Args dpp.PaymentTermsArgs
 	}{
 		Ctx:  ctx,
 		Args: args,
 	}
-	mock.lockPaymentRequest.Lock()
-	mock.calls.PaymentRequest = append(mock.calls.PaymentRequest, callInfo)
-	mock.lockPaymentRequest.Unlock()
-	return mock.PaymentRequestFunc(ctx, args)
+	mock.lockPaymentTerms.Lock()
+	mock.calls.PaymentTerms = append(mock.calls.PaymentTerms, callInfo)
+	mock.lockPaymentTerms.Unlock()
+	return mock.PaymentTermsFunc(ctx, args)
 }
 
-// PaymentRequestCalls gets all the calls that were made to PaymentRequest.
+// PaymentTermsCalls gets all the calls that were made to PaymentTerms.
 // Check the length with:
-//     len(mockedPaymentRequestService.PaymentRequestCalls())
-func (mock *PaymentRequestServiceMock) PaymentRequestCalls() []struct {
+//     len(mockedPaymentTermsService.PaymentTermsCalls())
+func (mock *PaymentTermsServiceMock) PaymentTermsCalls() []struct {
 	Ctx  context.Context
-	Args dpp.PaymentRequestArgs
+	Args dpp.PaymentTermsArgs
 } {
 	var calls []struct {
 		Ctx  context.Context
-		Args dpp.PaymentRequestArgs
+		Args dpp.PaymentTermsArgs
 	}
-	mock.lockPaymentRequest.RLock()
-	calls = mock.calls.PaymentRequest
-	mock.lockPaymentRequest.RUnlock()
+	mock.lockPaymentTerms.RLock()
+	calls = mock.calls.PaymentTerms
+	mock.lockPaymentTerms.RUnlock()
 	return calls
 }

@@ -1,26 +1,13 @@
 package dpp
 
 import (
-	"github.com/libsv/go-bc/spv"
+	"context"
+	"github.com/libsv/go-dpp/modes/hybridmode"
 	validator "github.com/theflyingcodr/govalidator"
 )
 
 // These structures are defined in the TSC spec:
 // See https://tsc.bitcoinassociation.net/standards/direct_payment_protocol
-
-// HybridPaymentModePayment includes data required for hybrid payment mode.
-type HybridPaymentModePayment struct {
-	// OptionID ID of chosen payment options
-	OptionID string `json:"optionId"`
-	// Transactions A list of valid, signed Bitcoin transactions that fully pays the PaymentTerms.
-	// The transaction is hex-encoded and must NOT be prefixed with “0x”.
-	// The order of transactions should match the order from PaymentTerms for this mode.
-	Transactions []string `json:"transactions"`
-	// Ancestors a map of txid to ancestry transaction info for the transactions in <optionID> above
-	// each ancestor contains the TX together with the MerkleProof needed when SPVRequired is true.
-	// See: https://tsc.bitcoinassociation.net/standards/transaction-ancestors/
-	Ancestors map[string]spv.TSCAncestryJSON `json:"ancestors"`
-}
 
 // Originator Data about payer. This data might be needed in many cases, e.g. tracking data for later loyalty
 // points processing etc.
@@ -38,10 +25,10 @@ type Originator struct {
 // Payment is a Payment message used in BIP270.
 // See https://github.com/moneybutton/bips/blob/master/bip-0270.mediawiki#payment
 type Payment struct {
-	// ModeID chosen from possible modes of PaymentTerms.
+	// ModeID chosen from possible messages of PaymentTerms.
 	ModeID string `json:"modeId" binding:"required" example:"ef63d9775da5"`
-	// Mode Object with data required by specific mode, e.g. HybridPaymentMode
-	Mode HybridPaymentModePayment `json:"mode" binding:"required"`
+	// Mode Object with data required by specific mode, e.g. HybridPaymentTerms
+	Mode hybridmode.Payment `json:"mode" binding:"required"`
 	// Originator Data about payer. This data might be needed in many cases, e.g. refund, tract data for later loyalty points processing etc.
 	Originator Originator `json:"originator"`
 	// Transaction A single valid, signed Bitcoin transaction that fully pays the PaymentTerms. This field is deprecated.
@@ -64,4 +51,26 @@ func (p Payment) Validate() error {
 // as proof of acceptance of the tx they have provided in the ancestry.
 type ProofCallback struct {
 	Token string `json:"token"`
+}
+
+// PaymentCreateArgs identifies the paymentID used for the payment.
+type PaymentCreateArgs struct {
+	PaymentID string `param:"paymentID"`
+}
+
+// Validate will ensure that the PaymentCreateArgs are supplied and correct.
+func (p PaymentCreateArgs) Validate() error {
+	return validator.New().
+		Validate("paymentID", validator.NotEmpty(p.PaymentID)).
+		Err()
+}
+
+// PaymentService enforces business rules when creating payments.
+type PaymentService interface {
+	PaymentCreate(ctx context.Context, args PaymentCreateArgs, req Payment) (*PaymentACK, error)
+}
+
+// PaymentWriter will write a payment to a data store.
+type PaymentWriter interface {
+	PaymentCreate(ctx context.Context, args PaymentCreateArgs, req Payment) (*PaymentACK, error)
 }

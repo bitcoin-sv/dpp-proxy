@@ -15,16 +15,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
+func TestPaymentTermsHandler_BuildPaymentTerms(t *testing.T) {
 	tests := map[string]struct {
-		paymentRequestFunc func(context.Context, dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error)
+		paymentTermsFunc func(context.Context, dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error)
 		paymentID          string
 		expResponse        dpp.PaymentTerms
 		expStatusCode      int
 		expErr             error
 	}{
 		"successful post": {
-			paymentRequestFunc: func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
+			paymentTermsFunc: func(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
 				return &dpp.PaymentTerms{
 					Memo: fmt.Sprintf("payment %s", args.PaymentID),
 				}, nil
@@ -36,7 +36,7 @@ func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 			expStatusCode: http.StatusOK,
 		},
 		"error is reported back": {
-			paymentRequestFunc: func(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
+			paymentTermsFunc: func(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
 				return nil, errors.New("nah darn")
 			},
 			paymentID: "abc123",
@@ -47,8 +47,8 @@ func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 	for name, test := range tests {
 		t.Run(name, func(t *testing.T) {
 			e := echo.New()
-			h := NewPaymentRequestHandler(&dppMocks.PaymentRequestServiceMock{
-				PaymentRequestFunc: test.paymentRequestFunc,
+			h := NewPaymentTermsHandler(&dppMocks.PaymentTermsServiceMock{
+				PaymentTermsFunc: test.paymentTermsFunc,
 			})
 			g := e.Group("/")
 			e.HideBanner = true
@@ -63,7 +63,7 @@ func TestPaymentRequestHandler_BuildPaymentRequest(t *testing.T) {
 			ctx.SetParamNames("paymentID")
 			ctx.SetParamValues(test.paymentID)
 
-			err := h.buildPaymentRequest(ctx)
+			err := h.buildPaymentTerms(ctx)
 			if test.expErr != nil {
 				assert.Error(t, err)
 				assert.EqualError(t, test.expErr, err.Error())

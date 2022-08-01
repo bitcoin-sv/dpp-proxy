@@ -77,7 +77,7 @@ type Logging struct {
 type Server struct {
 	Port     string
 	Hostname string
-	// FQDN - fully qualified domain name, used to form the paymentRequest
+	// FQDN - fully qualified domain name, used to form the PaymentTerms
 	// payment URL as this may be different from the hostname + port.
 	FQDN string
 	// SwaggerEnabled if true we will include an endpoint to serve swagger documents.

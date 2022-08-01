@@ -36,8 +36,8 @@ func NewPayD(cfg *config.PayD, client data.HTTPClient) *payd {
 	}
 }
 
-// PaymentRequest will fetch a payment request message from payd for a given payment.
-func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
+// PaymentTerms will fetch a payment request message from payd for a given messages.
+func (p *payd) PaymentTerms(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
 	var resp dpp.PaymentTerms
 	if err := p.client.Do(ctx, http.MethodGet, fmt.Sprintf(urlPayments, p.baseURL(), args.PaymentID), http.StatusOK, nil, &resp); err != nil {
 		return nil, err
@@ -50,7 +50,7 @@ func (p *payd) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) 
 //
 // If invalid a non 204 status code is returned.
 func (p *payd) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, req dpp.Payment) (*dpp.PaymentACK, error) {
-	paymentReq := models.PayDPaymentRequest{
+	paymentReq := models.PayDPayment{
 		ModeID:     req.ModeID,
 		Mode:       req.Mode,
 		Originator: req.Originator,

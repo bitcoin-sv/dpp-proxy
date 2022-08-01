@@ -304,10 +304,8 @@ github.com/libsv/go-bk v0.1.6/go.mod h1:khJboDoH18FPUaZlzRFKzlVN84d4YfdmlDtdX4LA
 github.com/libsv/go-bt/v2 v2.1.0-beta.2/go.mod h1:u5g3GmVLffBV8sWvMqHR3JekC51OR9XYvmQp1h/XoiQ=
 github.com/libsv/go-bt/v2 v2.1.0-beta.4 h1:eLp2XKPRnVrcoiGpjK9fsiTK8OT103LNvZ7VUC4mH20=
 github.com/libsv/go-bt/v2 v2.1.0-beta.4/go.mod h1:KbBf6ugGNMtVwtCSUtlSAHoVhbAie4hu2VM97d1ZL8I=
-github.com/libsv/go-dpp v0.1.12-0.20220729125937-ad1ac7bfd522 h1:v7t8IjrkY4H5n8jvCWETeTDvm2jqG2S9Ts9iS2lB0Wk=
-github.com/libsv/go-dpp v0.1.12-0.20220729125937-ad1ac7bfd522/go.mod h1:FFGU1qKTwvfFFENst14dCwMJcWiggx+2Z7AruQHuOSc=
-github.com/libsv/go-dpp v0.1.12-0.20220729135302-eb0655399a4a h1:ZHowAzlTYSZzHLKs/SWue9IzR4sgYwvwQPbFfxV3brQ=
-github.com/libsv/go-dpp v0.1.12-0.20220729135302-eb0655399a4a/go.mod h1:FFGU1qKTwvfFFENst14dCwMJcWiggx+2Z7AruQHuOSc=
+github.com/libsv/go-dpp v0.1.12-0.20220801104850-246f1c1ba168 h1:DULl4hU5HsI5+bTsyFe8Yzt5aLk/wZyMt38Dr8L2PXU=
+github.com/libsv/go-dpp v0.1.12-0.20220801104850-246f1c1ba168/go.mod h1:FFGU1qKTwvfFFENst14dCwMJcWiggx+2Z7AruQHuOSc=
 github.com/magiconair/properties v1.8.6 h1:5ibWZ6iY0NctNGWo87LalDlEZ6R41TqbbDamhfG/Qzo=
 github.com/magiconair/properties v1.8.6/go.mod h1:y3VJvCyxH9uVvJTWEGAELF3aiYNyPKd5NZ3oSwXrF60=
 github.com/mailru/easyjson v0.0.0-20190614124828-94de47d64c63/go.mod h1:C1wdFJiN94OJF2b5HbByQZoLdCWB1Yqtg26g4irojpc=

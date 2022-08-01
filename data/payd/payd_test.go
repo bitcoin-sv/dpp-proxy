@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"github.com/libsv/go-bc/spv"
+	"github.com/libsv/go-dpp/modes/hybridmode"
+	"github.com/libsv/go-dpp/nativetypes"
 	"testing"
 	"time"
 
@@ -24,7 +26,7 @@ func TestPayd_PaymentCreate(t *testing.T) {
 		req    dpp.Payment
 		cfg    *config.PayD
 		expURL string
-		expReq models.PayDPaymentRequest
+		expReq models.PayDPayment
 		expErr error
 	}{
 		"successful payment created": {
@@ -36,15 +38,15 @@ func TestPayd_PaymentCreate(t *testing.T) {
 			},
 			req: dpp.Payment{
 				ModeID: "ef63d9775da5",
-				Mode: dpp.HybridPaymentModePayment{
+				Mode: hybridmode.Payment{
 					OptionID:     "choiceID0",
 					Transactions: []string{"tx1 hex", "tx2 hex"},
 					Ancestors:    map[string]spv.TSCAncestryJSON{},
 				},
 			},
-			expReq: models.PayDPaymentRequest{
+			expReq: models.PayDPayment{
 				ModeID: "ef63d9775da5",
-				Mode: dpp.HybridPaymentModePayment{
+				Mode: hybridmode.Payment{
 					OptionID:     "choiceID0",
 					Transactions: []string{"tx1 hex", "tx2 hex"},
 					Ancestors:    map[string]spv.TSCAncestryJSON{},
@@ -65,15 +67,15 @@ func TestPayd_PaymentCreate(t *testing.T) {
 			},
 			req: dpp.Payment{
 				ModeID: "ef63d9775da5",
-				Mode: dpp.HybridPaymentModePayment{
+				Mode: hybridmode.Payment{
 					OptionID:     "choiceID0",
 					Transactions: []string{"tx1 hex", "tx2 hex"},
 					Ancestors:    map[string]spv.TSCAncestryJSON{},
 				},
 			},
-			expReq: models.PayDPaymentRequest{
+			expReq: models.PayDPayment{
 				ModeID: "ef63d9775da5",
-				Mode: dpp.HybridPaymentModePayment{
+				Mode: hybridmode.Payment{
 					OptionID:     "choiceID0",
 					Transactions: []string{"tx1 hex", "tx2 hex"},
 					Ancestors:    map[string]spv.TSCAncestryJSON{},
@@ -95,7 +97,7 @@ func TestPayd_PaymentCreate(t *testing.T) {
 			},
 			req: dpp.Payment{
 				ModeID: "ef63d9775da5",
-				Mode: dpp.HybridPaymentModePayment{
+				Mode: hybridmode.Payment{
 					OptionID:     "choiceID0",
 					Transactions: []string{"tx1 hex", "tx2 hex"},
 					Ancestors:    map[string]spv.TSCAncestryJSON{},
@@ -107,9 +109,9 @@ func TestPayd_PaymentCreate(t *testing.T) {
 					ExtendedData: map[string]interface{}{"paymentReference": "omgwow"},
 				},
 			},
-			expReq: models.PayDPaymentRequest{
+			expReq: models.PayDPayment{
 				ModeID: "ef63d9775da5",
-				Mode: dpp.HybridPaymentModePayment{
+				Mode: hybridmode.Payment{
 					OptionID:     "choiceID0",
 					Transactions: []string{"tx1 hex", "tx2 hex"},
 					Ancestors:    map[string]spv.TSCAncestryJSON{},
@@ -151,10 +153,10 @@ func TestPayd_PaymentCreate(t *testing.T) {
 	}
 }
 
-func TestPayd_PaymentRequest(t *testing.T) {
+func TestPayd_PaymentTerms(t *testing.T) {
 	tests := map[string]struct {
 		doFunc        func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error
-		args          dpp.PaymentRequestArgs
+		args          dpp.PaymentTermsArgs
 		cfg           *config.PayD
 		expURL        string
 		expPaymentReq *dpp.PaymentTerms
@@ -211,7 +213,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 					}
 				`), &out)
 			},
-			args: dpp.PaymentRequestArgs{
+			args: dpp.PaymentTermsArgs{
 				PaymentID: "qwe123",
 			},
 			cfg: &config.PayD{
@@ -224,12 +226,12 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				Version:		  "1.0",
 				Memo:             "invoice 6K9oZq9",
 				PaymentURL:       "http://dpp:8445/api/v1/payment/6K9oZq9",
-				Modes: &dpp.PaymentModes{
-					HybridPaymentMode: map[string]map[string][]dpp.TransactionTerms{
+				Modes: &dpp.PaymentTermsModes{
+					Hybrid: hybridmode.PaymentTerms{
 						"choiceID0": {
 							"transactions": {
-								dpp.TransactionTerms{
-									Outputs: dpp.Outputs{ NativeOutputs: []dpp.NativeOutput{
+								hybridmode.TransactionTerms{
+									Outputs: hybridmode.Outputs{ NativeOutputs: []nativetypes.NativeOutput{
 										{
 											Amount:        100,
 											LockingScript: func() *bscript.Script {
@@ -245,8 +247,8 @@ func TestPayd_PaymentRequest(t *testing.T) {
 											}(),
 										},
 									} },
-									Inputs: dpp.Inputs{},
-									Policies: &dpp.Policies{
+									Inputs: hybridmode.Inputs{},
+									Policies: &hybridmode.Policies{
 										FeeRate: map[string]map[string]int{
 											"data":
 												{"bytes":200,"satoshis":100},
@@ -328,7 +330,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 					}
 				`), &out)
 			},
-			args: dpp.PaymentRequestArgs{
+			args: dpp.PaymentTermsArgs{
 				PaymentID: "bwe123",
 			},
 			cfg: &config.PayD{
@@ -342,12 +344,12 @@ func TestPayd_PaymentRequest(t *testing.T) {
 				Version:		  "1.0",
 				Memo:             "invoice 6K9oZq9",
 				PaymentURL:       "https://dpp:8445/api/v1/payment/6K9oZq9",
-				Modes: &dpp.PaymentModes{
-					HybridPaymentMode: map[string]map[string][]dpp.TransactionTerms{
+				Modes: &dpp.PaymentTermsModes{
+					Hybrid: hybridmode.PaymentTerms{
 						"choiceID0": {
 							"transactions": {
-								dpp.TransactionTerms{
-									Outputs: dpp.Outputs{ NativeOutputs: []dpp.NativeOutput{
+								hybridmode.TransactionTerms{
+									Outputs: hybridmode.Outputs{ NativeOutputs: []nativetypes.NativeOutput{
 										{
 											Amount:        100,
 											LockingScript: func() *bscript.Script {
@@ -363,13 +365,13 @@ func TestPayd_PaymentRequest(t *testing.T) {
 											}(),
 										},
 									} },
-									Inputs: dpp.Inputs{},
-									Policies: &dpp.Policies{
+									Inputs: hybridmode.Inputs{},
+									Policies: &hybridmode.Policies{
 										FeeRate: map[string]map[string]int{
 											"data":
-												{"bytes":200,"satoshis":100},
-												"standard":
-												{"bytes":200,"satoshis":100},
+											{"bytes":200,"satoshis":100},
+											"standard":
+											{"bytes":200,"satoshis":100},
 										},
 										SPVRequired: false,
 										LockTime:    0,
@@ -399,7 +401,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 			doFunc: func(ctx context.Context, method string, url string, statusCode int, req, out interface{}) error {
 				return errors.New("yikes")
 			},
-			args: dpp.PaymentRequestArgs{
+			args: dpp.PaymentTermsArgs{
 				PaymentID: "bwe123",
 			},
 			cfg: &config.PayD{
@@ -420,7 +422,7 @@ func TestPayd_PaymentRequest(t *testing.T) {
 					return test.doFunc(ctx, method, url, statusCode, req, out)
 				},
 			})
-			pr, err := pd.PaymentRequest(context.Background(), test.args)
+			pr, err := pd.PaymentTerms(context.Background(), test.args)
 			if test.expErr != nil {
 				assert.Error(t, err)
 				assert.EqualError(t, err, test.expErr.Error())

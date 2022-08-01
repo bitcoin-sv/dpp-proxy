@@ -89,10 +89,12 @@ github.com/libsv/go-bk/envelope
 github.com/libsv/go-bt/v2
 github.com/libsv/go-bt/v2/bscript
 github.com/libsv/go-bt/v2/sighash
-# github.com/libsv/go-dpp v0.1.12-0.20220729135302-eb0655399a4a
+# github.com/libsv/go-dpp v0.1.12-0.20220801104850-246f1c1ba168
 ## explicit; go 1.17
 github.com/libsv/go-dpp
 github.com/libsv/go-dpp/mocks
+github.com/libsv/go-dpp/modes/hybridmode
+github.com/libsv/go-dpp/nativetypes
 # github.com/magiconair/properties v1.8.6
 ## explicit; go 1.13
 github.com/magiconair/properties

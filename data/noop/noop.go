@@ -2,11 +2,13 @@ package noop
 
 import (
 	"context"
+	"github.com/libsv/go-dpp/modes/hybridmode"
 	"time"
 
 	"github.com/bitcoin-sv/dpp-proxy/log"
 	"github.com/libsv/go-bt/v2/bscript"
 	"github.com/libsv/go-dpp"
+	"github.com/libsv/go-dpp/nativetypes"
 )
 
 type noop struct {
@@ -29,7 +31,7 @@ func (n *noop) PaymentCreate(ctx context.Context, args dpp.PaymentCreateArgs, re
 	return &dpp.PaymentACK{}, nil
 }
 
-func (n noop) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
+func (n noop) PaymentTerms(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
 	return &dpp.PaymentTerms{
 		Network:             "noop",
 		Version:			 "1.0",
@@ -45,13 +47,12 @@ func (n noop) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (
 			ExtendedData:     nil,
 			PaymentReference: "noop",
 		},
-		Modes: &dpp.PaymentModes{
-			HybridPaymentMode: map[string]map[string][]dpp.TransactionTerms{
-
+		Modes: &dpp.PaymentTermsModes{
+			Hybrid: hybridmode.PaymentTerms{
 				"choiceID0": {
 					"transactions": {
-						dpp.TransactionTerms{
-							Outputs: dpp.Outputs{ NativeOutputs: []dpp.NativeOutput{
+						hybridmode.TransactionTerms{
+							Outputs: hybridmode.Outputs{ NativeOutputs: []nativetypes.NativeOutput{
 								{
 									Amount:        1000,
 									LockingScript: func() *bscript.Script {
@@ -62,8 +63,8 @@ func (n noop) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (
 									Description:   "noop description",
 								},
 							} },
-							Inputs: dpp.Inputs{},
-							Policies: &dpp.Policies{},
+							Inputs: hybridmode.Inputs{},
+							Policies: &hybridmode.Policies{},
 						},
 					},
 				},

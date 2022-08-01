@@ -11,41 +11,41 @@ import (
 	validator "github.com/theflyingcodr/govalidator"
 )
 
-// paymentRequestProxy simply acts as a pass-through to the data layer
-// where another service will create the paymentRequest.
+// paymentTermsProxy simply acts as a pass-through to the data layer
+// where another service will create the PaymentTerms.
 // TODO - remove the other payment request service.
-type paymentRequestProxy struct {
-	preqRdr   dpp.PaymentRequestReader
+type paymentTermsProxy struct {
+	preqRdr   dpp.PaymentTermsReader
 	transCfg  *config.Transports
 	walletCfg *config.Server
 }
 
-// NewPaymentRequestProxy will setup and return a new PaymentRequest service that will generate outputs
+// NewPaymentTermsProxy will setup and return a new PaymentTerms service that will generate outputs
 // using the provided outputter which is defined in server config.
-func NewPaymentRequestProxy(preqRdr dpp.PaymentRequestReader, transCfg *config.Transports, walletCfg *config.Server) *paymentRequestProxy {
-	return &paymentRequestProxy{
+func NewPaymentTermsProxy(preqRdr dpp.PaymentTermsReader, transCfg *config.Transports, walletCfg *config.Server) *paymentTermsProxy {
+	return &paymentTermsProxy{
 		preqRdr:   preqRdr,
 		transCfg:  transCfg,
 		walletCfg: walletCfg,
 	}
 }
 
-// PaymentRequest will call to the data layer to return a full payment request.
-func (p *paymentRequestProxy) PaymentRequest(ctx context.Context, args dpp.PaymentRequestArgs) (*dpp.PaymentTerms, error) {
+// PaymentTerms will call to the data layer to return a full payment request.
+func (p *paymentTermsProxy) PaymentTerms(ctx context.Context, args dpp.PaymentTermsArgs) (*dpp.PaymentTerms, error) {
 	if err := validator.New().
 		Validate("paymentID", validator.NotEmpty(args.PaymentID)); err.Err() != nil {
 		return nil, err
 	}
-	resp, err := p.preqRdr.PaymentRequest(ctx, args)
+	resp, err := p.preqRdr.PaymentTerms(ctx, args)
 	if err != nil {
 		return nil, errors.Wrapf(err, "failed to read payment request for paymentID %s", args.PaymentID)
 	}
 
-	if len(resp.Modes.HybridPaymentMode["choiceID0"]["transactions"][0].Outputs.NativeOutputs) == 0 {
+	if len(resp.Modes.Hybrid["choiceID0"]["transactions"][0].Outputs.NativeOutputs) == 0 {
 		return nil, fmt.Errorf("no outputs received for paymentID %s", args.PaymentID)
 	}
 
-	if resp.Modes.HybridPaymentMode["choiceID0"]["transactions"][0].Policies.FeeRate == nil {
+	if resp.Modes.Hybrid["choiceID0"]["transactions"][0].Policies.FeeRate == nil {
 		return nil, fmt.Errorf("no fees received for paymentID %s", args.PaymentID)
 	}
 

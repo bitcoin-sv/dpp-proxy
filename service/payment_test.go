@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"github.com/libsv/go-bc/spv"
+	"github.com/libsv/go-dpp/modes/hybridmode"
 	"testing"
 
 	"github.com/bitcoin-sv/dpp-proxy/log"
@@ -26,7 +27,7 @@ func TestPayment_Create(t *testing.T) {
 			},
 			req: dpp.Payment{
 				ModeID: "ef63d9775da5",
-				Mode: dpp.HybridPaymentModePayment{
+				Mode: hybridmode.Payment{
 					OptionID:     "choiceID0",
 					Transactions: []string{"tx1 hex", "tx2 hex"},
 					Ancestors:    map[string]spv.TSCAncestryJSON{},
@@ -49,7 +50,7 @@ func TestPayment_Create(t *testing.T) {
 			args: dpp.PaymentCreateArgs{},
 			req: dpp.Payment{
 				ModeID: "ef63d9775da5",
-				Mode: dpp.HybridPaymentModePayment{
+				Mode: hybridmode.Payment{
 					OptionID:     "choiceID0",
 					Transactions: []string{"tx1 hex", "tx2 hex"},
 					Ancestors:    map[string]spv.TSCAncestryJSON{},
@@ -90,7 +91,7 @@ func TestPayment_Create(t *testing.T) {
 			},
 			req: dpp.Payment{
 				ModeID: "ef63d9775da5",
-				Mode: dpp.HybridPaymentModePayment{
+				Mode: hybridmode.Payment{
 					OptionID:     "choiceID0",
 					Transactions: []string{"tx1 hex", "tx2 hex"},
 					Ancestors:    map[string]spv.TSCAncestryJSON{},
